@@ -1,0 +1,102 @@
+BODY {
+  PADDING-LEFT: 22px; PADDING-RIGHT: 22px; BACKGROUND: #fff; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; min-width: 780px;
+}
+HTML {
+  PADDING-LEFT: 0px; PADDING-RIGHT: 0px; BACKGROUND: #fff; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; min-width: 780px;
+}
+CODE {
+	FONT-SIZE: 1.3em; FONT-FAMILY: serif
+}
+
+TD {
+  PADDING-RIGHT: 11px; PADDING-LEFT: 0px; FONT-SIZE: 0.90em; PADDING-BOTTOM: 5px; MARGIN: 0px 0px 3px; PADDING-TOP: 3px; 
+}
+H2 {
+  MARGIN-LEFT: 0px; FONT-WEIGHT: bold; FONT-SIZE: 1.2em
+}
+H3 {
+  FONT-WEIGHT: bold; FONT-SIZE: 1.25em; MARGIN-BOTTOM: 0px; 
+}
+LI {
+  PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 3px; PADDING-TOP: 0px; 
+}
+.restBody 
+{
+	 FONT-SIZE:0.9em; MARGIN-LEFT: 0px; 
+}
+.apiref {
+  FONT-SIZE: 0.6em; MARGIN: 0px; PADDING: 0px;
+}
+.titlecell {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-SIZE: 1.0em; FONT-WEIGHT:bold; PADDING-BOTTOM: 5px; MARGIN: 0px 0px 3px; PADDING-TOP: 3px; 
+}
+.breadcrumbs {
+  PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-SIZE: 0.8em; FONT-WEIGHT: bold; PADDING-BOTTOM: 5px; MARGIN: 0px 0px 3px; PADDING-TOP: 0px;
+}
+.userTable {
+  FONT-SIZE: 0.80em;
+}
+.navTable {
+  PADDING-BOTTOM: 5px; MARGIN: 0px 0px 3px; PADDING-TOP: 0px; BORDER-BOTTOM: #000 1px solid; BORDER-TOP: #000 1px solid; BACKGROUND-COLOR: #E5EFF7;
+}
+.adminNavTable {
+	BORDER-BOTTOM: #000 1px solid; PADDING-BOTTOM: 5px; BACKGROUND-COLOR: #f7efe5; MARGIN: 0px 0px 3px; BORDER-TOP: #000 1px solid; PADDING-TOP: 0px
+}
+.help {
+	PADDING-RIGHT: 11px; PADDING-LEFT: 0px; FONT-SIZE: 0.70em; PADDING-BOTTOM: 5px; MARGIN: 0px 0px 3px; PADDING-TOP: 3px; 
+}
+.formTable {
+  PADDING: 5px; MARGIN: 10px 0px 3px; BORDER: #000 1px solid; BACKGROUND-COLOR: #E5EFF7;
+}
+TABLE.ftrTable TR  {
+	vertical-align: top;
+}
+TABLE.ftrTable TD {
+	padding: 2px;
+}
+
+.odd {
+	background-color:#CCFFFF;
+}
+
+.restErrors
+{
+	color: #ffaaaa;
+}
+
+.restException
+{
+	color: red;
+}
+
+/* JOB SERVER ENTRIES*/
+
+.cs_SUBMITTED {
+  color: #00FFFF;
+  font-weight:bold;
+}
+
+.cs_PROCESSING,.cs_ORANGE {
+  color: #0000FF;
+  font-weight:bold;
+}
+
+.cs_DONE,.cs_STARTED,.cs_COMPLETE,.cs_GREEN {
+  color: #387C44;
+  font-weight:bold;
+}
+
+.cs_PARTIALERROR,.cs_PARTIAL {
+  color: #F99999;
+  font-weight:bold;
+}
+
+.cs_CANCELED {
+  color: #6B6B6B;
+  font-weight:bold;  
+}
+
+.cs_ERROR,.cs_STOPPED,.cs_NONE,.cs_RED {
+  color: #FF0000;
+  font-weight:bold;  
+}

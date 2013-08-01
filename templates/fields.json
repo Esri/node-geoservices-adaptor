@@ -1,0 +1,13 @@
+[
+	{"name" : "id", "type" : "esriFieldTypeInteger", "alias" : "ID", "nullable" : "true"},
+	{"name" : "idx", "type" : "esriFieldTypeInteger", "alias" : "IDX", "nullable" : "true"},
+	{"name" : "name", "type" : "esriFieldTypeString", "alias" : "Name", "length" : "255", "nullable" : "true"},
+	{"name" : "number", "type" : "esriFieldTypeInteger", "alias" : "Number", "nullable" : "true"},
+	{"name" : "free", "type" : "esriFieldTypeInteger", "alias" : "Free", "nullable" : "true"},
+	{"name" : "bikes", "type" : "esriFieldTypeInteger", "alias" : "Bikes", "nullable" : "true"},
+	{"name" : "bikesClass", "type" : "esriFieldTypeString", "alias" : "Bikes Class", "length" : "255", "nullable" : "true"},
+	{"name" : "address", "type" : "esriFieldTypeString", "alias" : "Address", "length" : "255", "nullable" : "true"},
+	{"name" : "timestamp", "type" : "esriFieldTypeString", "alias" : "Timestamp", "length" : "255", "nullable" : "true"},
+	{"name" : "citybikeTimestamp", "type" : "esriFieldTypeDate", "alias" : "Citybike Timestamp", "length" : 36, "nullable" : "true"},
+	{"name" : "localTimestamp", "type" : "esriFieldTypeDate", "alias" : "Local Timestamp", "length" : 36, "nullable" : "true"}
+]
