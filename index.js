@@ -8,7 +8,7 @@ var util = require("util");
 // var ags = require('./ags.js');
 var agsurls = require("./agsurls");
 var agsoutput = require("./agsoutput");
-var citybikes = require("./agsdataproviders/citybikes.js");
+var citybikes = require("./agsdataproviders/citybikes");
 
 
 // General URL engine for routing templated AGS requests

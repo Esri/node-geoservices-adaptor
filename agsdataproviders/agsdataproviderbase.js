@@ -1,5 +1,5 @@
-var agsoutput = require("./agsoutput.js");
-var agsurls = require("./agsurls.js");
+var agsoutput = require("../agsoutput.js");
+var agsurls = require("../agsurls.js");
 
 AgsDataProviderBase = function () {
 	this._urls = new agsurls.AgsUrls(this);

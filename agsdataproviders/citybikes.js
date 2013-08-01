@@ -1,4 +1,4 @@
-var agsdp = require("../agsdataprovider");
+var agsdp = require("./agsdataproviderbase");
 var util = require('util');
 var http = require('http');
 
