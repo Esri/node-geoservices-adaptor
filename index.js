@@ -19,7 +19,7 @@ String.prototype.bool = function() {
     return (/^true$/i).test(this);
 };
 
-var useCallback = function(request) {
+function useCallback(request) {
 	var q = url.parse(request.url, true).query;
 	return q.hasOwnProperty('callback');
 };
@@ -101,7 +101,7 @@ app.all('/:dataProviderName', function onRequest(request, response, next) {
 
 
 // Specific handlers
-var infoHandler = function onRequest(request, response) {
+function infoHandler(request, response) {
 	console.log("INFO");
 
 	var dataProvider = getSvcForRequest(request);
@@ -114,7 +114,7 @@ app.get(routerUrls.getInfoUrl(), infoHandler);
 app.post(routerUrls.getInfoUrl(), infoHandler);
 
 
-var servicesHandler = function onRequest(request, response) {
+function servicesHandler(request, response) {
 	console.log("SERVICES");
 
 	var dataProvider = getSvcForRequest(request);
@@ -127,7 +127,7 @@ app.get(routerUrls.getServicesUrl(), servicesHandler);
 app.post(routerUrls.getServicesUrl(), servicesHandler);
 
 
-var featureServiceHandler = function onRequest(request, response) {
+function featureServiceHandler(request, response) {
 	console.log("FEATURESERVICE");
 
 	var dataProvider = getSvcForRequest(request);
@@ -140,12 +140,24 @@ var featureServiceHandler = function onRequest(request, response) {
 app.get(routerUrls.getServiceUrl(), featureServiceHandler);
 app.post(routerUrls.getServiceUrl(), featureServiceHandler);
 
-var featureLayerHandler = function onRequest(request, response) {
+function featureLayersHandler(request, response) {
+	console.log("LAYERS");
+
+	var dataProvider = getSvcForRequest(request);
+	var serviceId = request.params.serviceId;
+
+	var output = agsoutput.featureServiceLayers(request.agsOutFormat, dataProvider, serviceId);
+	useCallback(request)?response.jsonp(200,output):response.send(200,output);
+};
+
+function featureLayerHandler(request, response) {
+	var layerId = request.params.layerId;
+	if (layerId === "layers") return featureLayersHandler(request, response);
+	
 	console.log("LAYER");
 
 	var dataProvider = getSvcForRequest(request);
 	var serviceId = request.params.serviceId;
-	var layerId = request.params.layerId;
 
 	var output = agsoutput.featureServiceLayer(request.agsOutFormat, dataProvider, serviceId, layerId);
 	useCallback(request)?response.jsonp(200,output):response.send(200,output);
@@ -154,7 +166,7 @@ var featureLayerHandler = function onRequest(request, response) {
 app.get(routerUrls.getLayerUrl(), featureLayerHandler);
 app.post(routerUrls.getLayerUrl(), featureLayerHandler);
 
-var layerQueryHandler = function onRequest(request, response) {
+function layerQueryHandler(request, response) {
 	console.log("QUERY");
 
 	var dataProvider = getSvcForRequest(request);

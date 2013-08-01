@@ -3,10 +3,13 @@ var util = require('util');
 
 var agsurls = require("./agsurls.js");
 
+var agsdataproviderbase = require("./agsdataproviders/agsdataproviderbase");
+
 var _infoJSON = JSON.parse(fs.readFileSync('templates/info.json', 'utf8'));
 var _servicesJSON = JSON.parse(fs.readFileSync('templates/services.json', 'utf8'));
 var _featureServiceJSON = JSON.parse(fs.readFileSync('templates/featureService.json', 'utf8'));
 var _featureServiceLayerJSON = JSON.parse(fs.readFileSync('templates/featureServiceLayer.json', 'utf8'));
+var _featureServiceLayersJSON = JSON.parse(fs.readFileSync('templates/featureServiceLayers.json', 'utf8'));
 
 var _featureSetJSON = JSON.parse(fs.readFileSync('templates/featureSet.json', 'utf8'));
 var _queryCountJSON = JSON.parse(fs.readFileSync('templates/queryCount.json', 'utf8'));
@@ -18,6 +21,8 @@ var _infoHTML = fs.readFileSync('templates/info.html', 'utf8');
 var _servicesHTML = fs.readFileSync('templates/services.html', 'utf8');
 var _featureServiceHTML = fs.readFileSync('templates/featureService.html', 'utf8');
 var _featureServiceLayerHTML = fs.readFileSync('templates/featureServiceLayer.html', 'utf8');
+var _featureServiceLayersHTML = fs.readFileSync('templates/featureServiceLayers.html', 'utf8');
+var _featureServiceLayer_LayerItemHTML = fs.readFileSync('templates/featureServiceLayer_layerItem.html', 'utf8');
 
 function _clone(object) {
 	if (object) {
@@ -26,8 +31,7 @@ function _clone(object) {
 	return null;
 }
 
-var envelopeHTMLTemplate = '<ul>XMin: %d<br/> YMin: %d<br/> ' +
-					   	   'XMax: %d<br/> YMax: %d<br/> ' + 
+var envelopeHTMLTemplate = '<ul>XMin: %d<br/> YMin: %d<br/> XMax: %d<br/> YMax: %d<br/> ' + 
 					   	   'Spatial Reference: %d<br/></ul>';
 function htmlStringForEnvelope(env) {
 	return util.format(envelopeHTMLTemplate, 
@@ -97,6 +101,15 @@ function featureServiceLayerJSON(dataProvider, serviceId, layerId) {
 	return r;
 };
 
+function featureServiceLayersJSON(dataProvider, serviceId) {
+	var r = _clone(_featureServiceLayersJSON);
+	var layerIds = dataProvider.layerIds;
+	for (var i=0; i<layerIds.length; i++) {
+		r.layers.push(featureServiceLayerJSON(dataProvider, serviceId, layerIds[i]));
+	}
+	return r;
+};
+
 var EarthRadius = 6378137,
 	RadiansPerDegree =  0.017453292519943;
 
@@ -117,16 +130,32 @@ function coordToMercator(coord) {
 function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId, 
 									  query,
 									  countOnly, idsOnly, outSR, 
-									  callback) {
+									  callback)
+									  {
 	var queryResult = null;
 
 	if (countOnly)
 	{
-		dataProvider.countForQuery(serviceId, layerId, query, callback);
+		dataProvider.countForQuery(serviceId, layerId, query, function(resultCount) {
+			var output = _clone(_queryCountJSON);
+			// Note, for now we only handle one layer at a time
+			var outLayer = output.layers[0];
+			outLayer.id = layerId;
+			outLayer.count = resultCount;
+			callback(output);
+		});
 	}
 	else if (idsOnly)
 	{
-		dataProvider.idsForQuery(serviceId, layerId, query, callback);
+		dataProvider.idsForQuery(serviceId, layerId, query, function(resultIds) {
+			var output = _clone(_queryIdsJSON);
+			// Note, for now we only handle one layer at a time
+			var outLayer = output.layers[0];
+			outLayer.id = layerId;
+			outLayer.objectIdFieldName = dataProvider.idField(serviceId, layerId);
+			outLayer.objectIds = resultIds;
+			callback(output);
+		});
 	}
 	else
 	{
@@ -134,6 +163,7 @@ function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId,
 			var featureSet = JSON.parse(JSON.stringify(_featureSetJSON));
 			
 			featureSet.fields = dataProvider.fields(serviceId, layerId);
+			featureSet.objectIdFieldName = dataProvider.idField(serviceId, layerId);
 			
 			if (outSR == 102100)
 			{
@@ -237,25 +267,62 @@ function featureServiceHTML(dataProvider, serviceId) {
 	);
 };
 
-function featureServiceLayerHTML(dataProvider, serviceId, layerId) {
-	var json = featureServiceLayerJSON(dataProvider, serviceId, layerId);
+function featureServiceLayerItemHTML(dataProvider, serviceId, layerId) {
+	var json = null;
+	if (dataProvider instanceof agsdataproviderbase.AgsDataProviderBase) {
+		json = featureServiceLayerJSON(dataProvider, serviceId, layerId);
+	} else {
+		json = dataProvider;
+	}
 	
-	return util.format(_featureServiceLayerHTML,
-		json.name, layerId,
-		dataProvider.urls.getServicesUrl(), dataProvider.urls.getServicesUrl(),
-		dataProvider.urls.getLayersUrl(serviceId), json.name, json.type,
-		dataProvider.urls.getLayerUrl(serviceId, layerId), json.name,
-		json.name, layerId,
+	return util.format(_featureServiceLayer_LayerItemHTML,
 		json.name,
 		json.displayField,
+		json.geometryType,
 		json.description,
 		json.copyrightText,
 		json.minScale,
 		json.maxScale,
 		json.maxRecordCount,
 		htmlStringForEnvelope(json.extent),
-		getHtmlForFields(json.fields),
+		getHtmlForFields(json.fields));
+};
+
+function featureServiceLayerHTML(dataProvider, serviceId, layerId) {
+	var json = featureServiceLayerJSON(dataProvider, serviceId, layerId);
+	
+	return util.format(_featureServiceLayerHTML,
+		json.name, layerId,
+		dataProvider.urls.getServicesUrl(), dataProvider.urls.getServicesUrl(),
+		dataProvider.urls.getServiceUrl(serviceId), json.name, json.type,
+		dataProvider.urls.getLayerUrl(serviceId, layerId), json.name,
+		json.name, layerId,
+		featureServiceLayerItemHTML(json),
 		dataProvider.urls.getLayerQueryUrl(serviceId, layerId));
+};
+
+function featureServiceLayersHTML(dataProvider, serviceId) {
+	var json = featureServiceJSON(dataProvider, serviceId);
+
+	var t = '<h3>Layer: <a href="%s">%s</a> (%d)</h3><br/>';
+	var layersHTML = "";
+	for (var i=0; i<json.layers.length; i++) {
+		var layer = json.layers[i];
+		layersHTML += util.format(t, 
+			dataProvider.urls.getLayerUrl(serviceId, layer.id),
+			layer.name, layer.id);
+	
+		layersHTML += featureServiceLayerItemHTML(dataProvider, serviceId, layer.id);
+	}
+
+	return util.format(_featureServiceLayersHTML,
+		serviceId, 
+		dataProvider.urls.getServicesUrl(), dataProvider.urls.getServicesUrl(),
+		dataProvider.urls.getServiceUrl(serviceId),
+		dataProvider.name, "FeatureServer",
+		dataProvider.urls.getLayersUrl(serviceId),
+		serviceId,
+		layersHTML);
 };
 
 exports.dataProvidersHTML = dataProvidersHTML;
@@ -278,6 +345,10 @@ exports.featureService = function(f, dataProvider, serviceId) {
 
 exports.featureServiceLayer = function(f, dataProvider, serviceId, layerId) {
 	return o(featureServiceLayerJSON, featureServiceLayerHTML, f, dataProvider, serviceId, layerId);
+};
+
+exports.featureServiceLayers = function(f, dataProvider, serviceId) {
+	return o(featureServiceLayersJSON, featureServiceLayersHTML, f, dataProvider, serviceId);
 };
 
 exports.featureServiceLayerQuery = function(f, 

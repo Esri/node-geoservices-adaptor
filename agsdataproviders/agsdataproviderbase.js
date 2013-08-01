@@ -85,19 +85,23 @@ AgsDataProviderBase.prototype = {
 
 	featuresForQuery: function(serviceId, layerId, query, callback) {
 		console.log("Implement featuresForDataQuery to return an array of JavaScript objects with 'attributes' and 'geometry' values");
-		callback([{"attributes": {"id":0,"name":"dummyFeature"},
-				 "geometry": {"x":0,"y":0,"spatialReference":{"wkid" : 4326}}}]);
+		callback([{
+			"attributes": {"id":0, "name":"dummyFeature"},
+			"geometry": {"x":0, "y":0, "spatialReference":{"wkid" : 4326}}
+		}]);
 	},
 
 	idsForQuery: function(serviceId, layerId, query, callback) {
 		console.log("Implement iDsForQuery to return an error of Object IDs");
-		var r = [];
-		var idField = this.idField(serviceId, layerId);
-		var fs = this.featuresForQuery(serviceId, layerId, query);
-		for (var i=0; i<fs.length; i++) {
-			r.push(fs[i][idField]);
-		};
-		callback(r);
+		var thisDataProvider = this;
+		this.featuresForQuery(serviceId, layerId, query, function (results) {
+			var r = [];
+			var idField = thisDataProvider.idField(serviceId, layerId);
+			for (var i=0; i<results.length; i++) {
+				r.push(results[i].attributes[idField]);
+			};
+			callback(r);
+		});
 	},
 
 	countForQuery: function(serviceId, layerId, query, callback) {

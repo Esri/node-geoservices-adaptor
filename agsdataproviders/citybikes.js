@@ -141,21 +141,6 @@ Object.defineProperties(CityBikes.prototype, {
 				{"name" : "localTimestamp", "type" : "esriFieldTypeDate", "alias" : "Local Timestamp", "length" : 36, "nullable" : "true"}
 			];
 		}
-	},
-	"countForQuery": {
-		value: function(serviceId, layerId, query, callback) {
-			callback(0);
-		}
-	},
-	"idsForQuery": {
-		value: function(serviceId, layerId, query, callback) {
-			callback([]);
-		}
-// 	},
-// 	"featuresForQuery": {
-// 		value: function(serviceId, layerId, query, callback) {
-// 			callback([]);
-// 		}
 	}
 });
 
