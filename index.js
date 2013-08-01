@@ -10,6 +10,7 @@ var agsurls = require("./agsurls");
 var agsoutput = require("./agsoutput");
 var citybikes = require("./agsdataproviders/citybikes");
 
+var dataProviders = [new citybikes.CityBikes()];
 
 // General URL engine for routing templated AGS requests
 var routerUrls = new agsurls.AgsUrls();
@@ -68,7 +69,6 @@ app.configure(function() {
 	app.use(app.router);
 	app.use(express.static(__dirname, {maxAge: 31557600000}));
 	
-	var dataProviders = [new citybikes.CityBikes()];
 	var svcs = {};
 	for (var i=0; i<dataProviders.length; i++) {
 		var dataProvider = dataProviders[i];

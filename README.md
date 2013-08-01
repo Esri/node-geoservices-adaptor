@@ -16,16 +16,15 @@ FeatureServices, each of which in turn exposes one or more FeatureLayers.
 
 The sample application included here just has one data provider (for data from http://api.citybik.es).
 
-1. `require ("./agsdataproviders/agsdataproviderbase")`
-2. Build your own subclass of `agsdataproviderbase.AgsDataProviderBase` (see [citybike.js](https://github.com/ArcGIS/node-ags-adaptor/blob/master/agsdataproviders/citybikes.js for a sample)).
-3. Add instances of your subclass to the `dataProviders` array in `app.configure()` of `index.js`
+1. Build your own subclass of `agsdataproviderbase.AgsDataProviderBase` (see [citybike.js](https://github.com/ArcGIS/node-ags-adaptor/blob/master/agsdataproviders/citybikes.js) for a sample). Override only what you need to.
+3. Add instances of your subclass to the `dataProviders` array at the top of `index.js`
 
-You can browse through the HTML pages to get to a REST endpoint for consumption by ArcGIS tools and APIs.
+The REST endpoints have matching HTML endpoints to help explore the services and reach a FeatureLayer endpoint for consumption by the ArcGIS tools and APIs.
 
 ##CityBikes
 Thanks to the awesome guys at [CityBik.es](http://citybik.es) we have a data source for bike share availability 
 (almost) globally. The sample Data Provider adapts this data into Geoservices format output. The root REST endpoint 
-for the CityBikes data provider can be found live here: http://node-ags-citybikes.aws.af.cm/citybikes/rest/services
+for the CityBikes data provider can be found live here (this is where you might point ArcCatalog): http://node-ags-citybikes.aws.af.cm/citybikes/rest/services
 
 ##Known Limitations
 * Only spatial references 4326 and 102100 are supported
