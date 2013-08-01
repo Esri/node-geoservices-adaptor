@@ -31,7 +31,6 @@ function getSvcForRequest(request) {
 	}
 	else
 	{
-		console.log("Unknown Data Provider Requested: " + request.params.dataProviderName);
 		return null;
 	}
 };
