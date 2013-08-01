@@ -106,8 +106,8 @@ AgsDataProviderBase.prototype = {
 
 	countForQuery: function(serviceId, layerId, query, callback) {
 		console.log("Implement countForQuery to return an integer count of records matching the query");
-		this.featuresForQuery(serviceId, layerId, query, function(fs) {
-			callback(fs.length);
+		this.featuresForQuery(serviceId, layerId, query, function(results) {
+			callback(results.length);
 		});
 	}
 };

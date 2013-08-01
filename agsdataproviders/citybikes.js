@@ -104,17 +104,17 @@ util.inherits(CityBikes, agsdp.AgsDataProviderBase);
 
 // Property overrides
 Object.defineProperties(CityBikes.prototype, {
-	"name": {
+	name: {
 		get: function() {
 			return "citybikes";
 		}
 	},
-	"isReady": {
+	isReady: {
 		get: function() {
 			return this._isReady;
 		}
 	},
-	"serviceIds": {
+	serviceIds: {
 		get: function() {
 			var out = [];
 			if (this._isReady) {
@@ -125,7 +125,7 @@ Object.defineProperties(CityBikes.prototype, {
 			return out.sort();
 		}
 	},
-	"fields": {
+	fields: {
 		value: function(serviceId, layerId) {
 			return [
 				{"name" : "id", "type" : "esriFieldTypeInteger", "alias" : "ID", "nullable" : "true"},
