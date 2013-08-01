@@ -24,6 +24,22 @@ var _featureServiceLayerHTML = fs.readFileSync('templates/featureServiceLayer.ht
 var _featureServiceLayersHTML = fs.readFileSync('templates/featureServiceLayers.html', 'utf8');
 var _featureServiceLayer_LayerItemHTML = fs.readFileSync('templates/featureServiceLayer_layerItem.html', 'utf8');
 
+var _serviceDetailsJSON = {
+	"name": "dummyService",
+	"type": "FeatureServer",
+	"url": "http://www.arcgis.com"
+};
+
+var _layerDetailsJSON = {
+	"id": -1,
+	"name": "dummyLayer",
+	"parentLayerId": -1,
+	"defaultVisibility": true,
+	"subLayerIds": null,
+	"minScale": 0,
+	"maxScale": 0
+};
+
 function _clone(object) {
 	if (object) {
 		return JSON.parse(JSON.stringify(object));
@@ -73,7 +89,11 @@ function servicesJSON(dataProvider) {
 	var serviceIds = dataProvider.serviceIds;
 	for (var i=0; i<serviceIds.length; i++)
 	{
-		r.services.push(dataProvider.serviceDetails(serviceIds[i]));
+		var serviceDetails = _clone(_serviceDetailsJSON),
+			serviceId = serviceIds[i];
+		serviceDetails.name = serviceId;
+		serviceDetails.url = dataProvider.urls.getServiceUrl(serviceId);
+		r.services.push(dataProvider.serviceDetails(serviceDetails, serviceId));
 	};
 	return r;
 };
@@ -84,10 +104,14 @@ function featureServiceJSON(dataProvider, serviceId) {
 	var layerIds = dataProvider.layerIds(serviceId);
 	var ls = [];
 	for (var i=0; i<layerIds.length; i++) {
-		ls.push(dataProvider.layerDetails(serviceId, layerIds[i]));
+		var layerDetails = _clone(_layerDetailsJSON),
+			layerId = layerIds[i];
+		layerDetails.id = layerId;
+		layerDetails.name = serviceId;
+		ls.push(dataProvider.serviceLayerListLayerDetails(layerDetails, serviceId, layerId));
 	}
 	r["layers"] = ls;
-	return r;
+	return dataProvider.featureServiceDetails(r, serviceId);
 };
 
 function featureServiceLayerJSON(dataProvider, serviceId, layerId) {
@@ -98,7 +122,7 @@ function featureServiceLayerJSON(dataProvider, serviceId, layerId) {
 	r["displayField"] = dataProvider.nameField(serviceId, layerId);
 	r["objectIdField"] = dataProvider.idField(serviceId, layerId);
 	r["fields"] = dataProvider.fields(serviceId, layerId);
-	return r;
+	return dataProvider.featureServiceLayerDetails(r, serviceId, layerId);
 };
 
 function featureServiceLayersJSON(dataProvider, serviceId) {

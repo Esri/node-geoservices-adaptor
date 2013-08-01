@@ -31,38 +31,29 @@ AgsDataProviderBase.prototype = {
 		return ["firstService","secondService"];
 	},
 
-	serviceDetails: function(serviceId) {
-		console.log("Implement serviceDetails() to return JSON service definition for a given service");
-		var r = {
-			"name": serviceId,
-			"type": "FeatureServer",
-			"url": this.urls.getServiceUrl(serviceId)
-		};
-		return r;
-	},
-
-	featureServiceDetails: function(serviceId) {
-		console.log("Implement featureServiceDetails() to return JSON service definition for a given service");
-		var r = agsoutput.featureServiceJSON(this, serviceId);
-		return r;
-	},
-
 	layerIds: function(serviceId) {
 		console.log("Implement layerIds() to return an array of layer ID references for the service ID");
 		return [0];
 	},
 
-	layerDetails: function(serviceId, layerId) {
-		console.log("Implement layerDetails() if serviceDetails() just returns layer IDs in the layers[] attribute");
-		return {
-			"id": layerId,
-			"name": serviceId,
-			"parentLayerId": -1,
-			"defaultVisibility": true,
-			"subLayerIds": null,
-			"minScale": 0,
-			"maxScale": 0
-		};
+	serviceDetails: function(detailsTemplate, serviceId) {
+		console.log("Implement serviceDetails() to return JSON service definition for the services list");
+		return detailsTemplate;
+	},
+
+	serviceLayerListLayerDetails: function(detailsTemplate, serviceId, layerId) {
+		console.log("Implement serviceLayerListLayerDetails() to update layer information in the featureService layers[] attribute");
+		return detailsTemplate;
+	},
+
+	featureServiceDetails: function(detailsTemplate, serviceId) {
+		console.log("Implement featureServiceDetails() to return JSON service definition for a given service");
+		return detailsTemplate;
+	},
+
+	featureServiceLayerDetails: function(detailsTemplate, serviceId, layerId) {
+		console.log("Implement featureServiceLayerDetails() to return layer information for a layer definition");
+		return detailsTemplate;
 	},
 
 	fields: function(serviceId, layerId) {

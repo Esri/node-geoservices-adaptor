@@ -342,6 +342,23 @@ Object.defineProperties(CityBikes.prototype, {
 				});
 			});
 		}
+	},
+	featureServiceLayerDetails: {
+		value: function(detailsTemplate, serviceId, layerId) {
+			if (this._cachedNetworks &&
+				this._cachedNetworks.hasOwnProperty(serviceId)) {
+				var network = this._cachedNetworks[serviceId].network;
+				console.log(network);
+				var x = network.lng;
+				var y = network.lat;
+				var w = 0.5, h = 0.5;
+				detailsTemplate.extent.xmin = x - (w/2);
+				detailsTemplate.extent.xmax = x + (w/2);
+				detailsTemplate.extent.ymin = y - (h/2);
+				detailsTemplate.extent.ymax = y + (h/2);
+			}
+			return detailsTemplate;
+		}
 	}
 });
 
