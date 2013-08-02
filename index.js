@@ -9,6 +9,7 @@ var util = require("util");
 
 var agsurls = require("./src/agsurls");
 var agsoutput = require("./src/agsoutput");
+var agsquery = require("./src/agsquery");
 
 var citybikes = require("./samples/citybikes");
 
@@ -172,7 +173,7 @@ function layerQueryHandler(request, response) {
 
 	var output = agsoutput.featureServiceLayerQuery(request.agsOutFormat,
 										dataProvider, serviceId, layerId, 
-										request,
+										new agsquery.Query(request),
 										function(output) {
 		useCallback(request)?response.jsonp(200,output):response.send(200,output);	
 	});
