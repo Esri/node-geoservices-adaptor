@@ -1,13 +1,11 @@
 node-ags-adaptor
 ================
 
-A node.js "ArcGIS Server" to provide an AGS bridge to generic data sources
+This is a [node.js](http://nodejs.org) implementation of part of the [Esri GeoServices REST API](http://resources.arcgis.com/en/help/arcgis-rest-api/).
 
-Sample source for http://api.citybik.es is provided.
+Enough of the API is implemented to allow simple read-only access by ArcGIS tools, apps, and APIs, including the [ArcGIS Runtime SDKs](https://developers.arcgis.com/en/documentation/) (iOS, Android, Mac OS X, Windows Phone, etc.), the [ArcGIS API for JavaScript](https://developers.arcgis.com/en/javascript/), [esri-leaflet](http://esri.github.io/esri-leaflet/), [ArcGIS Desktop](http://www.esri.com/software/arcgis/arcgis-for-desktop) etc.
 
-This node.js project handles a subset of ArcGIS Server requests to describe services and return query results.
-
-View live at http://node-ags-adaptor.aws.af.cm
+View live at http://node-geoservices-adaptor.aws.af.cm
 
 ##Introduction
 The application handles routing to 1 or more "data providers". A data provider is the equivalent of an ArcGIS Server.
@@ -21,12 +19,12 @@ The sample application included here just has one data provider (for data from h
 
 The REST endpoints have matching HTML endpoints to help explore the services and reach a FeatureLayer endpoint for consumption by the ArcGIS tools and APIs.
 
-##CityBikes
-Thanks to the awesome guys at [CityBik.es](http://citybik.es) we have a data source for bike share availability 
-(almost) globally. The sample Data Provider adapts this data into Geoservices format output. The root REST endpoint 
-for the CityBikes data provider can be found live here (this is where you might point ArcCatalog): http://node-ags-adaptor.aws.af.cm/citybikes/rest/services
+##Sample Provider
+The sample data provider makes use of the [awesome API](http://api.citybik.es) at [CityBik.es](http://citybik.es) providing bike share data (almost) globally. This sample Data Provider adapts the data into Geoservices format output. The root REST endpoint 
+for the CityBikes data provider can be found live here (this is where you might point ArcCatalog): http://node-geoservices-adaptor.aws.af.cm/citybikes/rest/services
 
 ##Known Limitations
+* Only a limited subset of the [Geoservices REST Specification](http://resources.arcgis.com/en/help/arcgis-rest-api/) is implemented.
 * Only spatial references 4326 and 102100 are supported
 * Queries only work against the layer end point. Feature Server queries are declared as a capability but not yet implemented.
 * HTML Browsing is not available for Query enpoints. Only JSON is currently supported.
