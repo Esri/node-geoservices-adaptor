@@ -16,10 +16,6 @@ var dataProviders = [new citybikes.CityBikes()];
 var routerUrls = new agsurls.AgsUrls();
 
 // Helper Functions
-String.prototype.bool = function() {
-    return (/^true$/i).test(this);
-};
-
 function useCallback(request) {
 	var q = url.parse(request.url, true).query;
 	return q.hasOwnProperty('callback');
@@ -172,23 +168,12 @@ function layerQueryHandler(request, response) {
 	var serviceId = request.params.serviceId;
 	var layerId = request.params.layerId;
 
-	var returnCountOnly = (request.param("returnCountOnly") || "false").bool();
-	var returnIdsOnly = (request.param("returnIdsOnly") || "false").bool();
-	var outSR = request.param("outSR") || 4326;
-	
 	var output = agsoutput.featureServiceLayerQuery(request.agsOutFormat,
 										dataProvider, serviceId, layerId, 
-										null,
-										returnCountOnly, returnIdsOnly, outSR, function(output) {
+										request,
+										function(output) {
 		useCallback(request)?response.jsonp(200,output):response.send(200,output);	
 	});
-// 	citybikes.getCities(function(cities) {
-// 		var city = cities[svcName];
-// 		citybikes.getBikes(city, function(bikes) {
-// 			var output = ags.queryOutput(svcName, layerId, bikes, format, returnCountOnly, returnIdsOnly, outSR);
-// 			useCallback(request)?response.jsonp(200,output):response.send(200,output);
-// 		});
-// 	});
 }
 
 app.get(routerUrls.getLayerQueryUrl(), layerQueryHandler);

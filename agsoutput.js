@@ -40,6 +40,11 @@ var _layerDetailsJSON = {
 	"maxScale": 0
 };
 
+String.prototype.bool = function() {
+    return (/^true$/i).test(this);
+};
+
+
 function _clone(object) {
 	if (object) {
 		return JSON.parse(JSON.stringify(object));
@@ -153,12 +158,11 @@ function coordToMercator(coord) {
 
 function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId, 
 									  query,
-									  countOnly, idsOnly, outSR, 
 									  callback)
 									  {
 	var queryResult = null;
 
-	if (countOnly)
+	if (query.returnCountOnly)
 	{
 		dataProvider.countForQuery(serviceId, layerId, query, function(resultCount) {
 			var output = _clone(_queryCountJSON);
@@ -169,7 +173,7 @@ function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId,
 			callback(output);
 		});
 	}
-	else if (idsOnly)
+	else if (query.returnIdsOnly)
 	{
 		dataProvider.idsForQuery(serviceId, layerId, query, function(resultIds) {
 			var output = _clone(_queryIdsJSON);
@@ -183,13 +187,13 @@ function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId,
 	}
 	else
 	{
-		dataProvider.featuresForQuery(serviceId, layerId, query, function(queryResult) {
+		dataProvider._featuresForQuery(serviceId, layerId, query, function(queryResult) {
 			var featureSet = JSON.parse(JSON.stringify(_featureSetJSON));
 			
 			featureSet.fields = dataProvider.fields(serviceId, layerId);
 			featureSet.objectIdFieldName = dataProvider.idField(serviceId, layerId);
 			
-			if (outSR == 102100)
+			if (query.outSR === 102100)
 			{
 				var projectedOutput = [];
 			
@@ -375,11 +379,57 @@ exports.featureServiceLayers = function(f, dataProvider, serviceId) {
 	return o(featureServiceLayersJSON, featureServiceLayersHTML, f, dataProvider, serviceId);
 };
 
+Query = function(request) {
+	// See http://resources.arcgis.com/en/help/arcgis-rest-api/#/Query_Feature_Service_Layer/02r3000000r1000000/
+	this.where = request.param("where");
+	var _objectIds = request.param("objectIds");
+	if (_objectIds) {
+		_objectIds = JSON.parse("[" + _objectIds + "]");
+	}
+	this.objectIds = _objectIds;
+	this.geometry = request.param("geometry"); // Not used
+	this.geometryType = request.param("geometryType"); // Not used
+
+	var _inSR = request.param("inSR");
+	if (_inSR) { _inSR = parseInt(_inSR); }
+	this.inSR = _inSR; // Not used
+
+	this.spatialRel = request.param("spatialRel"); // Not used
+	this.relationParam = request.param("relationParam"); // Not used
+	this.time = request.param("time"); // Not used
+	
+	var _outFields = (request.param("outFields") || "*");
+	if (_outFields !== "*") {
+		_outFields = JSON.parse("[" + _outFields + "]");
+	}
+	this.outFields = _outFields; // Not used
+	
+	this.returnGeometry = (request.param("returnGeometry") || "false").bool(); // Not used
+	this.returnIdsOnly = (request.param("returnIdsOnly") || "false").bool();
+	this.returnCountOnly = (request.param("returnCountOnly") || "false").bool();
+	
+	var _outSR = request.param("outSR");
+	if (_outSR) { _outSR = parseInt(_outSR); }	
+	this.outSR = _outSR;
+	
+	// Ignored:
+	// maxAllowableOffset
+	// geometryPrecision
+	// gdbVersion
+	// returnDistinctValues
+	// orderByFields
+	// groupByFieldsForStatistics
+	// outStatistics
+	// returnZ
+	// returnM
+};
+
 exports.featureServiceLayerQuery = function(f, 
 											dataProvider, serviceId, layerId,
-											query, 
-											countOnly, idsOnly, outSR, callback) {
-	featureServiceLayerQueryJSON(dataProvider, serviceId, layerId, query, countOnly, idsOnly, outSR, function(output) {
+											request, callback) {
+	var query = new Query(request);
+
+	featureServiceLayerQueryJSON(dataProvider, serviceId, layerId, query, function(output) {
 		callback(output);
 	});
 // 	if (f==="json") {

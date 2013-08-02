@@ -39,12 +39,13 @@ CityBikes = function () {
 		return cacheInvalid;
 	}
 
-	this._getTimezone = function(networkCacheEntry) {
+	this._getTimezone = function(networkCacheEntry, callback) {
 		var network = networkCacheEntry.network;
 		var networkName = networkCacheEntry.network.name;
 		if (this._networkTimezones.hasOwnProperty(networkName))
 		{
 			networkCacheEntry["timezone"] = this._networkTimezones[networkName];
+			callback.call(this, networkCacheEntry);
 		}
 		else
 		{
@@ -89,6 +90,8 @@ CityBikes = function () {
 								fs.writeFile(timezoneCacheFilename, JSON.stringify(_networkTimezones));
 								console.log("Wrote timezones to " + timezoneCacheFilename);
 							}
+							
+							callback.call(provider, networkCacheEntry);
 						}
 					}
 				});
@@ -127,6 +130,20 @@ CityBikes = function () {
 						{
 							network.lat = network.lat / 1000000;
 							network.lng = network.lng / 1000000;
+							var x = network.lng;
+							var y = network.lat;
+							var w = 0.5, h = 0.5;
+							network["agsextent"] = {
+								xmin: x - (w/2),
+								xmax: x + (w/2),
+								ymin: y - (h/2),
+								ymax: y + (h/2),
+								spatialReference: {
+									"wkid": 4326,
+									"latestWkid": 4326
+								}
+							};
+
 							var networkCacheEntry = {
 								"network": network, 
 								"stations": { 
@@ -139,7 +156,15 @@ CityBikes = function () {
 						
 							nc[network.name] = networkCacheEntry;
 						
-							provider._getTimezone(networkCacheEntry);
+							provider._getTimezone(networkCacheEntry, function() {
+								if (process.env.VCAP_APP_PORT) {
+									// Don't pre-cache unless deployed
+									console.log("Precaching stations for " + networkCacheEntry.network.name);
+									provider._stationsForNetwork(networkCacheEntry, function(stations) {
+										return null;
+									});
+								}
+							});
 						
 							added++
 						}
@@ -216,7 +241,7 @@ CityBikes = function () {
 				res.on('end', function() {
 					var stationsData = JSON.parse(stationsJSON);
 
-					n.stations.cachedBikes = [];
+					n.stations.cachedStations = [];
 					var minX = 0;
 					var minY = 0;
 					var maxX = 0;
@@ -226,46 +251,78 @@ CityBikes = function () {
 						var station = stationsData[i];
 					
 						var tmp = new Date(station.timestamp);
+						station["citybikesTimeString"] = station.timestamp;
 
 						// The timestamps are CEST - fix by - 2 hours.
 						tmp.setTime(tmp.getTime() - (2 * 60 * 60 * 1000));
 						var epochMS = new Date(tmp).getTime();
 						var localEpochMS = new Date(epochMS).getTime();
-						station["citybikeTimestamp"] = epochMS;
+
+						station["utcTime"] = epochMS;
+						
+						gmtOffStr = "";
 
 						if (n.timezone)
 						{
 							var gmtOffset = parseInt(n.timezone.gmtOffset);
 							localEpochMS = localEpochMS + (gmtOffset * 1000);
+							var offsetSeconds = n.timezone.gmtOffset,
+								offsetMinutes = Math.round(Math.abs(offsetSeconds)/60),
+								offsetMinRem = offsetMinutes%60,
+								offsetHours = (offsetMinutes-offsetMinRem)/60;
+							gmtOffStr += offsetSeconds<0?"-":"+";
+							gmtOffStr += offsetHours==0?"00":((offsetHours<10?"0":"") + offsetHours);
+							gmtOffStr += offsetMinRem==0?"00":((offsetMinRem<10?"0":"") + offsetMinRem);
+							station["timezone"] = n.timezone.abbreviation;
+							station["timezoneOffset"] = parseInt(n.timezone.gmtOffset);
 						}
 						else
 						{
+							gmtOffStr += "+0000";
+							station["timezone"] = "GMT";
+							station["timezoneOffset"] = 0;
 							console.log("Uh oh - no timezone for " + n.network.name);
 						}
-						station["localTimestamp"] = localEpochMS;
+						station["timezoneOffsetString"] = "GMT" + gmtOffStr;
+						station["localTimeString"] = new Date(localEpochMS).toUTCString() + gmtOffStr;
 					
-						var stationFeature = { 
-							"geometry": {"spatialReference": {"wkid":4326}},
-							"attributes": {}
-						};
 						var x = station.lng / 1000000;
 						var y = station.lat / 1000000;
-						stationFeature.geometry["x"] = x;
-						stationFeature.geometry["y"] = y;
-						if (x < minX) minX = x;
-						if (x > maxX) maxX = x;
-						if (y < minY) minY = y;
-						if (y > maxY) maxY = y;
-						stationFeature.attributes = JSON.parse(JSON.stringify(station));
+						if (i==0) {
+							minX = x;
+							maxX = x;
+							minY = y;
+							maxY = y;
+						} else {
+							if (x < minX) minX = x;
+							if (x > maxX) maxX = x;
+							if (y < minY) minY = y;
+							if (y > maxY) maxY = y;
+						}
+						var stationFeature = { 
+							geometry: {
+								x: x,
+								y: y,
+								spatialReference: {
+									wkid: 4326
+								}
+							},
+							attributes: JSON.parse(JSON.stringify(station))
+						};
 						provider._getBikeRange(stationFeature);
 						delete stationFeature.attributes["lat"];
 						delete stationFeature.attributes["lng"];
 						delete stationFeature.attributes["coordinates"];
+						delete stationFeature.attributes["timestamp"];
 						n.stations.cachedStations.push(stationFeature);
 					}
-					n.stations["extent"] = {
-						"xmin": minX, "ymin": minY,
-						"xmax": maxX, "ymax": maxY
+					n.stations["extent"] = n.network["agsextent"] = {
+						xmin: minX, ymin: minY,
+						xmax: maxX, ymax: maxY,
+						spatialReference: {
+							"wkid": 4326,
+							"latestWkid": 4326
+						}
 					};
 					n.stations.lastReadTime = new Date();
 
@@ -326,9 +383,12 @@ Object.defineProperties(CityBikes.prototype, {
 				{"name" : "bikes", "type" : "esriFieldTypeInteger", "alias" : "Bikes", "nullable" : "true"},
 				{"name" : "bikesClass", "type" : "esriFieldTypeString", "alias" : "Bikes Class", "length" : "255", "nullable" : "true"},
 				{"name" : "address", "type" : "esriFieldTypeString", "alias" : "Address", "length" : "255", "nullable" : "true"},
-				{"name" : "timestamp", "type" : "esriFieldTypeString", "alias" : "Timestamp", "length" : "255", "nullable" : "true"},
-				{"name" : "citybikeTimestamp", "type" : "esriFieldTypeDate", "alias" : "Citybike Timestamp", "length" : 36, "nullable" : "true"},
-				{"name" : "localTimestamp", "type" : "esriFieldTypeDate", "alias" : "Local Timestamp", "length" : 36, "nullable" : "true"}
+				{"name" : "citybikesTimeString", "type" : "esriFieldTypeString", "alias" : "CityBikes Time", "length" : "255", "nullable" : "true"},
+				{"name" : "utcTime", "type" : "esriFieldTypeDate", "alias" : "UTC Timestamp", "length" : 36, "nullable" : "true"},
+				{"name" : "timezone", "type" : "esriFieldTypeString", "alias" : "Timezone Code", "length" : "5", "nullable" : "true"},
+				{"name" : "timezoneOffset", "type" : "esriFieldTypeInteger", "alias" : "Timezone Offset", "nullable" : "true"},
+				{"name" : "timezoneOffsetString", "type" : "esriFieldTypeString", "alias" : "Timezone Offset String", "length" : "8", "nullable" : "true"},
+				{"name" : "localTimeString", "type" : "esriFieldTypeString", "alias" : "Local Time", "length" : "255", "nullable" : "true"},
 			];
 		}
 	},
@@ -343,19 +403,38 @@ Object.defineProperties(CityBikes.prototype, {
 			});
 		}
 	},
+	featureServiceDetails: {
+		value: function(detailsTemplate, serviceId, layerId) {
+			if (this._cachedNetworks &&
+				this._cachedNetworks.hasOwnProperty(serviceId)) {
+				var network = this._cachedNetworks[serviceId].network;
+				if (network.hasOwnProperty("agsextent"))
+				{
+					detailsTemplate.initialExtent = network.agsextent;
+				}
+			}
+			return detailsTemplate;
+		}
+	},
 	featureServiceLayerDetails: {
 		value: function(detailsTemplate, serviceId, layerId) {
 			if (this._cachedNetworks &&
 				this._cachedNetworks.hasOwnProperty(serviceId)) {
 				var network = this._cachedNetworks[serviceId].network;
-				console.log(network);
-				var x = network.lng;
-				var y = network.lat;
-				var w = 0.5, h = 0.5;
-				detailsTemplate.extent.xmin = x - (w/2);
-				detailsTemplate.extent.xmax = x + (w/2);
-				detailsTemplate.extent.ymin = y - (h/2);
-				detailsTemplate.extent.ymax = y + (h/2);
+				if (network.hasOwnProperty("agsextent"))
+				{
+					detailsTemplate.extent = network.agsextent;
+				}
+				else
+				{
+					var x = network.lng;
+					var y = network.lat;
+					var w = 0.25, h = 0.25;
+					detailsTemplate.extent.xmin = x - w;
+					detailsTemplate.extent.xmax = x + w;
+					detailsTemplate.extent.ymin = y - h;
+					detailsTemplate.extent.ymax = y + h;
+				}
 			}
 			return detailsTemplate;
 		}
