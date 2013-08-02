@@ -25,9 +25,55 @@ for the CityBikes data provider can be found live here (this is where you might 
 
 ##Known Limitations
 * Only a limited subset of the [Geoservices REST Specification](http://resources.arcgis.com/en/help/arcgis-rest-api/) is implemented.
+	* [Server Info](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Server_Info/02r300000116000000/)
+	* [Catalog](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Catalog/02r3000000tn000000/)
+	* [Feature Service](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Feature_Service/02r3000000z2000000/)
+	* Layers (Feature Service)
+	* [Layer (Feature Service)](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Layer/02r3000000w6000000/)
+	* [Query (Feature Service\Layer)](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Query_Feature_Service_Layer/02r3000000r1000000/)
 * Only spatial references 4326 and 102100 are supported
 * Queries only work against the layer end point. Feature Server queries are declared as a capability but not yet implemented.
-* HTML Browsing is not available for Query enpoints. Only JSON is currently supported.
+* HTML Browsing is not available for Query endpoints. All queries return JSON.
+* Only a subset of [Query (Feature Service\Layer)](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Query_Feature_Service_Layer/02r3000000r1000000/) is implemented:
+	* objectIds
+	* outSR (4326 and 102100 only)
+	* returnIdsOnly
+	* returnCountOnly
 
-##Note
-This ReadMe is incomplete. Just a placeholder.
+## Requirements
+
+* [node.js](http://nodejs.org)
+
+## Resources
+
+* [Geoservices REST Specification](http://resources.arcgis.com/en/help/arcgis-rest-api/)
+* [node.js documentation](http://nodejs.org/api/)
+* [express.js documentation](http://expressjs.com/api.html)
+* [CityBikes API](http://api.citybik.es)
+
+## Issues
+
+Find a bug or want to request a new feature?  Please let us know by submitting an Issue.
+
+## Contributing
+
+Anyone and everyone is welcome to contribute. 
+
+## Licensing
+Copyright 2012 Esri
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+A copy of the license is available in the repository's [license.txt](https://raw.github.com/Esri/quickstart-map-ios/master/license.txt) file.
+[](Esri Tags: NodeJS ExpressJS GeoServices REST CityBikes)
+[](Esri Language: JavaScript)
