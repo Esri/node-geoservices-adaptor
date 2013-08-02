@@ -1,14 +1,16 @@
 var express = require("express");
 var app = express();
+
 var http = require("http");
 var url = require("url");
 var fs = require("fs");
 var path = require("path");
 var util = require("util");
-// var ags = require('./ags.js');
-var agsurls = require("./agsurls");
-var agsoutput = require("./agsoutput");
-var citybikes = require("./agsdataproviders/citybikes");
+
+var agsurls = require("./src/agsurls");
+var agsoutput = require("./src/agsoutput");
+
+var citybikes = require("./samples/citybikes");
 
 var dataProviders = [new citybikes.CityBikes()];
 

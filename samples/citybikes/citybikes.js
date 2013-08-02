@@ -1,7 +1,8 @@
-var agsdp = require("./agsdataproviderbase");
-var util = require('util');
-var http = require('http');
-var fs = require('fs');
+var agsdp = require("../../src/agsdataproviderbase");
+var util = require("util");
+var http = require("http");
+var path = require("path");
+var fs = require("fs");
 
 Object.size = function(obj) {
     var size = 0, key;
@@ -25,12 +26,12 @@ CityBikes = function () {
 	this._networkTimezones = {};
 	this._networksAwaitingTimezone = {};
 
-	var _timezoneCacheFilename = "timezones.json";
+	this._timezoneCacheFilename = path.join(path.dirname(module.filename),"data","timezones.json");
 
-	if (fs.existsSync(_timezoneCacheFilename))
+	if (fs.existsSync(this._timezoneCacheFilename))
 	{
-		this._networkTimezones = JSON.parse(fs.readFileSync(_timezoneCacheFilename, 'utf8'));
-		console.log("Loaded timezones from " + _timezoneCacheFilename);
+		this._networkTimezones = JSON.parse(fs.readFileSync(this._timezoneCacheFilename, 'utf8'));
+		console.log("Loaded timezones from " + this._timezoneCacheFilename);
 	}
 
 	function _cacheInvalid(provider) {
@@ -51,6 +52,7 @@ CityBikes = function () {
 		{
 			this._networksAwaitingTimezone[networkName] = true;
 			var timezoneUrl = util.format("http://api.timezonedb.com/?key=%s&lat=%d&lng=%d&format=json", "IMPMC00M2XNY", network.lat, network.lng);
+			var provider = this;
 			http.get(timezoneUrl, function (res) {
 				var timezoneJSON = "";
 				res.setEncoding('utf8');
@@ -80,15 +82,18 @@ CityBikes = function () {
 							timezone["cacheRefreshDue"] = (new Date()).getTime() + 24*60*60000;
 							networkCacheEntry["timezone"] = timezone;
 
-							_networkTimezones[networkName] = timezone;
+							provider._networkTimezones[networkName] = timezone;
 				
-							delete _networksAwaitingTimezone[networkName];
-							console.log("Timezone: " + networkName + " (" + Object.size(_networksAwaitingTimezone) + ")");
+							delete provider._networksAwaitingTimezone[networkName];
+							console.log("Timezone: " + networkName + " (" + Object.size(provider._networksAwaitingTimezone) + ")");
 							console.log(timezone);
-							if (Object.size(_networksAwaitingTimezone) == 0)
+							if (Object.size(provider._networksAwaitingTimezone) == 0)
 							{
-								fs.writeFile(timezoneCacheFilename, JSON.stringify(_networkTimezones));
-								console.log("Wrote timezones to " + timezoneCacheFilename);
+								if (!fs.existsSync(path.dirname(provider._timezoneCacheFilename))) {
+									fs.mkDirSync(path.dirname(provider._timezoneCacheFilename));
+								}
+								fs.writeFile(provider._timezoneCacheFilename, JSON.stringify(provider._networkTimezones));
+								console.log("Wrote timezones to " + provider._timezoneCacheFilename);
 							}
 							
 							callback.call(provider, networkCacheEntry);

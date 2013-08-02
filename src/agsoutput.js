@@ -3,7 +3,7 @@ var util = require('util');
 
 var agsurls = require("./agsurls.js");
 
-var agsdataproviderbase = require("./agsdataproviders/agsdataproviderbase");
+var agsdataproviderbase = require("./agsdataproviderbase");
 
 var _infoJSON = JSON.parse(fs.readFileSync('templates/info.json', 'utf8'));
 var _servicesJSON = JSON.parse(fs.readFileSync('templates/services.json', 'utf8'));
@@ -412,7 +412,7 @@ Query = function(request) {
 	if (_outSR) { _outSR = parseInt(_outSR); }	
 	this.outSR = _outSR;
 	
-	// Ignored:
+	// The following FeatureService Layer Query Parameters properties are currently ignored:
 	// maxAllowableOffset
 	// geometryPrecision
 	// gdbVersion
@@ -432,7 +432,4 @@ exports.featureServiceLayerQuery = function(f,
 	featureServiceLayerQueryJSON(dataProvider, serviceId, layerId, query, function(output) {
 		callback(output);
 	});
-// 	if (f==="json") {
-// 	} else {
-// 	}
 };
