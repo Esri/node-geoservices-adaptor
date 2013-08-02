@@ -66,7 +66,7 @@ app.configure(function() {
 	});
 
 	app.use(app.router);
-	app.use(express.static(__dirname, {maxAge: 31557600000}));
+	app.use(express.static(path.join(__dirname,"resources"), {maxAge: 31557600000}));
 	
 	var svcs = {};
 	for (var i=0; i<dataProviders.length; i++) {

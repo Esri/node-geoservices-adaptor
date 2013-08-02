@@ -5,24 +5,24 @@ var agsurls = require("./agsurls");
 
 var agsdataproviderbase = require("./agsdataproviderbase");
 
-var _infoJSON = JSON.parse(fs.readFileSync('templates/info.json', 'utf8'));
-var _servicesJSON = JSON.parse(fs.readFileSync('templates/services.json', 'utf8'));
-var _featureServiceJSON = JSON.parse(fs.readFileSync('templates/featureService.json', 'utf8'));
-var _featureServiceLayerJSON = JSON.parse(fs.readFileSync('templates/featureServiceLayer.json', 'utf8'));
-var _featureServiceLayersJSON = JSON.parse(fs.readFileSync('templates/featureServiceLayers.json', 'utf8'));
+var _infoJSON = JSON.parse(fs.readFileSync('resources/templates/info.json', 'utf8'));
+var _servicesJSON = JSON.parse(fs.readFileSync('resources/templates/services.json', 'utf8'));
+var _featureServiceJSON = JSON.parse(fs.readFileSync('resources/templates/featureService.json', 'utf8'));
+var _featureServiceLayerJSON = JSON.parse(fs.readFileSync('resources/templates/featureServiceLayer.json', 'utf8'));
+var _featureServiceLayersJSON = JSON.parse(fs.readFileSync('resources/templates/featureServiceLayers.json', 'utf8'));
 
-var _featureSetJSON = JSON.parse(fs.readFileSync('templates/featureSet.json', 'utf8'));
-var _queryCountJSON = JSON.parse(fs.readFileSync('templates/queryCount.json', 'utf8'));
-var _queryIdsJSON = JSON.parse(fs.readFileSync('templates/queryIds.json', 'utf8'));
+var _featureSetJSON = JSON.parse(fs.readFileSync('resources/templates/featureSet.json', 'utf8'));
+var _queryCountJSON = JSON.parse(fs.readFileSync('resources/templates/queryCount.json', 'utf8'));
+var _queryIdsJSON = JSON.parse(fs.readFileSync('resources/templates/queryIds.json', 'utf8'));
 
-var _dataProvidersHTML = fs.readFileSync('templates/dataProviders.html', 'utf8');
+var _dataProvidersHTML = fs.readFileSync('resources/templates/dataProviders.html', 'utf8');
 
-var _infoHTML = fs.readFileSync('templates/info.html', 'utf8');
-var _servicesHTML = fs.readFileSync('templates/services.html', 'utf8');
-var _featureServiceHTML = fs.readFileSync('templates/featureService.html', 'utf8');
-var _featureServiceLayerHTML = fs.readFileSync('templates/featureServiceLayer.html', 'utf8');
-var _featureServiceLayersHTML = fs.readFileSync('templates/featureServiceLayers.html', 'utf8');
-var _featureServiceLayer_LayerItemHTML = fs.readFileSync('templates/featureServiceLayer_layerItem.html', 'utf8');
+var _infoHTML = fs.readFileSync('resources/templates/info.html', 'utf8');
+var _servicesHTML = fs.readFileSync('resources/templates/services.html', 'utf8');
+var _featureServiceHTML = fs.readFileSync('resources/templates/featureService.html', 'utf8');
+var _featureServiceLayerHTML = fs.readFileSync('resources/templates/featureServiceLayer.html', 'utf8');
+var _featureServiceLayersHTML = fs.readFileSync('resources/templates/featureServiceLayers.html', 'utf8');
+var _featureServiceLayer_LayerItemHTML = fs.readFileSync('resources/templates/featureServiceLayer_layerItem.html', 'utf8');
 
 var _serviceDetailsJSON = {
 	"name": "dummyService",
