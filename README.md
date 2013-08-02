@@ -7,7 +7,7 @@ Sample source for http://api.citybik.es is provided.
 
 This node.js project handles a subset of ArcGIS Server requests to describe services and return query results.
 
-View live at http://node-ags-citybikes.aws.af.cm/
+View live at http://node-ags-adaptor.aws.af.cm
 
 ##Introduction
 The application handles routing to 1 or more "data providers". A data provider is the equivalent of an ArcGIS Server.
@@ -24,7 +24,7 @@ The REST endpoints have matching HTML endpoints to help explore the services and
 ##CityBikes
 Thanks to the awesome guys at [CityBik.es](http://citybik.es) we have a data source for bike share availability 
 (almost) globally. The sample Data Provider adapts this data into Geoservices format output. The root REST endpoint 
-for the CityBikes data provider can be found live here (this is where you might point ArcCatalog): http://node-ags-citybikes.aws.af.cm/citybikes/rest/services
+for the CityBikes data provider can be found live here (this is where you might point ArcCatalog): http://node-ags-adaptor.aws.af.cm/citybikes/rest/services
 
 ##Known Limitations
 * Only spatial references 4326 and 102100 are supported
