@@ -19,6 +19,14 @@ The sample application included here just has one data provider (for data from h
 
 The REST endpoints have matching HTML endpoints to help explore the services and reach a FeatureLayer endpoint for consumption by the ArcGIS tools and APIs.
 
+At a glance, this is how it works:
+
+![Structure](structure.png)
+
+* **agsurls**: Construct Adaptor and Template REST Endpoints.
+* **agsoutput**: Construct JSON output. Format HTML output for JSON.
+* **agsdataproviderbase**: Describe the service (fields, idField, nameField, etc.) and return features when requested.
+
 ##Sample Data Provider
 The sample data provider makes use of the [awesome API](http://api.citybik.es) at [CityBik.es](http://citybik.es) providing bike share data (almost) globally. This sample Data Provider adapts the data into Geoservices format output. The root REST endpoint 
 for the CityBikes data provider can be found live here (this is where you might point ArcCatalog): http://node-geoservices-adaptor.aws.af.cm/citybikes/rest/services
