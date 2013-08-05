@@ -15,13 +15,18 @@ FeatureServices, each of which in turn exposes one or more FeatureLayers.
 The sample application included here just has one data provider (for data from http://api.citybik.es).
 
 1. Build your own subclass of `agsdataproviderbase.AgsDataProviderBase` (see [citybike.js](https://github.com/ArcGIS/node-ags-adaptor/blob/master/agsdataproviders/citybikes.js) for a sample). Override only what you need to.
-3. Add instances of your subclass to the `dataProviders` array at the top of `index.js`
+2. Add instances of your subclass to the `dataProviders` array at the top of `index.js`
 
 The REST endpoints have matching HTML endpoints to help explore the services and reach a FeatureLayer endpoint for consumption by the ArcGIS tools and APIs.
 
 ##Sample Data Provider
 The sample data provider makes use of the [awesome API](http://api.citybik.es) at [CityBik.es](http://citybik.es) providing bike share data (almost) globally. This sample Data Provider adapts the data into Geoservices format output. The root REST endpoint 
 for the CityBikes data provider can be found live here (this is where you might point ArcCatalog): http://node-geoservices-adaptor.aws.af.cm/citybikes/rest/services
+
+##Installation
+1. Clone the repo and run `npm update` in the repo folder
+2. Run the node server with `node index`
+3. Browse to [http://localhost:1337](http://localhost:1337)
 
 ##Known Limitations
 * Only a limited subset of the [Geoservices REST Specification](http://resources.arcgis.com/en/help/arcgis-rest-api/) is implemented.
