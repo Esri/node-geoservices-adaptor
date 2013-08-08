@@ -160,8 +160,7 @@ Object.defineProperties(GeoHubProvider.prototype, {
 							outputArcGISJSON(geoJSONData, query, callback);
 						}
 					});
-				} else if (layerId == 1)
-				{
+				} else if (layerId == 1) {
 					console.log("GeoHub gist");
 					var gistId = query.rawParams.gistId;
 					Geohub.gist(gistId, function(err, geoJSONData) {
@@ -169,12 +168,19 @@ Object.defineProperties(GeoHubProvider.prototype, {
 							console.log(err);
 							callback([], err);
 						} else {
-							outputArcGISJSON(geoJSONData, query, callback);
+							// In the case of a gist, it could be many files being returned.
+							if (geoJSONData.length) {
+								var i = query.rawParams.gistFileIndex || 0;
+								if (i > geoJSONData.length-1) {
+									callback([], "gistFileIndex " + i + " out range 0-" + geoJSONData.length-1);
+								} else {
+									outputArcGISJSON(geoJSONData[i], query, callback);
+								}
+							}
 						}
 					});
 				} else {
 					callback([], "Unknown layerId: " + layerId);
-					return;
 				}
 			} else {
 				callback([], "Unknown serviceId: " + serviceId);

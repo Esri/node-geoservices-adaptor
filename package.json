@@ -2,7 +2,9 @@
     "name":"node-ags-adaptor",
     "version":"0.0.1",
     "dependencies":{
-        "express":"3.x"
+        "express":"3.x",
+        "geohub": "*",
+        "terraformer-arcgis-parser": "*"
     },
   	"engine": "node >= 0.8.0"
 }
