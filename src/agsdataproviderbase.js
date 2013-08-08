@@ -192,9 +192,13 @@ AgsDataProviderBase.prototype = {
 		if (query.objectIds) { query["_idField"] = this.idField(serviceId, layerId); }
 		var provider = this;
 		this.featuresForQuery(serviceId, layerId, query, function(features, err) {
-			callback(features.filter(function(feature) {
-				return this._includeQueryResult(feature, query);
-			}, provider), err);
+			if (query.generatedFormat === "json") {
+				callback(features.filter(function(feature) {
+					return this._includeQueryResult(feature, query);
+				}, provider), err);
+			} else {
+				callback(features, err);
+			}
 		});
 	},
 

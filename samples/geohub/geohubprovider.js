@@ -76,7 +76,7 @@ function outputArcGISJSON(geoJSONOutput, query, callback) {
 
 	var arcgisOutput = TerraformerArcGIS.convert(filteredGeoJSON);
 
-	callback( arcgisOutput, null);
+	callback(arcgisOutput, null);
 }
 
 
@@ -125,11 +125,14 @@ Object.defineProperties(GeoHubProvider.prototype, {
 					"<li>filePath: The path to the GeoJSON file within the repo</li>" +
 					"<li>(optional) geoJSONType: The geoJSON Geometry Type to extract (since a FeatureLayer may emit a featureset with a single geometry type)." +
 					"If this is omitted, the first geoJSON Geometry will define the type used to filter on.</li>" +
+					"<li>(optional) f: Setting this to <em>geojson</em> returns the GeoHub output unprocessed as geoJSON.</li>" +
 					"</ul>";
 			} else if (layerId == 1) {
 				detailsTemplate.description += "<ul><li>gistId: The unique ID of the Gist</li>" +
+					"<li>(optional) gistFileIndex: If the gist has multiple .geojson files, specify which one should be returned (zero-based index, default value 0)." +
 					"<li>(optional) geoJSONType: The geoJSON Geometry Type to extract (since a FeatureLayer may emit a featureset with a single geometry type)." +
 					"If this is omitted, the first geoJSON Geometry will define the type used to filter on.</li>" +
+					"<li>(optional) f: Setting this to <em>geojson</em> returns the GeoHub output unprocessed as geoJSON.</li>" +
 					"</ul>";
 			} else {
 				detailsTemplate.description += "Whoops - unrecognized GeoHub type. Run Away!";
@@ -152,12 +155,22 @@ Object.defineProperties(GeoHubProvider.prototype, {
 					// Get the bike networks (which map to FeatyreServices). They may be cached,
 					// or may need to be fetched. So they are returned with a callback.
 			
-					Geohub.repo( user, repo, file, function( err, geoJSONData ) {
+					console.log(user + "." + repo + "." + file);
+					Geohub.repo(user, repo, file, function(err, geoJSONData) {
+								console.log(callback);
+// 						console.log(geoJSONData);
+// 						console.log(err);
+// 						console.trace();
 						if (err) {
-							console.log(err);
+							console.log("Uh oh: " + err);
 							callback([], err);
 						} else {
-							outputArcGISJSON(geoJSONData, query, callback);
+							if (query.format === "json") {
+								outputArcGISJSON(geoJSONData, query, callback);
+							} else {
+								query.generatedFormat = "geojson";
+								callback(geoJSONData, null);
+							}
 						}
 					});
 				} else if (layerId == 1) {
@@ -168,14 +181,19 @@ Object.defineProperties(GeoHubProvider.prototype, {
 							console.log(err);
 							callback([], err);
 						} else {
-							// In the case of a gist, it could be many files being returned.
-							if (geoJSONData.length) {
-								var i = query.rawParams.gistFileIndex || 0;
-								if (i > geoJSONData.length-1) {
-									callback([], "gistFileIndex " + i + " out range 0-" + geoJSONData.length-1);
-								} else {
-									outputArcGISJSON(geoJSONData[i], query, callback);
+							if (query.format === "json") {
+								// In the case of a gist, it could be many files being returned.
+								if (geoJSONData.length) {
+									var i = query.rawParams.gistFileIndex || 0;
+									if (i > geoJSONData.length-1) {
+										callback([], "gistFileIndex " + i + " out range 0-" + geoJSONData.length-1);
+									} else {
+										outputArcGISJSON(geoJSONData[i], query, callback);
+									}
 								}
+							} else {
+								query.generatedFormat = "geojson";
+								callback(geoJSONData, null);
 							}
 						}
 					});
