@@ -217,14 +217,14 @@ CityBikes = function () {
 					console.log("Networks cache expires at: " + provider._cacheExpirationTime);
 			
 					// And callback with the networks cache.
-					callback(nc);
+					callback(nc, null);
 				});
 			});
 		}
 		else
 		{
 			// Simple. Just return the cached networks.
-			callback(this._cachedNetworks);
+			callback(this._cachedNetworks, null);
 		}
 	};
 
@@ -276,7 +276,7 @@ CityBikes = function () {
 		{
 			// Easy, we already have the info cached.
 			console.log("Returning cached station results for " + n.network.name);
-			callback(n.stations.cachedStations);
+			callback(n.stations.cachedStations, null);
 		}
 		else
 		{
@@ -418,7 +418,7 @@ CityBikes = function () {
 											n.stations.cacheExpirationTime));
 
 					// Good. Call back with the results of our hard work.				
-					callback(n.stations.cachedStations);
+					callback(n.stations.cachedStations, null);
 				});
 			});
 		}
@@ -426,9 +426,13 @@ CityBikes = function () {
 
 	// Someone created an instance of us. Let's get our caches built.
 	var citybikesProvider = this;
-	this._networks(function(networkList) {
-		citybikesProvider._cachedNetworks = networkList;
-		citybikesProvider._isReady = true;
+	this._networks(function(networkList, err) {
+		if (err) {
+			console.log("Error caching networks! " + err);
+		} else {
+			citybikesProvider._cachedNetworks = networkList;
+			citybikesProvider._isReady = true;
+		}
 	});
 };
 
@@ -502,10 +506,10 @@ Object.defineProperties(CityBikes.prototype, {
 				// Note that we know we only have a single layer (stations) for any
 				// feature service (network) so we ignore the layerId.
 				var network = networks[serviceId];
-				provider._stationsForNetwork(network, function(stationFeatures) {
+				provider._stationsForNetwork(network, function(stationFeatures, err) {
 					// We have the stations for the network. These are our features
 					// that match the query. So call back to our caller with our results.
-					callback(stationFeatures);
+					callback(stationFeatures, err);
 				});
 			});
 		}

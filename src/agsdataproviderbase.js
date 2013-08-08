@@ -100,6 +100,17 @@ AgsDataProviderBase.prototype = {
 		if (!this._devMode) console.log("Implement featureServiceDetails() to return JSON service definition for a given service");
 		return detailsTemplate;
 	},
+	
+	// A string to be used to name each layer in the "Feature Service" response. It is 
+	// also used in the "Layer (Feature Service)" and "Layers (Feature Service)" responses.
+	//
+	// Notes:
+	// - A layerId is usually an integer (starting at 0) but it is often useful to 
+	//   display a more descriptive name for that layer in the JSON output.
+	featureServiceLayerName: function(serviceId, layerId) {
+		if (!this._devMode) console.log("Implement featureServiceName() to specify a human readable name for a layerId");
+		return serviceId + " layer " + layerId;
+	},
 
 	// JSON to be returned for the "Layer (Feature Service)" and "Layers (Feature Service)"
 	// responses.
@@ -160,6 +171,7 @@ AgsDataProviderBase.prototype = {
 	// Notes:
 	// - Each feature should include a dictionary named "attributes" and a dictionary
 	//   named "geometry" which matches a valid JSON GeoService geometry representation.
+	//   For more details, see http://resources.arcgis.com/en/help/rest/apiref/feature.html
 	// - If geometries are returned in WKID 4326, the engine can convert them to 102100
 	//   if the caller has requested it with the outSR parameter.
 	// - It is valid to return an empty array.
@@ -170,7 +182,7 @@ AgsDataProviderBase.prototype = {
 		callback([{
 			"attributes": {"id":0, "name":"dummyFeature"},
 			"geometry": {"x":0, "y":0, "spatialReference":{"wkid" : 4326}}
-		}]);
+		}], null);
 	},
 	
 	// Internal - do not override.
@@ -179,10 +191,10 @@ AgsDataProviderBase.prototype = {
 	_featuresForQuery: function(serviceId, layerId, query, callback) {
 		if (query.objectIds) { query["_idField"] = this.idField(serviceId, layerId); }
 		var provider = this;
-		this.featuresForQuery(serviceId, layerId, query, function(features) {
+		this.featuresForQuery(serviceId, layerId, query, function(features, err) {
 			callback(features.filter(function(feature) {
 				return this._includeQueryResult(feature, query);
-			}, provider));
+			}, provider), err);
 		});
 	},
 
@@ -222,13 +234,15 @@ AgsDataProviderBase.prototype = {
 	idsForQuery: function(serviceId, layerId, query, callback) {
 		if (!this._devMode) console.log("Implement iDsForQuery to return an error of Object IDs");
 		var thisDataProvider = this;
-		this._featuresForQuery(serviceId, layerId, query, function (results) {
+		this._featuresForQuery(serviceId, layerId, query, function (results, err) {
 			var r = [];
-			var idField = thisDataProvider.idField(serviceId, layerId);
-			for (var i=0; i<results.length; i++) {
-				r.push(results[i].attributes[idField]);
-			};
-			callback(r);
+			if (!err) {
+				var idField = thisDataProvider.idField(serviceId, layerId);
+				for (var i=0; i<results.length; i++) {
+					r.push(results[i].attributes[idField]);
+				};
+			}
+			callback(r, err);
 		});
 	},
 
@@ -241,8 +255,8 @@ AgsDataProviderBase.prototype = {
 	// Override with a more efficient method if your dataprovider allows for it.
 	countForQuery: function(serviceId, layerId, query, callback) {
 		if (!this._devMode) console.log("Implement countForQuery to return an integer count of records matching the query");
-		this._featuresForQuery(serviceId, layerId, query, function(results) {
-			callback(results.length);
+		this._featuresForQuery(serviceId, layerId, query, function(results, err) {
+			callback(results.length, err);
 		});
 	}
 };

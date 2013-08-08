@@ -4,8 +4,8 @@
 	"name" : "Not Set",
 	"type" : "Feature Layer",
 	"displayField" : "name",
-	"description" : "Bikes",
-	"copyrightText" : "citybik.es",
+	"description" : "",
+	"copyrightText" : "",
 	"defaultVisibility": true,
 	"relationships": [],
 

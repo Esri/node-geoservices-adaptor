@@ -8,6 +8,7 @@ var agsdataproviderbase = require("./agsdataproviderbase");
 var _infoJSON = JSON.parse(fs.readFileSync('resources/templates/info.json', 'utf8'));
 var _servicesJSON = JSON.parse(fs.readFileSync('resources/templates/services.json', 'utf8'));
 var _featureServiceJSON = JSON.parse(fs.readFileSync('resources/templates/featureService.json', 'utf8'));
+var _featureService_LayerItemJSON = JSON.parse(fs.readFileSync('resources/templates/featureService_layerItem.json', 'utf8'));
 var _featureServiceLayerJSON = JSON.parse(fs.readFileSync('resources/templates/featureServiceLayer.json', 'utf8'));
 var _featureServiceLayersJSON = JSON.parse(fs.readFileSync('resources/templates/featureServiceLayers.json', 'utf8'));
 
@@ -30,15 +31,6 @@ var _serviceDetailsJSON = {
 	"url": "http://www.arcgis.com"
 };
 
-var _layerDetailsJSON = {
-	"id": -1,
-	"name": "dummyLayer",
-	"parentLayerId": -1,
-	"defaultVisibility": true,
-	"subLayerIds": null,
-	"minScale": 0,
-	"maxScale": 0
-};
 
 function _clone(object) {
 	if (object) {
@@ -104,10 +96,10 @@ function featureServiceJSON(dataProvider, serviceId) {
 	var layerIds = dataProvider.layerIds(serviceId);
 	var ls = [];
 	for (var i=0; i<layerIds.length; i++) {
-		var layerDetails = _clone(_layerDetailsJSON),
+		var layerDetails = _clone(_featureService_LayerItemJSON),
 			layerId = layerIds[i];
 		layerDetails.id = layerId;
-		layerDetails.name = serviceId;
+		layerDetails.name = dataProvider.featureServiceLayerName(serviceId, layerId);
 		ls.push(dataProvider.serviceLayerListLayerDetails(layerDetails, serviceId, layerId));
 	}
 	r["layers"] = ls;
@@ -117,7 +109,7 @@ function featureServiceJSON(dataProvider, serviceId) {
 function featureServiceLayerJSON(dataProvider, serviceId, layerId) {
 	var r = _clone(_featureServiceLayerJSON);
 	r["currentVersion"] = dataProvider.serverVersion;
-	r["name"] = serviceId;
+	r["name"] = dataProvider.featureServiceLayerName(serviceId, layerId);
 	r["layerId"] = layerId;
 	r["displayField"] = dataProvider.nameField(serviceId, layerId);
 	r["objectIdField"] = dataProvider.idField(serviceId, layerId);
@@ -159,7 +151,7 @@ function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId,
 
 	if (query.returnCountOnly)
 	{
-		dataProvider.countForQuery(serviceId, layerId, query, function(resultCount) {
+		dataProvider.countForQuery(serviceId, layerId, query, function(resultCount, err) {
 			var output = _clone(_queryCountJSON);
 			// Note, for now we only handle one layer at a time
 			var outLayer = output.layers[0];
@@ -170,7 +162,7 @@ function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId,
 	}
 	else if (query.returnIdsOnly)
 	{
-		dataProvider.idsForQuery(serviceId, layerId, query, function(resultIds) {
+		dataProvider.idsForQuery(serviceId, layerId, query, function(resultIds, err) {
 			var output = _clone(_queryIdsJSON);
 			// Note, for now we only handle one layer at a time
 			var outLayer = output.layers[0];
@@ -182,7 +174,7 @@ function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId,
 	}
 	else
 	{
-		dataProvider._featuresForQuery(serviceId, layerId, query, function(queryResult) {
+		dataProvider._featuresForQuery(serviceId, layerId, query, function(queryResult, err) {
 			var featureSet = JSON.parse(JSON.stringify(_featureSetJSON));
 			
 			featureSet.fields = dataProvider.fields(serviceId, layerId);

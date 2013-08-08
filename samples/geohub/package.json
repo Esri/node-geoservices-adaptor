@@ -1,0 +1,9 @@
+{
+    "name": "geohubdataprovider",
+    "main": "./geohubprovider.js",
+    "version": "0.0.1",
+    "dependencies": {
+        "geohub": "*",
+        "terraformer-arcgis-parser": "*"
+    }
+}

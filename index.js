@@ -12,8 +12,9 @@ var agsoutput = require("./src/agsoutput");
 var agsquery = require("./src/agsquery");
 
 var citybikes = require("./samples/citybikes");
+var geohubprovider = require("./samples/geohub");
 
-var dataProviders = [new citybikes.CityBikes()];
+var dataProviders = [new citybikes.CityBikes(), new geohubprovider.GeoHubProvider(app, agsoutput)];
 
 // General URL engine for routing templated AGS requests
 var routerUrls = new agsurls.AgsUrls();
@@ -37,8 +38,6 @@ function getSvcForRequest(request) {
 
 // App configuration
 app.configure(function() {
-// 	app.enable("jsonp callback");
-
 	app.use(express.methodOverride());
 	app.use(express.bodyParser());
  
