@@ -219,9 +219,9 @@ AgsDataProviderBase.prototype = {
 						type: "FeatureCollection",
 						features: []
 					};
-					var idField = this.idField(serviceId, layerId);
 					for (var i = 0; i < results.length; i++) {
 						var feature = TerraformerArcGIS.parse(results[i]);
+					var idField = provider.idField(serviceId, layerId);
 						// We ought to specify the "id" property of the feature, and since
 						// we have it, we'll do it.
 						feature.id = results[i].attributes[idField];
