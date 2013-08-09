@@ -174,32 +174,45 @@ function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId,
 	}
 	else
 	{
-		dataProvider._featuresForQuery(serviceId, layerId, query, function(queryResult, err) {
-			var featureSet = JSON.parse(JSON.stringify(_featureSetJSON));
-			
-			featureSet.fields = dataProvider.fields(serviceId, layerId);
-			featureSet.objectIdFieldName = dataProvider.idField(serviceId, layerId);
-			
-			if (query.outSR === 102100)
-			{
-				var projectedOutput = [];
-			
-				for (var i=0; i<queryResult.length; i++)
-				{
-					var feature = JSON.parse(JSON.stringify(queryResult[i]));
-					feature.geometry = coordToMercator(feature.geometry);
-					projectedOutput.push(feature);
-				}
-
-				featureSet.features = projectedOutput;
-				featureSet.spatialReference.wkid = 102100;
+		dataProvider._featuresForQuery(serviceId, layerId, query, function(queryResult, err, outputFormat) {
+			if (err) {
+				callback([], err);
 			}
 			else
 			{
-				featureSet.features = queryResult;
-			}
+				switch (query.generatedFormat.toLowerCase()) {
+					case "json":
+						var featureSet = JSON.parse(JSON.stringify(_featureSetJSON));
 			
-			callback(featureSet);
+						featureSet.fields = dataProvider.fields(serviceId, layerId);
+						featureSet.objectIdFieldName = dataProvider.idField(serviceId, layerId);
+			
+						if (query.outSR === 102100)
+						{
+							var projectedOutput = [];
+			
+							for (var i=0; i<queryResult.length; i++)
+							{
+								var feature = JSON.parse(JSON.stringify(queryResult[i]));
+								feature.geometry = coordToMercator(feature.geometry);
+								projectedOutput.push(feature);
+							}
+
+							featureSet.features = projectedOutput;
+							featureSet.spatialReference.wkid = 102100;
+						}
+						else
+						{
+							featureSet.features = queryResult;
+						}
+			
+						callback(featureSet, err);
+						break;
+					case "geojson":
+						callback(queryResult, err);
+						break;
+				}
+			}
 		});
 	}
 };

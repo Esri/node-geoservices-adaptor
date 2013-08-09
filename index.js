@@ -173,8 +173,12 @@ function layerQueryHandler(request, response) {
 	var output = agsoutput.featureServiceLayerQuery(request.agsOutFormat,
 										dataProvider, serviceId, layerId, 
 										new agsquery.Query(request),
-										function(output) {
-		useCallback(request)?response.jsonp(200,output):response.send(200,output);	
+										function(output, err) {
+		if (err) {
+			response.send(500, err);
+		} else {
+			useCallback(request)?response.jsonp(200,output):response.send(200,output);
+		}
 	});
 }
 

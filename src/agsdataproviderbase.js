@@ -1,4 +1,5 @@
-var agsurls = require("./agsurls.js");
+var agsurls = require("./agsurls.js"),
+	TerraformerArcGIS = require("terraformer-arcgis-parser");
 
 AgsDataProviderBase = function () {
 	this._urls = new agsurls.AgsUrls(this);
@@ -189,12 +190,50 @@ AgsDataProviderBase.prototype = {
 	// This is the entry point from agsoutput to get query results, and pre-processes the
 	// query parameters and post-processes the results appropriately.
 	_featuresForQuery: function(serviceId, layerId, query, callback) {
+		// If we've been passed objectIds, then we'll pass on the id field for convenience.
 		if (query.objectIds) { query["_idField"] = this.idField(serviceId, layerId); }
+
+		// Now call into the provider implementation of featuresForQuery()
 		var provider = this;
 		this.featuresForQuery(serviceId, layerId, query, function(features, err) {
-			callback(features.filter(function(feature) {
-				return this._includeQueryResult(feature, query);
-			}, provider), err);
+			// post-processing the data from featuresForQuery()
+			if (query.generatedFormat === "geojson") {
+				if (query.format === "json") {
+					// It actually makes no sense to return json when asked for geojson. The client must
+					// specify the f=geojson parameter.
+					callback(features, "Data Provider Error: geoJSON was returned for a query asking for JSON.");
+				} else {
+					// If geoJSON was generated, just pass it on through
+					callback(features, err);
+				}
+			} else if (query.generatedFormat === "json") {
+				// More typical ArcGIS Server behaviour. Esri JSON delivered.
+				// Let's filter out the features according to some query rules.
+				var results = features.filter(function(feature) {
+					return this._includeQueryResult(feature, query);
+				}, provider);
+				if (query.format === "geojson") {
+					// The user has asked for geoJSON but so far we just have JSON
+					// Let's user terraformer to convert...
+					var geojsonOutput = {
+						type: "FeatureCollection",
+						features: []
+					};
+					var idField = this.idField(serviceId, layerId);
+					for (var i = 0; i < results.length; i++) {
+						var feature = TerraformerArcGIS.parse(results[i]);
+						// We ought to specify the "id" property of the feature, and since
+						// we have it, we'll do it.
+						feature.id = results[i].attributes[idField];
+						geojsonOutput.features.push(feature)
+					};
+					// Now we're outputting geoJSON.
+					query.generatedFormat = "geojson";
+					// And pass it on out.
+					callback(geojsonOutput, err);
+				}
+				callback (results, err);
+			} 
 		});
 	},
 
