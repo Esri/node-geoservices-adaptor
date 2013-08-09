@@ -198,13 +198,13 @@ AgsDataProviderBase.prototype = {
 		this.featuresForQuery(serviceId, layerId, query, function(features, err) {
 			// post-processing the data from featuresForQuery()
 			if (query.generatedFormat === "geojson") {
-				if (query.format === "json") {
-					// It actually makes no sense to return json when asked for geojson. The client must
-					// specify the f=geojson parameter.
-					callback(features, "Data Provider Error: geoJSON was returned for a query asking for JSON.");
-				} else {
+				if (query.format === "geojson") {
 					// If geoJSON was generated, just pass it on through
 					callback(features, err);
+				} else {
+					// It actually makes no sense to return json when asked for geojson. The client must
+					// specify the f=geojson parameter.
+					callback(features, "Data Provider Error: geoJSON was returned for a query asking for " + query.format);
 				}
 			} else if (query.generatedFormat === "json") {
 				// More typical ArcGIS Server behaviour. Esri JSON delivered.
@@ -219,20 +219,28 @@ AgsDataProviderBase.prototype = {
 						type: "FeatureCollection",
 						features: []
 					};
-					for (var i = 0; i < results.length; i++) {
-						var feature = TerraformerArcGIS.parse(results[i]);
 					var idField = provider.idField(serviceId, layerId);
+					for (var i=0; i < results.length; i++) {
+						var result = results[i];
+
+						// Need to do this before setting "id". See:
+						// https://github.com/Esri/Terraformer/issues/137
+						var feature = JSON.parse(JSON.stringify(TerraformerArcGIS.parse(result)));
+
 						// We ought to specify the "id" property of the feature, and since
 						// we have it, we'll do it.
-						feature.id = results[i].attributes[idField];
-						geojsonOutput.features.push(feature)
+						feature["id"] = result.attributes[idField];
+						geojsonOutput.features.push(feature);
 					};
+
 					// Now we're outputting geoJSON.
 					query.generatedFormat = "geojson";
 					// And pass it on out.
 					callback(geojsonOutput, err);
+				} else {
+					// Just return whatever we got
+					callback (results, err);
 				}
-				callback (results, err);
 			} 
 		});
 	},
