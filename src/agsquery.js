@@ -67,8 +67,8 @@ Query = function(request) {
 	this.outSR = _outSR;
 	
 	this.rawParams = MergeRecursiveCopy(request.params, request.query, request.body);
-	
-	this.format = request.param("f") || "json";
+
+	this.format = (request.param("f") || "json").toLowerCase();
 	this.generatedFormat = "json";
 	
 	// The following FeatureService Layer Query Parameters properties are currently ignored:
