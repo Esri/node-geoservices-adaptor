@@ -158,11 +158,7 @@ Object.defineProperties(GeoHubProvider.prototype, {
 					console.log(user + "." + repo + "." + file);
 					Geohub.repo(user, repo, file, function(err, geoJSONData) {
 								console.log(callback);
-// 						console.log(geoJSONData);
-// 						console.log(err);
-// 						console.trace();
 						if (err) {
-							console.log("Uh oh: " + err);
 							callback([], err);
 						} else {
 							if (query.format === "json") {
