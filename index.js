@@ -14,8 +14,6 @@ var agsquery = require("./src/agsquery");
 var citybikes = require("./samples/citybikes");
 var geohubprovider = require("./samples/geohub");
 
-var dataProviders = [new citybikes.CityBikes(), new geohubprovider.GeoHubProvider(app, agsoutput)];
-
 // General URL engine for routing templated AGS requests
 var routerUrls = new agsurls.AgsUrls();
 
@@ -59,24 +57,13 @@ app.configure(function() {
 
 	app.use(allowCrossDomain);
 	app.use(function(req,res,next) {
-		req["agsOutFormat"] = req.param("f") || "html";
+		req["agsOutFormat"] = (req.param("f") || "html").toLowerCase();;
 		console.log(req.url);
 		next();
 	});
 
 	app.use(app.router);
 	app.use(express.static(path.join(__dirname,"resources"), {maxAge: 31557600000}));
-	
-	var svcs = {};
-	for (var i=0; i<dataProviders.length; i++) {
-		var dataProvider = dataProviders[i];
-		svcs[dataProvider.name] = {
-			"dataProvider" : dataProvider
-		};
-	}
-	app.set("agsDataProviders", svcs);
-	
-	console.log('App Configured');
 });
 
 // Redirect handlers for badly formed URLs (help users get to grips)
@@ -113,7 +100,7 @@ app.post(routerUrls.getInfoUrl(), infoHandler);
 
 function servicesHandler(request, response) {
 	console.log("SERVICES");
-
+	
 	var dataProvider = getSvcForRequest(request);
 
 	var output = agsoutput.services(request.agsOutFormat, dataProvider);
@@ -184,5 +171,20 @@ function layerQueryHandler(request, response) {
 
 app.get(routerUrls.getLayerQueryUrl(), layerQueryHandler);
 app.post(routerUrls.getLayerQueryUrl(), layerQueryHandler);
+
+var dataProviders = [new citybikes.CityBikes(), new geohubprovider.GeoHubProvider(app, agsoutput)];
+
+app.configure(function() {
+	var svcs = {};
+	for (var i=0; i<dataProviders.length; i++) {
+		var dataProvider = dataProviders[i];
+		svcs[dataProvider.name] = {
+			"dataProvider" : dataProvider
+		};
+	}
+	app.set("agsDataProviders", svcs);
+	
+	console.log('App Configured');
+});
 
 app.listen(process.env.VCAP_APP_PORT || 1337);

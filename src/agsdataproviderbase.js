@@ -196,6 +196,10 @@ AgsDataProviderBase.prototype = {
 		// Now call into the provider implementation of featuresForQuery()
 		var provider = this;
 		this.featuresForQuery(serviceId, layerId, query, function(features, err) {
+			if (err) {
+				callback(features, err);
+				return;
+			}
 			// post-processing the data from featuresForQuery()
 			if (query.generatedFormat === "geojson") {
 				if (query.format === "geojson") {
