@@ -1,5 +1,5 @@
-node-ags-adaptor
-================
+node-geoservices-adaptor
+========================
 
 This is a [node.js](http://nodejs.org) implementation of part of the [Esri GeoServices REST API](http://resources.arcgis.com/en/help/arcgis-rest-api/).
 
@@ -25,16 +25,36 @@ At a glance, this is how it works:
 
 * **agsurls**: Construct Adaptor and Template REST Endpoints.
 * **agsoutput**: Construct JSON output. Format HTML output for JSON.
-* **agsdataproviderbase**: Describe the service (fields, idField, nameField, etc.) and return features when requested.
+* **agsdataproviderbase**: Describe the service (fields, idField, nameField, etc.) and return features when requested. Inherit from this and selectively override to add a provider.
 
-##Sample Data Provider
-The sample data provider makes use of the [awesome API](http://api.citybik.es) at [CityBik.es](http://citybik.es) providing bike share data (almost) globally. This sample Data Provider adapts the data into Geoservices format output. The root REST endpoint 
-for the CityBikes data provider can be found live here (this is where you might point ArcCatalog): http://node-geoservices-adaptor.aws.af.cm/citybikes/rest/services
+Making use of the [Terraformer](https://github.com/esri/terraformer) library, the application is able to support outputting in [geoJSON](http://www.geojson.org/geojson-spec.html) by specifying `f=geojson`.
+
+## Requirements
+* [node.js](http://nodejs.org)
 
 ##Installation
 1. Clone the repo and run `npm update` in the repo folder
 2. Run the node server with `node index`
 3. Browse to [http://localhost:1337](http://localhost:1337)
+
+##Sample Data Providers
+###Citybikes
+The Citybikes sample data provider makes use of the [awesome API](http://api.citybik.es) at [CityBik.es](http://citybik.es) providing bike share data (almost) globally. This sample Data Provider adapts the data into Geoservices format output. The root REST endpoint 
+for the CityBikes data provider can be found live here (this is where you might point ArcCatalog): http://node-geoservices-adaptor.aws.af.cm/citybikes/rest/services
+###GeoHub
+Making use of the [GeoHub repo](https://github.com/chelm/geohub), this sample provider allows a client to request geoJSON files from either a GitHub repository ([example](https://github.com/chelm/grunt-geo/blob/master/forks.geojson)) or from a GitHub gist ([example](https://gist.github.com/chelm/6178185)). The following additional query parameters are implemented:
+
+* repo
+	* **githubUser**: The repo owner's username.
+	* **repoName**: The name of the repo containing the GeoJSON file.
+	* **filePath**: The path to the GeoJSON file within the repo. Note, you should not include the ".geojson" file extension.
+	* **geoJSONType** (optional): The geoJSON Geometry Type to extract (since an ArcGIS FeatureLayer may only emit a featureset with a single geometry type). If this is omitted, the first geoJSON Geometry will define the type used to filter on.
+	* **f** (optional): Setting this to `geojson` returns the contents of the geoJSON file unprocessed.
+* gist
+	* **gistId**: The unique ID of the Gist
+	* **gistFileIndex** (optional): If the gist has multiple .geojson files, specify which one should be returned (zero-based index, default value 0).
+	* **geoJSONType** (optional): The geoJSON Geometry Type to extract (since an ArcGIS FeatureLayer may only emit a featureset with a single geometry type). If this is omitted, the first geoJSON Geometry will define the type used to filter on.
+	* **f** (optional): Setting this to `geojson` returns the contents of the geoJSON file unprocessed.
 
 ##Known Limitations
 * Only a limited subset of the [Geoservices REST Specification](http://resources.arcgis.com/en/help/arcgis-rest-api/) is implemented.
@@ -44,7 +64,8 @@ for the CityBikes data provider can be found live here (this is where you might 
 	* `Layers (Feature Service)`
 	* [`Layer (Feature Service)`](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Layer/02r3000000w6000000/)
 	* [`Query (Feature Service\Layer)`](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Query_Feature_Service_Layer/02r3000000r1000000/)
-* Only spatial references 4326 and 102100 are supported
+* Only spatial references 4326 and 102100 are supported.
+* The application will convert from 4326 to 102100 only.
 * Queries only work against the layer end point. `Query (Feature Service)` is declared as a capability but not yet implemented.
 * HTML Browsing is not available for Query endpoints. All queries return JSON.
 * Only a subset of [`Query (Feature Service\Layer)`](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Query_Feature_Service_Layer/02r3000000r1000000/) is implemented:
@@ -52,18 +73,18 @@ for the CityBikes data provider can be found live here (this is where you might 
 	* `outSR` (4326 and 102100 only)
 	* `returnIdsOnly`
 	* `returnCountOnly`
-
-## Requirements
-
-* [node.js](http://nodejs.org)
+* Authentication and tokenization is not implemented. All services are considered public.
 
 ## Resources
 
-* [Geoservices REST Specification](http://resources.arcgis.com/en/help/arcgis-rest-api/)
+* [Esri Geoservices REST Specification](http://resources.arcgis.com/en/help/arcgis-rest-api/)
+* [Terraformer](https://github.com/esri/terraformer) by [Esri](http://esri.github.io)
 * [node.js documentation](http://nodejs.org/api/)
 * [express.js documentation](http://expressjs.com/api.html)
 * [CityBikes API](http://api.citybik.es)
+* [GeoHub](https://github.com/chelm/geohub)
 * [AppFog](http://appfog.com)
+* [geoJSON Specification](http://www.geojson.org/geojson-spec.html)
 
 ## Issues
 

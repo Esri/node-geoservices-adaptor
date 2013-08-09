@@ -128,7 +128,8 @@ Object.defineProperties(GeoHubProvider.prototype, {
 					"<li>(optional) f: Setting this to <em>geojson</em> returns the GeoHub output unprocessed as geoJSON.</li>" +
 					"</ul>";
 			} else if (layerId == 1) {
-				detailsTemplate.description += "<ul><li>gistId: The unique ID of the Gist</li>" +
+				detailsTemplate.description += "<ul>" +
+					"<li>gistId: The unique ID of the Gist</li>" +
 					"<li>(optional) gistFileIndex: If the gist has multiple .geojson files, specify which one should be returned (zero-based index, default value 0)." +
 					"<li>(optional) geoJSONType: The geoJSON Geometry Type to extract (since a FeatureLayer may emit a featureset with a single geometry type)." +
 					"If this is omitted, the first geoJSON Geometry will define the type used to filter on.</li>" +
