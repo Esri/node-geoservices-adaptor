@@ -12,7 +12,7 @@ GeoHubProvider = function (app, agsoutput) {
 			0: "repo",
 			1: "gist"
 		}
-	};			
+	};
 	
 	console.log("Initialized new GeoHub Data Provider");
 };
@@ -148,7 +148,13 @@ Object.defineProperties(GeoHubProvider.prototype, {
 			{
 				if (layerId == 0) 
 				{
-					console.log("GeoHub repo");
+					if (!(query.rawParams.hasOwnProperty("githubUser") &&
+						  query.rawParams.hasOwnProperty("repoName") &&
+						  query.rawParams.hasOwnProperty("filePath"))) {
+						callback([], "You must specify githubUser, repoName, and filePath!");
+						return;
+					}
+
 					var user = query.rawParams.githubUser;
 					var repo = query.rawParams.repoName;
 					var file = query.rawParams.filePath;
@@ -171,7 +177,10 @@ Object.defineProperties(GeoHubProvider.prototype, {
 						}
 					});
 				} else if (layerId == 1) {
-					console.log("GeoHub gist");
+					if (!query.rawParams.hasOwnProperty("gistId")) {
+						callback([], "You must specify a gistId query parameter.");
+						return;
+					}
 					var gistId = query.rawParams.gistId;
 					Geohub.gist(gistId, function(err, geoJSONData) {
 						if (err) {

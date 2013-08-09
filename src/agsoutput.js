@@ -382,7 +382,7 @@ exports.featureServiceLayers = function(f, dataProvider, serviceId) {
 exports.featureServiceLayerQuery = function(f, 
 											dataProvider, serviceId, layerId,
 											query, callback) {
-	featureServiceLayerQueryJSON(dataProvider, serviceId, layerId, query, function(output) {
-		callback(output);
+	featureServiceLayerQueryJSON(dataProvider, serviceId, layerId, query, function(output, err) {
+		callback(output, err);
 	});
 };
