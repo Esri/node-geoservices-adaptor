@@ -5,6 +5,9 @@ var agsurls = require("./agsurls");
 
 var agsdataproviderbase = require("./agsdataproviderbase");
 
+var terraformer = require("terraformer"),
+	terraformerArcGIS = require("terraformer-arcgis-parser");
+
 var _infoJSON = JSON.parse(fs.readFileSync('resources/templates/info.json', 'utf8'));
 var _servicesJSON = JSON.parse(fs.readFileSync('resources/templates/services.json', 'utf8'));
 var _featureServiceJSON = JSON.parse(fs.readFileSync('resources/templates/featureService.json', 'utf8'));
@@ -143,6 +146,12 @@ function coordToMercator(coord) {
 	};
 }
 
+function projectGeographicGeomToMercator(geometry) {
+	var g = terraformerArcGIS.convert(terraformerArcGIS.parse(geometry).toMercator());
+	g.spatialReference.wkid = 102100;
+	return g;
+}
+
 function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId, 
 									  query,
 									  callback)
@@ -183,7 +192,7 @@ function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId,
 				switch (query.generatedFormat.toLowerCase()) {
 					case "json":
 						var featureSet = JSON.parse(JSON.stringify(_featureSetJSON));
-			
+						
 						featureSet.fields = dataProvider.fields(serviceId, layerId);
 						featureSet.objectIdFieldName = dataProvider.idField(serviceId, layerId);
 			
@@ -194,12 +203,15 @@ function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId,
 							for (var i=0; i<queryResult.length; i++)
 							{
 								var feature = JSON.parse(JSON.stringify(queryResult[i]));
-								feature.geometry = coordToMercator(feature.geometry);
-								projectedOutput.push(feature);
+// 								feature.geometry = coordToMercator(feature.geometry);
+ 								feature.geometry = projectGeographicGeomToMercator(feature.geometry);
+								projectedOutput.push(JSON.parse(JSON.stringify(feature)));
 							}
 
 							featureSet.features = projectedOutput;
 							featureSet.spatialReference.wkid = 102100;
+							debugger;
+							console.log(featureSet);
 						}
 						else
 						{
