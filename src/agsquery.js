@@ -64,7 +64,7 @@ Query = function(request) {
 	
 	var _outSR = request.param("outSR");
 	if (_outSR) { _outSR = parseInt(_outSR); }	
-	this.outSR = _outSR;
+	this.outSR = _outSR || 4326;
 	
 	this.rawParams = MergeRecursiveCopy(request.params, request.query, request.body);
 

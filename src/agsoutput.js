@@ -71,80 +71,85 @@ function getHtmlForFields(fields) {
 
 
 // JSON
-function infoJSON(dataProvider) {
-	var r = _clone(_infoJSON);
-	r["currentVersion"] = dataProvider.serverVersion;
-	r["fullVersion"] = dataProvider.serverVersion.toString();
-	return r;
+function infoJSON(dataProvider, callback) {
+	var t = _clone(_infoJSON);
+	t["currentVersion"] = dataProvider.serverVersion;
+	t["fullVersion"] = dataProvider.serverVersion.toString();
+	callback(t, null);
 }
 
-function servicesJSON(dataProvider) {
-	var r = _clone(_servicesJSON);
-	r["currentVersion"] = dataProvider.serverVersion;
-	var serviceIds = dataProvider.serviceIds;
-	for (var i=0; i<serviceIds.length; i++)
-	{
-		var serviceDetails = _clone(_serviceDetailsJSON),
-			serviceId = serviceIds[i];
-		serviceDetails.name = serviceId;
-		serviceDetails.url = dataProvider.urls.getServiceUrl(serviceId);
-		r.services.push(dataProvider.serviceDetails(serviceDetails, serviceId));
-	};
-	return r;
+function servicesJSON(dataProvider, callback) {
+	var t = _clone(_servicesJSON);
+	t["currentVersion"] = dataProvider.serverVersion;
+	var serviceIds = dataProvider.getServiceIds(function(serviceIds, err) {
+		for (var i=0; i<serviceIds.length; i++)
+		{
+			var serviceDetails = _clone(_serviceDetailsJSON),
+				serviceId = serviceIds[i];
+			serviceDetails.name = serviceId;
+			serviceDetails.url = dataProvider.urls.getServiceUrl(serviceId);
+			t.services.push(serviceDetails);
+		};
+		dataProvider.updateServicesDetails(t.services, function(newDetails, err) {
+			t.services = newDetails;
+			callback(t, err);
+		});
+	});
 };
 
-function featureServiceJSON(dataProvider, serviceId) {
-	var r = _clone(_featureServiceJSON);
-	r["currentVersion"] = dataProvider.serverVersion;
-	var layerIds = dataProvider.layerIds(serviceId);
-	var ls = [];
-	for (var i=0; i<layerIds.length; i++) {
-		var layerDetails = _clone(_featureService_LayerItemJSON),
-			layerId = layerIds[i];
-		layerDetails.id = layerId;
-		layerDetails.name = dataProvider.featureServiceLayerName(serviceId, layerId);
-		ls.push(dataProvider.serviceLayerListLayerDetails(layerDetails, serviceId, layerId));
-	}
-	r["layers"] = ls;
-	return dataProvider.featureServiceDetails(r, serviceId);
+function featureServiceJSON(dataProvider, serviceId, callback) {
+	var t = _clone(_featureServiceJSON);
+	t["currentVersion"] = dataProvider.serverVersion;
+	dataProvider.getFeatureServiceDetails(t, serviceId, function(layerIds, layerNames, err) {
+		var ls = [];
+		for (var i=0; i<layerIds.length; i++) {
+			var layerDetails = _clone(_featureService_LayerItemJSON);
+			layerDetails.id = layerIds[i];
+			layerDetails.name = layerNames[i];
+			ls.push(layerDetails);
+		}
+		dataProvider.updateFeatureServiceDetailsLayersList(serviceId, ls, function(layersDetails, err) {
+			t.layers = layersDetails;
+			callback(t, err);
+		});
+	});
 };
 
-function featureServiceLayerJSON(dataProvider, serviceId, layerId) {
-	var r = _clone(_featureServiceLayerJSON);
-	r["currentVersion"] = dataProvider.serverVersion;
-	r["name"] = dataProvider.featureServiceLayerName(serviceId, layerId);
-	r["layerId"] = layerId;
-	r["displayField"] = dataProvider.nameField(serviceId, layerId);
-	r["objectIdField"] = dataProvider.idField(serviceId, layerId);
-	r["fields"] = dataProvider.fields(serviceId, layerId);
-	return dataProvider.featureServiceLayerDetails(r, serviceId, layerId);
+function featureServiceLayerJSON(dataProvider, serviceId, layerId, callback) {
+	var t = _clone(_featureServiceLayerJSON);
+	dataProvider.getFeatureServiceLayerDetails(t, serviceId, layerId, function(layerName, idField, nameField, fields, err) {
+		t["currentVersion"] = dataProvider.serverVersion;
+		t["name"] = layerName; // dataProvider.featureServiceLayerName(serviceId, layerId);
+		t["layerId"] = layerId;
+		t["objectIdField"] = idField; // dataProvider.idField(serviceId, layerId);
+		t["displayField"] = nameField; // dataProvider.nameField(serviceId, layerId);
+		t["fields"] = fields; // dataProvider.fields(serviceId, layerId);
+		callback(t, err);
+	});
 };
 
-function featureServiceLayersJSON(dataProvider, serviceId) {
-	var r = _clone(_featureServiceLayersJSON);
-	var layerIds = dataProvider.layerIds;
-	for (var i=0; i<layerIds.length; i++) {
-		r.layers.push(featureServiceLayerJSON(dataProvider, serviceId, layerIds[i]));
-	}
-	return r;
+function featureServiceLayersJSON(dataProvider, serviceId, callback) {
+	var t = _clone(_featureServiceLayersJSON);
+	var outputter = this;
+	dataProvider.getLayerIds(serviceId, function(layerIds, err) {
+		if (err) return callback(null, err);
+		var layerResults = {};
+		var retrievedResults = 0;
+		for (var i=0; i<layerIds.length; i++) {
+			outputter.featureServiceLayerJSON(dataProvider, serviceId, layerId, function (layerJSON, err) {
+				if (err) return callback(null, err);
+				layerResults[layerId] = layerJSON;
+				retrievedResults++;
+				if (retrievedResults == layerIds.length) {
+					t.layers = layerIds.map(function(layerId) {
+						return layerResults[layerId];
+					});
+					callback(t, err);
+				}
+			});
+		}
+	});
 };
-
-var EarthRadius = 6378137,
-	RadiansPerDegree =  0.017453292519943;
-
-function degToRad(deg) {
-	return deg * RadiansPerDegree;
-}
-
-function coordToMercator(coord) {
-	var x = coord.x;
-	var y = Math.max(Math.min(coord.y, 89.99999), -89.99999);
-	return {
-		"x": degToRad(x) * EarthRadius,
-		"y": EarthRadius/2.0 * Math.log( (1.0 + Math.sin(degToRad(y))) / (1.0 - Math.sin(degToRad(y))) ),
-		"spatialReference": {"wkid": 102100}
-	};
-}
 
 function projectGeographicGeomToMercator(geometry) {
 	var g = terraformerArcGIS.convert(terraformerArcGIS.parse(geometry).toMercator());
@@ -166,7 +171,7 @@ function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId,
 			var outLayer = output.layers[0];
 			outLayer.id = layerId;
 			outLayer.count = resultCount;
-			callback(output);
+			callback(output, err);
 		});
 	}
 	else if (query.returnIdsOnly)
@@ -178,13 +183,14 @@ function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId,
 			outLayer.id = layerId;
 			outLayer.objectIdFieldName = dataProvider.idField(serviceId, layerId);
 			outLayer.objectIds = resultIds;
-			callback(output);
+			callback(output, err);
 		});
 	}
 	else
 	{
-		dataProvider._featuresForQuery(serviceId, layerId, query, function(queryResult, err, outputFormat) {
+		dataProvider._featuresForQuery(serviceId, layerId, query, function(queryResult, idField, fields, err, outputFormat) {
 			if (err) {
+				console.log("1 " + err);
 				callback([], err);
 			}
 			else
@@ -203,15 +209,12 @@ function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId,
 							for (var i=0; i<queryResult.length; i++)
 							{
 								var feature = JSON.parse(JSON.stringify(queryResult[i]));
-// 								feature.geometry = coordToMercator(feature.geometry);
  								feature.geometry = projectGeographicGeomToMercator(feature.geometry);
-								projectedOutput.push(JSON.parse(JSON.stringify(feature)));
+								projectedOutput.push(feature);
 							}
 
 							featureSet.features = projectedOutput;
 							featureSet.spatialReference.wkid = 102100;
-							debugger;
-							console.log(featureSet);
 						}
 						else
 						{
@@ -221,6 +224,10 @@ function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId,
 						callback(featureSet, err);
 						break;
 					case "geojson":
+						if (query.outSR != 4326) {
+							return callback(queryResult, "geoJSON can only be output in geographic coordinates. outSR asked for " + 
+								query.outSR + ". Alternatively specify a return format other than f=geojson");
+						}
 						callback(queryResult, err);
 						break;
 				}
@@ -258,144 +265,192 @@ function getHtmlForFeatureServiceLayerEntry(layer, layerUrl) {
 						layer.id);
 }
 
-function infoHTML(dataProvider) {
-	var json = infoJSON(dataProvider);
-	return util.format(_infoHTML,
-		json.currentVersion,
-		json.fullVersion);
+function infoHTML(dataProvider, callback) {
+	infoJSON(dataProvider, function(json, err) {
+		var r = util.format(_infoHTML,
+			json.currentVersion,
+			json.fullVersion);
+		callback(r, err);
+	});
 };
 
-function servicesHTML(dataProvider) {
-	var json = servicesJSON(dataProvider);
-	var serviceListHTML = "";
-	for (var i=0; i < json.services.length; i++) {
-		serviceListHTML += getHtmlForFeatureServiceEntry(json.services[i]);
-	}
-	return util.format(_servicesHTML,
-		dataProvider.urls.getServicesUrl(), dataProvider.urls.getServicesUrl(),
-		json.currentVersion,
-		serviceListHTML);
+function servicesHTML(dataProvider, callback) {
+	servicesJSON(dataProvider, function(json, err) {
+		var serviceListHTML = "";
+		for (var i=0; i < json.services.length; i++) {
+			serviceListHTML += getHtmlForFeatureServiceEntry(json.services[i]);
+		}
+		var r = util.format(_servicesHTML,
+			dataProvider.urls.getServicesUrl(), dataProvider.urls.getServicesUrl(),
+			json.currentVersion,
+			serviceListHTML);
+
+		callback(r, err);
+	});
 };
 
-function featureServiceHTML(dataProvider, serviceId) {
-	var json = featureServiceJSON(dataProvider, serviceId);
-	var layerListHTML = "";
+function featureServiceHTML(dataProvider, serviceId, callback) {
+	featureServiceJSON(dataProvider, serviceId, function(json, err) {
+		var layerListHTML = "";
 	
-	for (var i=0; i<json.layers.length; i++) {
-		var layer = json.layers[i];
-		var layerUrl = dataProvider.urls.getLayerUrl(serviceId, layer["id"]);
-		layerListHTML += getHtmlForFeatureServiceLayerEntry(layer, layerUrl);
-	}
+		for (var i=0; i<json.layers.length; i++) {
+			var layer = json.layers[i];
+			var layerUrl = dataProvider.urls.getLayerUrl(serviceId, layer["id"]);
+			layerListHTML += getHtmlForFeatureServiceLayerEntry(layer, layerUrl);
+		}
 	
-	return util.format(
-		_featureServiceHTML,
-		dataProvider.name, "Feature Server",
-		dataProvider.urls.getServicesUrl(), dataProvider.urls.getServicesUrl(), "",
-		serviceId, "Feature Server",
-		json.serviceDescription,
-		json.hasVersionedData,
-		json.maxRecordCount,
-		json.supportedQueryFormats,
-		dataProvider.urls.getLayersUrl(serviceId),
-		layerListHTML,
-		json.description,
-		json.copyrightText,
-		json.spatialReference.wkid,
-		htmlStringForEnvelope(json.initialExtent),
-		htmlStringForEnvelope(json.fullExtent),
-		json.units,
-		"FSQueryURL"
-	);
+		var r = util.format(
+			_featureServiceHTML,
+			dataProvider.name, "Feature Server",
+			dataProvider.urls.getServicesUrl(), dataProvider.urls.getServicesUrl(), "",
+			serviceId, "Feature Server",
+			json.serviceDescription,
+			json.hasVersionedData,
+			json.maxRecordCount,
+			json.supportedQueryFormats,
+			dataProvider.urls.getLayersUrl(serviceId),
+			layerListHTML,
+			json.description,
+			json.copyrightText,
+			json.spatialReference.wkid,
+			htmlStringForEnvelope(json.initialExtent),
+			htmlStringForEnvelope(json.fullExtent),
+			json.units,
+			"FSQueryURL"
+		);
+		
+		callback(r, err);
+	});
 };
 
-function featureServiceLayerItemHTML(dataProvider, serviceId, layerId) {
-	var json = null;
+function featureServiceLayerItemHTML(dataProvider, serviceId, layerId, callback) {
+	function getHTML(json) {
+		var r = util.format(_featureServiceLayer_LayerItemHTML,
+			json.name,
+			json.displayField,
+			json.geometryType,
+			json.description,
+			json.copyrightText,
+			json.minScale,
+			json.maxScale,
+			json.maxRecordCount,
+			htmlStringForEnvelope(json.extent),
+			getHtmlForFields(json.fields));
+
+		return r;
+	}
 	if (dataProvider instanceof agsdataproviderbase.AgsDataProviderBase) {
-		json = featureServiceLayerJSON(dataProvider, serviceId, layerId);
+		featureServiceLayerJSON(dataProvider, serviceId, layerId, function (json, err) {
+			doCallback(getHTML(json), err);
+		});
 	} else {
-		json = dataProvider;
+		var json = dataProvider;
+		return getHTML(json);
 	}
-	
-	return util.format(_featureServiceLayer_LayerItemHTML,
-		json.name,
-		json.displayField,
-		json.geometryType,
-		json.description,
-		json.copyrightText,
-		json.minScale,
-		json.maxScale,
-		json.maxRecordCount,
-		htmlStringForEnvelope(json.extent),
-		getHtmlForFields(json.fields));
+// 	var json = null;
+// 	if (dataProvider instanceof agsdataproviderbase.AgsDataProviderBase) {
+// 		json = featureServiceLayerJSON(dataProvider, serviceId, layerId);
+// 	} else {
+// 		json = dataProvider;
+// 	}
 };
 
-function featureServiceLayerHTML(dataProvider, serviceId, layerId) {
-	var json = featureServiceLayerJSON(dataProvider, serviceId, layerId);
+function featureServiceLayerHTML(dataProvider, serviceId, layerId, callback) {
+	featureServiceLayerJSON(dataProvider, serviceId, layerId, function (json, err) {
+		var r = util.format(_featureServiceLayerHTML,
+			json.name, layerId,
+			dataProvider.urls.getServicesUrl(), dataProvider.urls.getServicesUrl(),
+			dataProvider.urls.getServiceUrl(serviceId), json.name, json.type,
+			dataProvider.urls.getLayerUrl(serviceId, layerId), json.name,
+			json.name, layerId,
+			featureServiceLayerItemHTML(json),
+			dataProvider.urls.getLayerQueryUrl(serviceId, layerId));
 	
-	return util.format(_featureServiceLayerHTML,
-		json.name, layerId,
-		dataProvider.urls.getServicesUrl(), dataProvider.urls.getServicesUrl(),
-		dataProvider.urls.getServiceUrl(serviceId), json.name, json.type,
-		dataProvider.urls.getLayerUrl(serviceId, layerId), json.name,
-		json.name, layerId,
-		featureServiceLayerItemHTML(json),
-		dataProvider.urls.getLayerQueryUrl(serviceId, layerId));
+		callback(r, err);
+	});
 };
 
-function featureServiceLayersHTML(dataProvider, serviceId) {
-	var json = featureServiceJSON(dataProvider, serviceId);
+function featureServiceLayersHTML(dataProvider, serviceId, callback) {
+	featureServiceLayersJSON(dataProvider, serviceId, function(json, err) {
+		var layerHTMLItems = {};
+		var t = '<h3>Layer: <a href="%s">%s</a> (%d)</h3><br/>';
+		var layersHTML = "";
+		var retrievedCount = 0;
+		for (var i=0; i<json.layers.length; i++) {
+			var layer = json.layers[i];
+			featureServiceLayerItemHTML(dataProvider, serviceId, layer.id, function(html, err) {
+				if (err) return callback("", err);
 
-	var t = '<h3>Layer: <a href="%s">%s</a> (%d)</h3><br/>';
-	var layersHTML = "";
-	for (var i=0; i<json.layers.length; i++) {
-		var layer = json.layers[i];
-		layersHTML += util.format(t, 
-			dataProvider.urls.getLayerUrl(serviceId, layer.id),
-			layer.name, layer.id);
-	
-		layersHTML += featureServiceLayerItemHTML(dataProvider, serviceId, layer.id);
-	}
+				html = util.format(t, dataProvider.urls.getLayerUrl(serviceId, layer.id),
+								   layer.name, layer.id) + html;
+				layerHTMLItems[layer.id] = html;
+				retrievedCount++;
 
-	return util.format(_featureServiceLayersHTML,
-		serviceId, 
-		dataProvider.urls.getServicesUrl(), dataProvider.urls.getServicesUrl(),
-		dataProvider.urls.getServiceUrl(serviceId),
-		dataProvider.name, "FeatureServer",
-		dataProvider.urls.getLayersUrl(serviceId),
-		serviceId,
-		layersHTML);
+				if (retrievedCount.length == json.layers.length) {
+					for (var j=0; j<json.layers.length; j++) {
+						layersHTML += layerHTMLItems[json.layers[j].id];
+					}
+					var r = util.format(_featureServiceLayersHTML,
+						serviceId, 
+						dataProvider.urls.getServicesUrl(), dataProvider.urls.getServicesUrl(),
+						dataProvider.urls.getServiceUrl(serviceId),
+						dataProvider.name, "FeatureServer",
+						dataProvider.urls.getLayersUrl(serviceId),
+						serviceId,
+						layersHTML);
+					callback(r, err);
+				}
+			});
+		}
+	});
 };
 
 exports.dataProvidersHTML = dataProvidersHTML;
 
-function o(mJ,mH,f,d,s,l) {
-	return (f==="json")?mJ(d,s,l):mH(d,s,l);
+function o(mJ,mH,f,d) {
+	var args = Array.prototype.slice.call(arguments);
+	var callback = args.pop();
+	args.shift(); args.shift(); args.shift();
+	args.push(function(result, err) {
+		callback(result, err);
+	});
+	var m = (f==="json")?mJ:mH;
+	m.apply(d,args);
 };
 
-exports.info = function(f, dataProvider) {
-	return o(infoJSON, infoHTML, f, dataProvider);
+exports.info = function(f, dataProvider, callback) {
+	o(infoJSON, infoHTML, f, dataProvider, function(output, err) {
+		callback(output, err);
+	});
 };
 
-exports.services = function(f, dataProvider) {
-	return o(servicesJSON, servicesHTML, f, dataProvider);
+exports.services = function(f, dataProvider, callback) {
+	o(servicesJSON, servicesHTML, f, dataProvider, function(output, err) {
+		callback(output, err);
+	});
 };
 
-exports.featureService = function(f, dataProvider, serviceId) {
-	return o(featureServiceJSON, featureServiceHTML, f, dataProvider, serviceId);
+exports.featureService = function(f, dataProvider, serviceId, callback) {
+	o(featureServiceJSON, featureServiceHTML, f, dataProvider, serviceId, function(output, err) {
+		callback(output, err);
+	});
 };
 
-exports.featureServiceLayer = function(f, dataProvider, serviceId, layerId) {
-	return o(featureServiceLayerJSON, featureServiceLayerHTML, f, dataProvider, serviceId, layerId);
+exports.featureServiceLayer = function(f, dataProvider, serviceId, layerId, callback) {
+	o(featureServiceLayerJSON, featureServiceLayerHTML, f, dataProvider, serviceId, layerId, function(output, err) {
+		callback(output, err);
+	});
 };
 
-exports.featureServiceLayers = function(f, dataProvider, serviceId) {
-	return o(featureServiceLayersJSON, featureServiceLayersHTML, f, dataProvider, serviceId);
+exports.featureServiceLayers = function(f, dataProvider, serviceId, callback) {
+	o(featureServiceLayersJSON, featureServiceLayersHTML, f, dataProvider, serviceId, function(output, err) {
+		callback(output, err);
+	});
 };
 
-exports.featureServiceLayerQuery = function(f, 
-											dataProvider, serviceId, layerId,
-											query, callback) {
-	featureServiceLayerQueryJSON(dataProvider, serviceId, layerId, query, function(output, err) {
+exports.featureServiceLayerQuery = function(f, dataProvider, serviceId, layerId, query, callback) {
+	o(featureServiceLayerQueryJSON, featureServiceLayerQueryJSON, f, dataProvider, serviceId, layerId, query, function(output, err) {
+		console.log(err);
 		callback(output, err);
 	});
 };
