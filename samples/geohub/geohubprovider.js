@@ -10,11 +10,12 @@ var geohubRepoDescription = "Use the following query parameters to output GeoSer
 var geohubGistDescription = "Use the following query parameters to output GeoServices info from a GeoJSON Source:" + "<ul>" + "<li><b>gistId</b>: The unique ID of the Gist</li>" + "<li><b>geoJSONType</b> (optional): The geoJSON Geometry Type to extract (since a FeatureLayer may emit a featureset with only a single geometry type). " + "If this is omitted, the first geoJSON Geometry will define the type used to filter on. Note, this is ignored if f=geojson</li>" + "</ul>" + "A Gist may include many geoJSON files. The Layer Index is used to return the correct file starting with index 0. " + "If the requested format is geojson (f=geojson) then you may use * for the layerId to return all encountered geoJSON in the gist." + "<br/>You can also specify the URL as .../geohub/rest/services/gist/<b>gistId</b>/FeatureService/<b>gistFileIndex</b>" + "<br/>For example, to find the 2nd file in gist 6178185, use this URL:<br/><ul><li>.../geohub/rest/services/gist/6178185/FeatureService/1</li></ul>";
 
 function parseServiceId(serviceId) {
+    var r = {
+    	fullServiceId: serviceId
+    };
     var parts = serviceId.split("+");
     console.log(parts);
-    var r = {
-        serviceId: parts[0]
-    };
+    r.serviceId = parts[0];
     switch (r.serviceId) {
     case "repo":
         r.githubUser = parts[1];
@@ -27,7 +28,6 @@ function parseServiceId(serviceId) {
         r.geoJSONType = (parts.length > 2) ? parts[2] : null;
         break;
     };
-    console.log(r);
     return r;
 };
 
@@ -37,45 +37,6 @@ GeoHubProvider = function(app, agsoutput) {
     // http://localhost:1337/geohub/rest/services/repo/chelm/grunt-geo/forks/FeatureServer/0
     // and
     // http://localhost:1337/geohub/rest/services/gist/6178185/FeatureServer/0
-    //     var tempUrls = new agsurls.AgsUrls();
-    //     this._geohub_defaultLayerQueryUrl = tempUrls.getLayerQueryUrl();
-    //     this._geohub_repoLayerQueryUrl = this._geohub_defaultLayerQueryUrl.replace(":dataProviderName", "geohub");
-    //     this._geohub_gistLayerQueryUrl = this._geohub_defaultLayerQueryUrl;
-    // 
-    //     this._originalQueryHandler = null;
-    //     this._app = app;
-    // 
-    //     var provider = this;
-    // 
-    //     this._geohubQueryHandler = function(request, response) {
-    //         // By this point, the routing will have parsed out the 
-    //         // parameters we're interested in.
-    //         var serviceBits = request.param.serviceId.split("+");
-    //         console.log(serviceBits);
-    //         debugger;
-    //         provider._originalQueryHandler[0](request, response);
-    //     };
-    // 
-    //     this._setupGeohubRouting = function() {
-    //         if (this._originalQueryHandler == null) {
-    //             var getRoutes = this._app.routes.get;
-    //             var oqh = null;
-    //             for (var i = 0; i < getRoutes.length; i++) {
-    //                 var route = getRoutes[i];
-    //                 if (route.path === this._geohub_defaultLayerQueryUrl) {
-    //                     oqh = route.callbacks;
-    //                     break;
-    //                 }
-    //             }
-    //             this._originalQueryHandler = oqh;
-    //             app.get(this._geohub_repoLayerQueryUrl, this._geohubQueryHandler);
-    //             app.post(this._geohub_repoLayerQueryUrl, this._geohubQueryHandler);
-    //             app.get(this._geohub_gistLayerQueryUrl, this._geohubQueryHandler);
-    //             app.post(this._geohub_gistLayerQueryUrl, this._geohubQueryHandler);
-    //         }
-    //     }
-    // 
-    //     this._setupGeohubRouting();
     this._services = {
         "repo": {
             0: "Not Used"
@@ -124,9 +85,26 @@ function FilterGeoJSONByType(geoJSONItem, geometryType) {
     return null;
 };
 
-function outputArcGISJSON(geoJSONOutput, query, callback) {
-    console.log("OutputtingArcGISJSON");
+function getEsriGeometryType(geoJSONType) {
+	var r = null;
+    switch (geoJSONType) {
+    case "Point":
+    case "MultiPoint":
+        r = "esriGeometryPoint";
+        break;
+    case "LineString":
+    case "MultiLineString":
+        r = "esriGeometryPolyline";
+        break;
+    case "Polygon":
+    case "MultiPolygon":
+        r = "esriGeometryPolygon";
+        break;
+    }
+    return r;
+}
 
+function outputArcGISJSON(geoJSONOutput, query, callback) {
     // GeoJSON FeatureCollections can contain anything. We'll
     // limit the output to the type of just the first item.
     var types = GeoJSONGeometryTypes(geoJSONOutput);
@@ -142,12 +120,16 @@ function outputArcGISJSON(geoJSONOutput, query, callback) {
         return;
     }
 
-    console.log(types);
+    console.log("geoJSON Files contains " + types);
     console.log("Filtering by geoJSON type: " + type);
     var filteredGeoJSON = FilterGeoJSONByType(geoJSONOutput, type);
 
     var arcgisOutput = TerraformerArcGIS.convert(filteredGeoJSON);
-
+	
+	if (query.geohubParams.geoJSONType) {
+		query.outputGeometryType = getEsriGeometryType(query.geohubParams.geoJSONType);
+	}
+	
     for (var i = 0; i < arcgisOutput.length; i++) {
         arcgisOutput[i].attributes = {
             id: i,
@@ -171,28 +153,55 @@ Object.defineProperties(GeoHubProvider.prototype, {
             return "geohub";
         }
     },
-    serviceIds: {
-        get: function() {
+    getServiceIds: {
+        value: function(callback) {
             // Override the service name - every data provider should override this.
-            return Object.keys(this._services);
+            callback(Object.keys(this._services), null);
         }
     },
-    layerIds: {
-        value: function(serviceId) {
+    getLayerIds: {
+        value: function(serviceId, callback) {
             var c = parseServiceId(serviceId);
             serviceId = c.serviceId;
-            return Object.keys(this._services[serviceId]);
+            switch (serviceId) {
+            	case "repo":
+            		callback([0], null);
+            		break;
+            	case "gist":
+            		if (c.gistId) {
+						Geohub.gist({ id: c.gistId }, function(err, geoJSONData) {
+							if (err) {
+								console.log(err);
+								callback([0], err);
+							} else {
+								var ids = [];
+								for (var i=0; i<geoJSONData.length; i++) {
+									ids.push(i);
+								}
+								callback(ids, null);
+							}
+						});
+					} else {
+						callback([0], null);
+					}
+            	break;
+            }
         }
     },
-    featureServiceLayerName: {
+    getLayerName: {
         value: function(serviceId, layerId) {
             var c = parseServiceId(serviceId);
             serviceId = c.serviceId;
-            return this._services[serviceId][layerId];
+            switch (serviceId) {
+            	case "repo":
+            		return "Repo Layer " + layerId;
+            	case "gist":
+            		return "Gist " + c.gistId + " File " + layerId;
+            }
         }
     },
-    featureServiceDetails: {
-        value: function(detailsTemplate, serviceId) {
+    getFeatureServiceDetails: {
+        value: function(detailsTemplate, serviceId, callback) {
             var c = parseServiceId(serviceId);
             serviceId = c.serviceId;
 
@@ -204,7 +213,10 @@ Object.defineProperties(GeoHubProvider.prototype, {
                 detailsTemplate.serviceDescription = "Whoops - unrecognized GeoHub type. Run Away! " + serviceId;
                 console.log("Unrecognized GeoHub type: " + serviceId);
             }
-            return detailsTemplate;
+            var provider = this;
+            this.getLayerIds(c.fullServiceId, function(layerIds, err) {
+            	callback(layerIds, provider.getLayerNamesForIds(c.fullServiceId, layerIds), err);
+            });
         }
     },
     _readGeoHubGeoJSON: {
@@ -213,7 +225,6 @@ Object.defineProperties(GeoHubProvider.prototype, {
             serviceId = c.serviceId;
             
             console.log("READING GEOHUB");
-            console.log(c);
 
             if (serviceId === "repo") {
                 if (!(c.hasOwnProperty("githubUser") && c.hasOwnProperty("repoName") && c.hasOwnProperty("filePath"))) {
@@ -253,8 +264,8 @@ Object.defineProperties(GeoHubProvider.prototype, {
             }
         }
     },
-    featureServiceLayerDetails: {
-        value: function(detailsTemplate, serviceId, layerId) {
+    getFeatureServiceLayerDetails: {
+        value: function(detailsTemplate, serviceId, layerId, callback) {
             var c = parseServiceId(serviceId);
             serviceId = c.serviceId;
 
@@ -266,13 +277,22 @@ Object.defineProperties(GeoHubProvider.prototype, {
                 detailsTemplate.description = "Whoops - unrecognized GeoHub type. Run Away! " + serviceId;;
                 console.log("Unrecognized GeoHub type: " + serviceId);
             }
-
-            return detailsTemplate;
+            
+            if (c.geoJSONType) {
+            	detailsTemplate.geometryType = getEsriGeometryType(c.geoJSONType);
+            }
+            
+			callback(this.getLayerName(c.fullServiceId, layerId), 
+					 this.idField(c.fullServiceId, layerId),
+					 this.nameField(c.fullServiceId, layerId),
+					 this.fields(c.fullServiceId, layerId), null);
         }
     },
     featuresForQuery: {
         value: function(serviceId, layerId, query, callback) {
             this._readGeoHubGeoJSON(serviceId, layerId, function(geoJSONData, err) {
+            	if (err) { callback([], err); }
+            	
 				var c = parseServiceId(serviceId);
 				serviceId = c.serviceId;
 
@@ -303,20 +323,16 @@ Object.defineProperties(GeoHubProvider.prototype, {
                             callback(geoJSONData[layerId], null);
                         } else if (query.format === "json") {
                             // Otherwise we return the Esri JSON for that file.
-                            outputArcGISJSON(geoJSONData[layerId], query, callback);
+                            return outputArcGISJSON(geoJSONData[layerId], query, callback);
                         }
                     }
-                }
-
-                if (query.format === "json") {
-                    // Return the geoJSON as Esri JSON
-                    console.log("Outputting JSON");
-                    outputArcGISJSON(geoJSONData, query, callback);
-                } else {
-                    // Just pass the geoJSON on through!
-                    console.log("Outputting geoJSON");
-                    query.generatedFormat = "geojson";
-                    callback(geoJSONData, null);
+                } else if (serviceId === "repo") {
+                	if (query.format === "geojson") {
+                		query.generatedFormat = "geojson";
+                		callback(geoJSONData, null);
+                	} else {
+                		outputArcGISJSON(geoJSONData, query, callback);
+                	}
                 }
             });
 		}
