@@ -90,8 +90,9 @@ function infoHandler(request, response) {
 
 	var dataProvider = getSvcForRequest(request);
 	
-	var output = agsoutput.info(request.agsOutFormat, dataProvider);
-	useCallback(request)?response.jsonp(200,output):response.send(200,output);
+	agsoutput.info(request.agsOutFormat, dataProvider, function(output, err) {
+		useCallback(request)?response.jsonp(200,output):response.send(200,output);
+	});
 };
 
 app.get(routerUrls.getInfoUrl(), infoHandler);
@@ -103,8 +104,9 @@ function servicesHandler(request, response) {
 	
 	var dataProvider = getSvcForRequest(request);
 
-	var output = agsoutput.services(request.agsOutFormat, dataProvider);
-	useCallback(request)?response.jsonp(200,output):response.send(200,output);
+	agsoutput.services(request.agsOutFormat, dataProvider, function(output, err) {
+		useCallback(request)?response.jsonp(200,output):response.send(200,output);
+	});
 };
 
 app.get(routerUrls.getServicesUrl(), servicesHandler);
@@ -117,8 +119,9 @@ function featureServiceHandler(request, response) {
 	var dataProvider = getSvcForRequest(request);
 	var serviceId = request.params.serviceId;
 
-	var output = agsoutput.featureService(request.agsOutFormat, dataProvider, serviceId);
-	useCallback(request)?response.jsonp(200,output):response.send(200,output);
+	agsoutput.featureService(request.agsOutFormat, dataProvider, serviceId, function(output, err) {
+		useCallback(request)?response.jsonp(200,output):response.send(200,output);
+	});
 };
 
 app.get(routerUrls.getServiceUrl(), featureServiceHandler);
@@ -130,8 +133,9 @@ function featureLayersHandler(request, response) {
 	var dataProvider = getSvcForRequest(request);
 	var serviceId = request.params.serviceId;
 
-	var output = agsoutput.featureServiceLayers(request.agsOutFormat, dataProvider, serviceId);
-	useCallback(request)?response.jsonp(200,output):response.send(200,output);
+	var output = agsoutput.featureServiceLayers(request.agsOutFormat, dataProvider, serviceId, function(output, err) {
+		useCallback(request)?response.jsonp(200,output):response.send(200,output);
+	});
 };
 
 function featureLayerHandler(request, response) {
@@ -143,8 +147,9 @@ function featureLayerHandler(request, response) {
 	var dataProvider = getSvcForRequest(request);
 	var serviceId = request.params.serviceId;
 
-	var output = agsoutput.featureServiceLayer(request.agsOutFormat, dataProvider, serviceId, layerId);
-	useCallback(request)?response.jsonp(200,output):response.send(200,output);
+	var output = agsoutput.featureServiceLayer(request.agsOutFormat, dataProvider, serviceId, layerId, function(output, err) {
+		useCallback(request)?response.jsonp(200,output):response.send(200,output);
+	});
 };
 
 app.get(routerUrls.getLayerUrl(), featureLayerHandler);

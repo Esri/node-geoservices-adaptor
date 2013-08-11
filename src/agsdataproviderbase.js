@@ -53,9 +53,20 @@ AgsDataProviderBase.prototype = {
 	// 
 	// Notes:
 	// - Service IDs should be suitable for use in urls.
-	get serviceIds() {
+	getServiceIds: function(callback) {
 		if (!this._devMode) console.log("Implement serviceIds() to return an array of service ID references for this provider");
-		return ["firstService","secondService"];
+		callback(["firstService","secondService"], null);
+	},
+
+	// An array of objects, each of which will have name and url properties.
+	// The output will be injected into the "Catalog" response services property
+	//
+	// Note:
+	// - servicesDetails is pre-populated with sensible values.
+	// - The "name" property of each item will correspond to a serviceId returned by getServiceIds().
+	updateServicesDetails: function(servicesDetails, callback) {
+		if (!this._devMode) console.log("Implement updateServicesDetails() if updating JSON service definitions for the services list");
+		callback(servicesDetails, null);
 	},
 
 	// Return an array of the IDs for all layers provided by the specified featureService of
@@ -66,27 +77,28 @@ AgsDataProviderBase.prototype = {
 	// 
 	// Notes:
 	// - IDs are conventionally integers, beginning at 0.
-	layerIds: function(serviceId) {
+	getLayerIds: function(serviceId, callback) {
 		if (!this._devMode) console.log("Implement layerIds() to return an array of layer ID references for the service ID");
-		return [0];
+		callback([0], null);
 	},
 
-	// JSON to be injected into the "Catalog" response for each service entry returned by
-	// the serviceIds property.
+	// A string to be used to name each layer in the "Feature Service" response. It is 
+	// also used in the "Layer (Feature Service)" and "Layers (Feature Service)" responses.
 	//
-	// detailsTemplate is pre-populated with sensible values.
-	serviceDetails: function(detailsTemplate, serviceId) {
-		if (!this._devMode) console.log("Implement serviceDetails() to return JSON service definition for the services list");
-		return detailsTemplate;
+	// Notes:
+	// - A layerId is usually an integer (starting at 0) but it is often useful to 
+	//   display a more descriptive name for that layer in the JSON output.
+	getLayerName: function(serviceId, layerId) {
+		if (!this._devMode) console.log("Implement getLayerName() to specify a human readable name for a layerId");
+		return serviceId + " layer " + layerId;
 	},
-
-	// JSON to be injected into the "Feature Service" response for each layer provided 
-	// (see also the layerIds property).
-	//
-	// detailsTemplate is pre-populated with sensible values.
-	serviceLayerListLayerDetails: function(detailsTemplate, serviceId, layerId) {
-		if (!this._devMode) console.log("Implement serviceLayerListLayerDetails() to update layer information in the featureService layers[] attribute");
-		return detailsTemplate;
+	
+	getLayerNamesForIds: function(serviceId, layerIds) {
+	    var layerNames = [];
+	    for (var i = 0; i < layerIds.length; i++) {
+	        layerNames.push(this.getLayerName(serviceId, layerIds[i]));
+	    }
+	    return layerNames;
 	},
 
 	// JSON to be returned for the "Feature Service" response.
@@ -97,20 +109,21 @@ AgsDataProviderBase.prototype = {
 	// - The layers attribute will be pre-populated by calling the layerIds property and then
 	//   the serviceLayerListLayerDetails() function for each layerId.
 	// - A useful property to override in the detailsTemplate is "initialExtent".
-	featureServiceDetails: function(detailsTemplate, serviceId) {
+	getFeatureServiceDetails: function(detailsTemplate, serviceId, callback) {
 		if (!this._devMode) console.log("Implement featureServiceDetails() to return JSON service definition for a given service");
-		return detailsTemplate;
+		var provider = this;
+		this.getLayerIds(serviceId, function(layerIds, err) {
+			callback(layerIds, provider.getLayerNamesForIds(layerIds), err);
+		});
 	},
 	
-	// A string to be used to name each layer in the "Feature Service" response. It is 
-	// also used in the "Layer (Feature Service)" and "Layers (Feature Service)" responses.
+	// JSON to be injected into the "Feature Service" response for each layer provided 
+	// (see also the layerIds property).
 	//
-	// Notes:
-	// - A layerId is usually an integer (starting at 0) but it is often useful to 
-	//   display a more descriptive name for that layer in the JSON output.
-	featureServiceLayerName: function(serviceId, layerId) {
-		if (!this._devMode) console.log("Implement featureServiceName() to specify a human readable name for a layerId");
-		return serviceId + " layer " + layerId;
+	// detailsTemplate is pre-populated with sensible values.
+	updateFeatureServiceDetailsLayersList: function(serviceId, layersDetails, callback) {
+		if (!this._devMode) console.log("Implement updateServiceLayersListLayerDetails() to update layer information in the featureService layers[] attribute");
+		callback(layersDetails, null);
 	},
 
 	// JSON to be returned for the "Layer (Feature Service)" and "Layers (Feature Service)"
@@ -119,9 +132,12 @@ AgsDataProviderBase.prototype = {
 	// Notes:
 	// - A useful property to override in the detailsTemplate is "extent" which will
 	//   allow consumers to home in on the data when added to a map.
-	featureServiceLayerDetails: function(detailsTemplate, serviceId, layerId) {
+	getFeatureServiceLayerDetails: function(detailsTemplate, serviceId, layerId, callback) {
 		if (!this._devMode) console.log("Implement featureServiceLayerDetails() to return layer information for a layer definition");
-		return detailsTemplate;
+		callback(this.getLayerName(serviceId, layerId), 
+				 this.idField(serviceId, layerId),
+				 this.nameField(serviceId, layerId),
+				 this.fields(serviceId, layerId), null);
 	},
 
 	// Fields list to be returned for the "Layer (Feature Service)" and 
@@ -183,32 +199,34 @@ AgsDataProviderBase.prototype = {
 		callback([{
 			"attributes": {"id":0, "name":"dummyFeature"},
 			"geometry": {"x":0, "y":0, "spatialReference":{"wkid" : 4326}}
-		}], null);
+		}], this.idField(serviceId, layerId), this.fields(serviceId, layerId), null);
 	},
 	
 	// Internal - do not override.
 	// This is the entry point from agsoutput to get query results, and pre-processes the
 	// query parameters and post-processes the results appropriately.
 	_featuresForQuery: function(serviceId, layerId, query, callback) {
-		// If we've been passed objectIds, then we'll pass on the id field for convenience.
-		if (query.objectIds) { query["_idField"] = this.idField(serviceId, layerId); }
+		if (query.objectIds) {
+			// If we've been passed objectIds, then we'll pass on the id field for convenience.
+			query["_idField"] = this.idField(serviceId, layerId);
+		}
 
 		// Now call into the provider implementation of featuresForQuery()
 		var provider = this;
-		this.featuresForQuery(serviceId, layerId, query, function(features, err) {
+		this.featuresForQuery(serviceId, layerId, query, function(features, idField, fields, err) {
 			if (err) {
-				callback(features, err);
+				callback(features, null, null, err);
 				return;
 			}
 			// post-processing the data from featuresForQuery()
 			if (query.generatedFormat === "geojson") {
 				if (query.format === "geojson") {
 					// If geoJSON was generated, just pass it on through
-					callback(features, err);
+					callback(features, idField, fields, err);
 				} else {
 					// It actually makes no sense to return json when asked for geojson. The client must
 					// specify the f=geojson parameter.
-					callback(features, "Data Provider Error: geoJSON was returned for a query asking for " + query.format);
+					callback(features, null, null, "Data Provider Error: geoJSON was returned for a query asking for " + query.format);
 				}
 			} else if (query.generatedFormat === "json") {
 				// More typical ArcGIS Server behaviour. Esri JSON delivered.
@@ -223,13 +241,12 @@ AgsDataProviderBase.prototype = {
 						type: "FeatureCollection",
 						features: []
 					};
-					var idField = provider.idField(serviceId, layerId);
 					for (var i=0; i < results.length; i++) {
 						var result = results[i];
 
 						// Need to do this before setting "id". See:
 						// https://github.com/Esri/Terraformer/issues/137
-						var feature = JSON.parse(JSON.stringify(TerraformerArcGIS.parse(result)));
+						var feature = TerraformerArcGIS.parse(result);
 
 						// We ought to specify the "id" property of the feature, and since
 						// we have it, we'll do it.
@@ -240,10 +257,10 @@ AgsDataProviderBase.prototype = {
 					// Now we're outputting geoJSON.
 					query.generatedFormat = "geojson";
 					// And pass it on out.
-					callback(geojsonOutput, err);
+					callback(geojsonOutput, "id", fields, err);
 				} else {
 					// Just return whatever we got
-					callback (results, err);
+					callback (results, idField, fields, err);
 				}
 			} 
 		});
@@ -285,10 +302,9 @@ AgsDataProviderBase.prototype = {
 	idsForQuery: function(serviceId, layerId, query, callback) {
 		if (!this._devMode) console.log("Implement iDsForQuery to return an error of Object IDs");
 		var thisDataProvider = this;
-		this._featuresForQuery(serviceId, layerId, query, function (results, err) {
+		this._featuresForQuery(serviceId, layerId, query, function (results, idField, fields, err) {
 			var r = [];
 			if (!err) {
-				var idField = thisDataProvider.idField(serviceId, layerId);
 				for (var i=0; i<results.length; i++) {
 					r.push(results[i].attributes[idField]);
 				};
@@ -306,7 +322,7 @@ AgsDataProviderBase.prototype = {
 	// Override with a more efficient method if your dataprovider allows for it.
 	countForQuery: function(serviceId, layerId, query, callback) {
 		if (!this._devMode) console.log("Implement countForQuery to return an integer count of records matching the query");
-		this._featuresForQuery(serviceId, layerId, query, function(results, err) {
+		this._featuresForQuery(serviceId, layerId, query, function(results, idField, fields, err) {
 			callback(results.length, err);
 		});
 	}

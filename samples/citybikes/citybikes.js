@@ -455,8 +455,8 @@ Object.defineProperties(CityBikes.prototype, {
 			return this._isReady;
 		}
 	},
-	serviceIds: {
-		get: function() {
+	getServiceIds: {
+		value: function(callback) {
 			// Each Network (typically a city) is mapped to a FeatureService. We'll then
 			// give each feature service a single layer, and that layer will contain the
 			// actual bike stations information for that network. So, we use the network
@@ -467,7 +467,17 @@ Object.defineProperties(CityBikes.prototype, {
 					out.push(networkName);
 				}
 			}
-			return out.sort();
+			callback(out.sort());
+		}
+	},
+	idField: {
+		value: function(serviceId, layerId) {
+			return "id";
+		}
+	},
+	nameField: {
+		value: function(serviceId, layerId) {
+			return "name";
 		}
 	},
 	fields: {
@@ -509,13 +519,15 @@ Object.defineProperties(CityBikes.prototype, {
 				provider._stationsForNetwork(network, function(stationFeatures, err) {
 					// We have the stations for the network. These are our features
 					// that match the query. So call back to our caller with our results.
-					callback(stationFeatures, err);
+					var idField = provider.idField(serviceId, layerId);
+					var fields = provider.fields(serviceId, layerId);
+					callback(stationFeatures, idField, fields, err);
 				});
 			});
 		}
 	},
-	featureServiceDetails: {
-		value: function(detailsTemplate, serviceId, layerId) {
+	getFeatureServiceDetails: {
+		value: function(detailsTemplate, serviceId, callback) {
 			// We'll take the default JSON that the engine has calculated for us, but we'll
 			// inject an extent if we have one stored so that clients can connect to us
 			// more easily.
@@ -527,11 +539,14 @@ Object.defineProperties(CityBikes.prototype, {
 					detailsTemplate.initialExtent = network.agsextent;
 				}
 			}
-			return detailsTemplate;
+			var provider = this;
+			this.getLayerIds(serviceId, function(layerIds, err) {
+				callback(layerIds, provider.getLayerNamesForIds(serviceId, layerIds), err);
+			});
 		}
 	},
-	featureServiceLayerDetails: {
-		value: function(detailsTemplate, serviceId, layerId) {
+	getFeatureServiceLayerDetails: {
+		value: function(detailsTemplate, serviceId, layerId, callback) {
 			// We'll take the default JSON that the engine has calculated for us, but we'll
 			// inject an extent if we have one stored so that clients can connect to us
 			// more easily.
@@ -556,8 +571,14 @@ Object.defineProperties(CityBikes.prototype, {
 					detailsTemplate.extent.ymin = y - h;
 					detailsTemplate.extent.ymax = y + h;
 				}
+				callback(this.getLayerName(serviceId, layerId), 
+						 this.idField(serviceId, layerId), 
+						 this.nameField(serviceId, layerId),
+						 this.fields(serviceId, layerId), null);
+			} else {
+				callback(detailsTemplate, null, null, null,
+						 "Invalid CityBikes Service ID: " + serviceId);
 			}
-			return detailsTemplate;
 		}
 	}
 });
