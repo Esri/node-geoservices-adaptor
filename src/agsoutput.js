@@ -190,7 +190,6 @@ function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId,
 	{
 		dataProvider._featuresForQuery(serviceId, layerId, query, function(queryResult, idField, fields, err, outputFormat) {
 			if (err) {
-				console.log("1 " + err);
 				callback([], err);
 			}
 			else
@@ -201,7 +200,7 @@ function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId,
 						
 						featureSet.fields = dataProvider.fields(serviceId, layerId);
 						featureSet.objectIdFieldName = dataProvider.idField(serviceId, layerId);
-			
+						
 						if (query.outSR === 102100)
 						{
 							var projectedOutput = [];
@@ -212,13 +211,18 @@ function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId,
  								feature.geometry = projectGeographicGeomToMercator(feature.geometry);
 								projectedOutput.push(feature);
 							}
-
+							
 							featureSet.features = projectedOutput;
 							featureSet.spatialReference.wkid = 102100;
 						}
 						else
 						{
 							featureSet.features = queryResult;
+						}
+						
+						if (query.hasOwnProperty("outputGeometryType")) {
+// 							debugger;
+							featureSet.geometryType = query["outputGeometryType"];
 						}
 			
 						callback(featureSet, err);
@@ -347,12 +351,6 @@ function featureServiceLayerItemHTML(dataProvider, serviceId, layerId, callback)
 		var json = dataProvider;
 		return getHTML(json);
 	}
-// 	var json = null;
-// 	if (dataProvider instanceof agsdataproviderbase.AgsDataProviderBase) {
-// 		json = featureServiceLayerJSON(dataProvider, serviceId, layerId);
-// 	} else {
-// 		json = dataProvider;
-// 	}
 };
 
 function featureServiceLayerHTML(dataProvider, serviceId, layerId, callback) {
@@ -450,7 +448,6 @@ exports.featureServiceLayers = function(f, dataProvider, serviceId, callback) {
 
 exports.featureServiceLayerQuery = function(f, dataProvider, serviceId, layerId, query, callback) {
 	o(featureServiceLayerQueryJSON, featureServiceLayerQueryJSON, f, dataProvider, serviceId, layerId, query, function(output, err) {
-		console.log(err);
 		callback(output, err);
 	});
 };
