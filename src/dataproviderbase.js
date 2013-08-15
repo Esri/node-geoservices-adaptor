@@ -1,13 +1,13 @@
-var agsurls = require("./agsurls.js"),
+var urls = require("./urls.js"),
 	TerraformerArcGIS = require("terraformer-arcgis-parser");
 
-AgsDataProviderBase = function () {
-	this._urls = new agsurls.AgsUrls(this);
+DataProviderBase = function () {
+	this._urls = new urls.Urls(this);
 	this._devMode = (process.env.VCAP_APP_PORT === null);
 }
 
-AgsDataProviderBase.prototype = {
-	// A single instance of AgsUrls which can be used to return URLs relevant to this service.
+DataProviderBase.prototype = {
+	// A single instance of Urls which can be used to return URLs relevant to this service.
 	// This is used, for example, where Service URLs are written out in a service's HTML output.
 	get urls() {
 		return this._urls;
@@ -34,8 +34,8 @@ AgsDataProviderBase.prototype = {
 	// 		http://localhost:1337/citybikes/rest/services/citibikenyc/FeatureServer/0
 	// name() will return "myprovider". This is also listed at the root URL (e.g. http://localhost:1337)
 	get name() {
-		if (!this._devMode) console.log("Implement to provide a unique name for this virtual AGS instance");
-		return "dummyAGSInstance_Override";
+		if (!this._devMode) console.log("Implement to provide a unique name for this virtual ArcGIS Server instance");
+		return "dummyDataProvider_Override";
 	},
 	
 	// An array of service names that are used to uniquely identify each FeatureService
@@ -203,7 +203,7 @@ AgsDataProviderBase.prototype = {
 	},
 	
 	// Internal - do not override.
-	// This is the entry point from agsoutput to get query results, and pre-processes the
+	// This is the entry point from the output module to get query results, and pre-processes the
 	// query parameters and post-processes the results appropriately.
 	_featuresForQuery: function(serviceId, layerId, query, callback) {
 		if (query.objectIds) {
@@ -328,4 +328,4 @@ AgsDataProviderBase.prototype = {
 	}
 };
 
-exports.AgsDataProviderBase = AgsDataProviderBase;
+exports.DataProviderBase = DataProviderBase;
