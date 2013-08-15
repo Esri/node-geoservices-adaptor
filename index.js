@@ -7,15 +7,15 @@ var fs = require("fs");
 var path = require("path");
 var util = require("util");
 
-var agsurls = require("./src/agsurls");
-var agsoutput = require("./src/agsoutput");
-var agsquery = require("./src/agsquery");
+var urls = require("./src/urls");
+var output = require("./src/output");
+var query = require("./src/query");
 
 var citybikes = require("./samples/citybikes");
 var geohubprovider = require("./samples/geohub");
 
-// General URL engine for routing templated AGS requests
-var routerUrls = new agsurls.AgsUrls();
+// General URL engine for routing templated requests
+var routerUrls = new urls.Urls();
 
 // Helper Functions
 function useCallback(request) {
@@ -24,7 +24,7 @@ function useCallback(request) {
 };
 
 function getSvcForRequest(request) {
-	var svcs = app.get("agsDataProviders");
+	var svcs = app.get("dataProviders");
 	if (svcs.hasOwnProperty(request.params.dataProviderName)) {
 		return svcs[request.params.dataProviderName].dataProvider;
 	}
@@ -57,7 +57,7 @@ app.configure(function() {
 
 	app.use(allowCrossDomain);
 	app.use(function(req,res,next) {
-		req["agsOutFormat"] = (req.param("f") || "html").toLowerCase();;
+		req["geoservicesOutFormat"] = (req.param("f") || "html").toLowerCase();;
 		console.log(req.url);
 		next();
 	});
@@ -68,7 +68,7 @@ app.configure(function() {
 
 // Redirect handlers for badly formed URLs (help users get to grips)
 app.all('/', function onRequest(request, response) {
-	response.send(200,agsoutput.dataProvidersHTML(app.get("agsDataProviders")));
+	response.send(200,output.dataProvidersHTML(app.get("dataProviders")));
 });
 
 app.all('/:dataProviderName', function onRequest(request, response, next) {
@@ -90,8 +90,8 @@ function infoHandler(request, response) {
 
 	var dataProvider = getSvcForRequest(request);
 	
-	agsoutput.info(request.agsOutFormat, dataProvider, function(output, err) {
-		useCallback(request)?response.jsonp(200,output):response.send(200,output);
+	output.info(request.geoservicesOutFormat, dataProvider, function(responseData, err) {
+		useCallback(request)?response.jsonp(200,responseData):response.send(200,responseData);
 	});
 };
 
@@ -104,8 +104,8 @@ function servicesHandler(request, response) {
 	
 	var dataProvider = getSvcForRequest(request);
 
-	agsoutput.services(request.agsOutFormat, dataProvider, function(output, err) {
-		useCallback(request)?response.jsonp(200,output):response.send(200,output);
+	output.services(request.geoservicesOutFormat, dataProvider, function(responseData, err) {
+		useCallback(request)?response.jsonp(200,responseData):response.send(200,responseData);
 	});
 };
 
@@ -119,8 +119,8 @@ function featureServiceHandler(request, response) {
 	var dataProvider = getSvcForRequest(request);
 	var serviceId = request.params.serviceId;
 
-	agsoutput.featureService(request.agsOutFormat, dataProvider, serviceId, function(output, err) {
-		useCallback(request)?response.jsonp(200,output):response.send(200,output);
+	output.featureService(request.geoservicesOutFormat, dataProvider, serviceId, function(responseData, err) {
+		useCallback(request)?response.jsonp(200,responseData):response.send(200,responseData);
 	});
 };
 
@@ -133,8 +133,8 @@ function featureLayersHandler(request, response) {
 	var dataProvider = getSvcForRequest(request);
 	var serviceId = request.params.serviceId;
 
-	var output = agsoutput.featureServiceLayers(request.agsOutFormat, dataProvider, serviceId, function(output, err) {
-		useCallback(request)?response.jsonp(200,output):response.send(200,output);
+	output.featureServiceLayers(request.geoservicesOutFormat, dataProvider, serviceId, function(responseData, err) {
+		useCallback(request)?response.jsonp(200,responseData):response.send(200,responseData);
 	});
 };
 
@@ -147,8 +147,8 @@ function featureLayerHandler(request, response) {
 	var dataProvider = getSvcForRequest(request);
 	var serviceId = request.params.serviceId;
 
-	var output = agsoutput.featureServiceLayer(request.agsOutFormat, dataProvider, serviceId, layerId, function(output, err) {
-		useCallback(request)?response.jsonp(200,output):response.send(200,output);
+	output.featureServiceLayer(request.geoservicesOutFormat, dataProvider, serviceId, layerId, function(responseData, err) {
+		useCallback(request)?response.jsonp(200,responseData):response.send(200,responseData);
 	});
 };
 
@@ -162,14 +162,14 @@ function layerQueryHandler(request, response) {
 	var serviceId = request.params.serviceId;
 	var layerId = request.params.layerId;
 
-	var output = agsoutput.featureServiceLayerQuery(request.agsOutFormat,
-										dataProvider, serviceId, layerId, 
-										new agsquery.Query(request),
-										function(output, err) {
+	output.featureServiceLayerQuery(request.geoservicesOutFormat,
+									dataProvider, serviceId, layerId, 
+									new query.Query(request),
+									function(responseData, err) {
 		if (err) {
 			response.send(500, err);
 		} else {
-			useCallback(request)?response.jsonp(200,output):response.send(200,output);
+			useCallback(request)?response.jsonp(200,responseData):response.send(200,responseData);
 		}
 	});
 }
@@ -177,7 +177,7 @@ function layerQueryHandler(request, response) {
 app.get(routerUrls.getLayerQueryUrl(), layerQueryHandler);
 app.post(routerUrls.getLayerQueryUrl(), layerQueryHandler);
 
-var dataProviders = [new citybikes.CityBikes(), new geohubprovider.GeoHubProvider(app, agsoutput)];
+var dataProviders = [new citybikes.CityBikes(), new geohubprovider.GeoHubProvider(app)];
 
 app.configure(function() {
 	var svcs = {};
@@ -187,7 +187,7 @@ app.configure(function() {
 			"dataProvider" : dataProvider
 		};
 	}
-	app.set("agsDataProviders", svcs);
+	app.set("dataProviders", svcs);
 	
 	console.log('App Configured');
 });

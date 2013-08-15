@@ -1,31 +1,38 @@
 node-geoservices-adaptor
 ========================
 
-This is a [node.js](http://nodejs.org) implementation of part of the [Esri GeoServices REST API](http://resources.arcgis.com/en/help/arcgis-rest-api/).
+This is a [node.js](http://nodejs.org) implementation of part of the [ArcGIS REST API](http://resources.arcgis.com/en/help/arcgis-rest-api/).
 
 Enough of the API is implemented to allow simple read-only access by ArcGIS tools, apps, and APIs, including [ArcGIS Runtime SDKs](https://developers.arcgis.com/en/documentation/) (iOS, Android, Mac OS X, Windows Phone, etc.), [ArcGIS API for JavaScript](https://developers.arcgis.com/en/javascript/), [esri-leaflet](http://esri.github.io/esri-leaflet/), [ArcGIS Desktop](http://www.esri.com/software/arcgis/arcgis-for-desktop) etc.
 
-View live at http://node-geoservices-adaptor.aws.af.cm (hosted at [AppFog](http://appfog.com))
+View live at http://geonode.geeknixta.com
 
 ##Introduction
-The application handles routing to 1 or more "data providers". A data provider is the equivalent of an ArcGIS Server.
-It is the entry point that ArcGIS Desktop or ArcCatalog might be pointed at and is responsible for exposing 
-FeatureServices, each of which in turn exposes one or more FeatureLayers.
+The application handles mapping ArcGIS Server-style FeatureService REST requests to 1 or more "data providers", and the presentation of "data provider" output back to the caller in appropriate ArcGIS JSON Output format.
 
-The sample application included here just has one data provider (for data from http://api.citybik.es).
+Each data provider interprets the mapped requests to declare feature services and layers, and to return query results.
 
-1. Build your own subclass of `agsdataproviderbase.AgsDataProviderBase` (see [citybike.js](https://github.com/ArcGIS/node-ags-adaptor/blob/master/agsdataproviders/citybikes.js) for a sample). Override only what you need to.
-2. Add instances of your subclass to the `dataProviders` array at the top of `index.js`
+The application will do as much work as possible to correctly generate outgoing JSON, but each adaptor has access to the generated JSON to modify it as appropriate.
 
-The REST endpoints have matching HTML endpoints to help explore the services and reach a FeatureLayer endpoint for consumption by the ArcGIS tools and APIs.
+This prototype application has two sample data providers:
+
+* CityBikes: Provide data from http://api.citybik.es.
+* GeoHub: Provide data from geoJSON files stored in GitHub Repositories and Gists.
+
+You can similarly create your own data providers:
+
+1. Build your own subclass of `dataproviderbase.DataProviderBase` (see [citybike.js](https://github.com/ArcGIS/node-geoservices-adaptor/blob/master/dataProviders/citybikes.js) for a sample). Override only what you need to.
+2. Add instances of your subclass to the `dataProviders` array in `index.js`
+
+The application handles generating appropriate HTML for each endpoint to help explore the services and reach a FeatureLayer endpoint for consumption by the ArcGIS tools and APIs.
 
 At a glance, this is how it works:
 
 ![Structure](structure.png)
 
-* **agsurls**: Construct Adaptor and Template REST Endpoints.
-* **agsoutput**: Construct JSON output. Format HTML output for JSON.
-* **agsdataproviderbase**: Describe the service (fields, idField, nameField, etc.) and return features when requested. Inherit from this and selectively override to add a provider.
+* **urls**: Construct Adaptor and Template REST Endpoints.
+* **output**: Construct JSON output. Format HTML output for JSON.
+* **dataproviderbase**: Describe the service (fields, idField, nameField, etc.) and return features when requested. Inherit from this and selectively override to add a provider.
 
 Making use of the [Terraformer](https://github.com/esri/terraformer) library, the application is able to support outputting in [geoJSON](http://www.geojson.org/geojson-spec.html) by specifying `f=geojson`.
 
@@ -77,13 +84,12 @@ Making use of the [GeoHub repo](https://github.com/chelm/geohub), this sample pr
 
 ## Resources
 
-* [Esri Geoservices REST Specification](http://resources.arcgis.com/en/help/arcgis-rest-api/)
+* [ArcGIS REST Specification](http://resources.arcgis.com/en/help/arcgis-rest-api/)
 * [Terraformer](https://github.com/esri/terraformer) by [Esri](http://esri.github.io)
 * [node.js documentation](http://nodejs.org/api/)
 * [express.js documentation](http://expressjs.com/api.html)
 * [CityBikes API](http://api.citybik.es)
 * [GeoHub](https://github.com/chelm/geohub)
-* [AppFog](http://appfog.com)
 * [geoJSON Specification](http://www.geojson.org/geojson-spec.html)
 
 ## Issues

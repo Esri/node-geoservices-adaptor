@@ -1,4 +1,4 @@
-var agsdp = require("../../src/agsdataproviderbase");
+var dataproviderbase = require("../../src/dataproviderbase");
 var util = require("util");
 var http = require("http");
 var path = require("path");
@@ -170,7 +170,7 @@ CityBikes = function () {
 							var y = network.lat;
 							var w = 0.5, h = 0.5;
 							// Build an extent based off this lat/lng for the FeatureService
-							network["agsextent"] = {
+							network["calculatedExtent"] = {
 								xmin: x - (w/2),
 								xmax: x + (w/2),
 								ymin: y - (h/2),
@@ -415,7 +415,7 @@ CityBikes = function () {
 						n.stations.cachedStations.push(stationFeature);
 					}
 					// Store the calculated extent
-					n.stations["extent"] = n.network["agsextent"] = {
+					n.stations["extent"] = n.network["calculatedExtent"] = {
 						xmin: minX, ymin: minY,
 						xmax: maxX, ymax: maxY,
 						spatialReference: {
@@ -455,10 +455,10 @@ CityBikes = function () {
 	});
 };
 
-// This node.js helper function allows us to inherit from agsdataproviderbase.
-util.inherits(CityBikes, agsdp.AgsDataProviderBase);
+// This node.js helper function allows us to inherit from dataproviderbase.
+util.inherits(CityBikes, dataproviderbase.DataProviderBase);
 
-// And now we'll override only what we need to (see also /src/agsdataproviderbase.js).
+// And now we'll override only what we need to (see also /src/dataproviderbase.js).
 Object.defineProperties(CityBikes.prototype, {
 	name: {
 		get: function() {
@@ -554,9 +554,9 @@ Object.defineProperties(CityBikes.prototype, {
 			if (this._cachedNetworks &&
 				this._cachedNetworks.hasOwnProperty(serviceId)) {
 				var network = this._cachedNetworks[serviceId].network;
-				if (network.hasOwnProperty("agsextent"))
+				if (network.hasOwnProperty("calculatedExtent"))
 				{
-					detailsTemplate.initialExtent = network.agsextent;
+					detailsTemplate.initialExtent = network.calculatedExtent;
 				}
 			}
 			var provider = this;
@@ -573,11 +573,11 @@ Object.defineProperties(CityBikes.prototype, {
 			if (this._cachedNetworks &&
 				this._cachedNetworks.hasOwnProperty(serviceId)) {
 				var network = this._cachedNetworks[serviceId].network;
-				if (network.hasOwnProperty("agsextent"))
+				if (network.hasOwnProperty("calculatedExtent"))
 				{
 					// If we have an accurate extent based off cached station locations,
 					// use that.
-					detailsTemplate.extent = network.agsextent;
+					detailsTemplate.extent = network.calculatedExtent;
 				}
 				else
 				{

@@ -1,7 +1,5 @@
 var util = require("util"),
-    path = require("path"),
-    agsdp = require("../../src/agsdataproviderbase"),
-    agsurls = require("../../src/agsurls"),
+    dataproviderbase = require("../../src/dataproviderbase"),
     Geohub = require("geohub"),
     TerraformerArcGIS = require("terraformer-arcgis-parser");
 
@@ -31,12 +29,12 @@ function parseServiceId(serviceId) {
     return r;
 };
 
-GeoHubProvider = function(app, agsoutput) {
+GeoHubProvider = function(app) {
     GeoHubProvider.super_.call(this);
     // We want routes like this:
-    // http://localhost:1337/geohub/rest/services/repo/chelm/grunt-geo/forks/FeatureServer/0
+    // http://localhost:1337/geohub/rest/services/repo+chelm+grunt-geo+forks/FeatureServer/0
     // and
-    // http://localhost:1337/geohub/rest/services/gist/6178185/FeatureServer/0
+    // http://localhost:1337/geohub/rest/services/gist+6178185/FeatureServer/0
     this._services = {
         "repo": {
             0: "Not Used"
@@ -142,10 +140,10 @@ function outputArcGISJSON(geoJSONOutput, query, callback) {
 
 
 
-// This node.js helper function allows us to inherit from agsdataproviderbase.
-util.inherits(GeoHubProvider, agsdp.AgsDataProviderBase);
+// This node.js helper function allows us to inherit from dataproviderbase.
+util.inherits(GeoHubProvider, dataproviderbase.DataProviderBase);
 
-// And now we'll override only what we need to (see also /src/agsdataproviderbase.js).
+// And now we'll override only what we need to (see also /src/dataproviderbase.js).
 Object.defineProperties(GeoHubProvider.prototype, {
     name: {
         get: function() {
@@ -291,7 +289,7 @@ Object.defineProperties(GeoHubProvider.prototype, {
     featuresForQuery: {
         value: function(serviceId, layerId, query, callback) {
             this._readGeoHubGeoJSON(serviceId, layerId, function(geoJSONData, err) {
-            	if (err) { callback([], err); }
+            	if (err) { return callback([], err); }
             	
 				var c = parseServiceId(serviceId);
 				serviceId = c.serviceId;

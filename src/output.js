@@ -1,9 +1,7 @@
 var fs = require('fs');
 var util = require('util');
 
-var agsurls = require("./agsurls");
-
-var agsdataproviderbase = require("./agsdataproviderbase");
+var dataproviderbase = require("./dataproviderbase");
 
 var terraformer = require("terraformer"),
 	terraformerArcGIS = require("terraformer-arcgis-parser");
@@ -120,7 +118,7 @@ function featureServiceLayerJSON(dataProvider, serviceId, layerId, callback) {
 	dataProvider.getFeatureServiceLayerDetails(t, serviceId, layerId, function(layerName, idField, nameField, fields, err) {
 		t["currentVersion"] = dataProvider.serverVersion;
 		t["name"] = layerName; // dataProvider.featureServiceLayerName(serviceId, layerId);
-		t["layerId"] = layerId;
+		t["id"] = layerId;
 		t["objectIdField"] = idField; // dataProvider.idField(serviceId, layerId);
 		t["displayField"] = nameField; // dataProvider.nameField(serviceId, layerId);
 		t["fields"] = fields; // dataProvider.fields(serviceId, layerId);
@@ -136,7 +134,8 @@ function featureServiceLayersJSON(dataProvider, serviceId, callback) {
 		var layerResults = {};
 		var retrievedResults = 0;
 		for (var i=0; i<layerIds.length; i++) {
-			outputter.featureServiceLayerJSON(dataProvider, serviceId, layerId, function (layerJSON, err) {
+			var layerId = layerIds[i];
+			featureServiceLayerJSON(dataProvider, serviceId, layerId, function (layerJSON, err) {
 				if (err) return callback(null, err);
 				layerResults[layerId] = layerJSON;
 				retrievedResults++;
@@ -343,9 +342,9 @@ function featureServiceLayerItemHTML(dataProvider, serviceId, layerId, callback)
 
 		return r;
 	}
-	if (dataProvider instanceof agsdataproviderbase.AgsDataProviderBase) {
+	if (dataProvider instanceof dataproviderbase.DataProviderBase) {
 		featureServiceLayerJSON(dataProvider, serviceId, layerId, function (json, err) {
-			doCallback(getHTML(json), err);
+			callback(getHTML(json), err);
 		});
 	} else {
 		var json = dataProvider;
@@ -376,7 +375,7 @@ function featureServiceLayersHTML(dataProvider, serviceId, callback) {
 		var retrievedCount = 0;
 		for (var i=0; i<json.layers.length; i++) {
 			var layer = json.layers[i];
-			featureServiceLayerItemHTML(dataProvider, serviceId, layer.id, function(html, err) {
+			featureServiceLayerItemHTML(layer, serviceId, layer.id, function(html, err) {
 				if (err) return callback("", err);
 
 				html = util.format(t, dataProvider.urls.getLayerUrl(serviceId, layer.id),
@@ -384,7 +383,7 @@ function featureServiceLayersHTML(dataProvider, serviceId, callback) {
 				layerHTMLItems[layer.id] = html;
 				retrievedCount++;
 
-				if (retrievedCount.length == json.layers.length) {
+				if (retrievedCount == json.layers.length) {
 					for (var j=0; j<json.layers.length; j++) {
 						layersHTML += layerHTMLItems[json.layers[j].id];
 					}
