@@ -232,40 +232,58 @@ CityBikes = function () {
 	// raw numbers - this is easier to render off for AGOL. Better maps FTW!
 	//
 	// First, we describe this scheme in this._classificationScheme
-	this._classificationScheme = {
+	this._bikeClassificationScheme = {
 		"0": { "min": 0, "max": 0, "label": "No bikes" },
 		"1": { "min": 1, "max": 1, "label": "1 bike" },
 		"few": { "min": 2, "max": 8, "label": "A few bikes" },
 		"plenty": { "min": 9, "max": 10000, "label": "Plenty of bikes" }
 	};
+	
+	this._dockClassificationScheme = {
+		"0": { "min": 0, "max": 0, "label": "No docks" },
+		"1": { "min": 1, "max": 1, "label": "1 dock" },
+		"2": { "min": 2, "max": 2, "label": "2 docks" },
+		"3": { "min": 3, "max": 3, "label": "3 docks" },
+		"4": { "min": 4, "max": 4, "label": "4 docks" },
+		"few": { "min": 5, "max": 10, "label": "5-10 docks" },
+		"plenty": { "min": 11, "max": 10000, "label": "Plenty of docks" }
+	};	
+
+	this._getClassValue = function(classificationScheme, value) {
+		var classes = [];
+		for (var k in classificationScheme)
+		{
+			classes.push(k);
+		}
+		
+		for (var i=0; i<classes.length; i++)
+		{
+			var className = classes[i];
+			var classRange = classificationScheme[className];
+			var min = classRange.min;
+			var max = classRange.max;
+
+			if (value >= min && value <= max)
+			{
+				return classRange.label;
+			}
+		}
+		
+		return value + " out of range!";
+	}
 
 	// Then we provide a way to calculate the value from the scheme for a network's station.
 	this._getBikeRange = function(station) {
 		var bikesAvailable = station.attributes.bikes;
-		var classes = [];
-		for (var k in this._classificationScheme)
-		{
-			classes.push(k);
-		}
-	
-		for (var i=0; i<classes.length; i++)
-		{
-			var className = classes[i];
-			var classRange = this._classificationScheme[className];
-			var min = classRange.min;
-			var max = classRange.max;
 
-			if (bikesAvailable >= min && bikesAvailable <= max)
-			{
-				station.attributes["bikesClass"] = classRange.label;
-				break;
-			}
-		}
-		if (!station.attributes.hasOwnProperty("bikesClass"))
-		{
-			station.attributes["bikesClass"] = "Woah, that's a lotta bikes!";
-		}
+		station.attributes["bikesClass"] = this._getClassValue(this._bikeClassificationScheme, bikesAvailable);
 	};
+	
+	this._getDockRange = function(station) {
+		var docksFree = station.attributes.free;
+		
+		station.attributes["docksClass"] = this._getClassValue(this._dockClassificationScheme, docksFree);
+	}
 
 	this._stationsForNetwork = function(n, callback) {
 		// Given a networkCacheEntry (see this._networks and this._cachedNetworks),
@@ -385,6 +403,7 @@ CityBikes = function () {
 						
 						// Get that nice smart-value for AGOL rendering (see _getBikeRange()).
 						provider._getBikeRange(stationFeature);
+						provider._getDockRange(stationFeature);
 						
 						// Remove some attributes we don't want to output.
 						delete stationFeature.attributes["lat"];
@@ -494,6 +513,7 @@ Object.defineProperties(CityBikes.prototype, {
 				{"name" : "free", "type" : "esriFieldTypeInteger", "alias" : "Free", "nullable" : "true"},
 				{"name" : "bikes", "type" : "esriFieldTypeInteger", "alias" : "Bikes", "nullable" : "true"},
 				{"name" : "bikesClass", "type" : "esriFieldTypeString", "alias" : "Bikes Class", "length" : "255", "nullable" : "true"},
+				{"name" : "docksClass", "type" : "esriFieldTypeString", "alias" : "Docks Class", "length" : "255", "nullable" : "true"},
 				{"name" : "address", "type" : "esriFieldTypeString", "alias" : "Address", "length" : "255", "nullable" : "true"},
 				{"name" : "citybikesTimeString", "type" : "esriFieldTypeString", "alias" : "CityBikes Time", "length" : "255", "nullable" : "true"},
 				{"name" : "utcTime", "type" : "esriFieldTypeDate", "alias" : "UTC Timestamp", "length" : 36, "nullable" : "true"},
