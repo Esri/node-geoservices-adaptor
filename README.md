@@ -49,7 +49,7 @@ Making use of the [Terraformer](https://github.com/esri/terraformer) library, th
 The Citybikes sample data provider makes use of the [awesome API](http://api.citybik.es) at [CityBik.es](http://citybik.es) providing bike share data (almost) globally. This sample Data Provider adapts the data into Geoservices format output. The root REST endpoint 
 for the CityBikes data provider can be found live here (this is where you might point ArcCatalog): http://geonode.geeknixta.com/citybikes/rest/services
 ###GeoHub
-Making use of the [GeoHub repo](https://github.com/chelm/geohub), this sample provider allows a client to request geoJSON files from either a GitHub repository ([example](https://github.com/chelm/grunt-geo/blob/master/forks.geojson)) or from a GitHub gist ([example](https://gist.github.com/chelm/6178185)). For more details, see the [GeoHub Plugin Readme]().
+Making use of the [GeoHub repo](https://github.com/chelm/geohub), this sample provider allows a client to request geoJSON files from either a GitHub repository ([example](https://github.com/chelm/grunt-geo/blob/master/forks.geojson)) or from a GitHub gist ([example](https://gist.github.com/chelm/6178185)). For more details, see the [GeoHub Plugin Readme](samples/geohub/README.md).
 
 ##Known Limitations
 * Only a limited subset of the [Geoservices REST Specification](http://resources.arcgis.com/en/help/arcgis-rest-api/) is implemented.
