@@ -47,21 +47,9 @@ Making use of the [Terraformer](https://github.com/esri/terraformer) library, th
 ##Sample Data Providers
 ###Citybikes
 The Citybikes sample data provider makes use of the [awesome API](http://api.citybik.es) at [CityBik.es](http://citybik.es) providing bike share data (almost) globally. This sample Data Provider adapts the data into Geoservices format output. The root REST endpoint 
-for the CityBikes data provider can be found live here (this is where you might point ArcCatalog): http://node-geoservices-adaptor.aws.af.cm/citybikes/rest/services
+for the CityBikes data provider can be found live here (this is where you might point ArcCatalog): http://geonode.geeknixta.com/citybikes/rest/services
 ###GeoHub
-Making use of the [GeoHub repo](https://github.com/chelm/geohub), this sample provider allows a client to request geoJSON files from either a GitHub repository ([example](https://github.com/chelm/grunt-geo/blob/master/forks.geojson)) or from a GitHub gist ([example](https://gist.github.com/chelm/6178185)). The following additional query parameters are implemented:
-
-* repo
-	* **githubUser**: The repo owner's username.
-	* **repoName**: The name of the repo containing the GeoJSON file.
-	* **filePath**: The path to the GeoJSON file within the repo. Note, you should not include the ".geojson" file extension.
-	* **geoJSONType** (optional): The geoJSON Geometry Type to extract (since an ArcGIS FeatureLayer may only emit a featureset with a single geometry type). If this is omitted, the first geoJSON Geometry will define the type used to filter on.
-	* **f** (optional): Setting this to `geojson` returns the contents of the geoJSON file unprocessed.
-* gist
-	* **gistId**: The unique ID of the Gist
-	* **gistFileIndex** (optional): If the gist has multiple .geojson files, specify which one should be returned (zero-based index, default value 0).
-	* **geoJSONType** (optional): The geoJSON Geometry Type to extract (since an ArcGIS FeatureLayer may only emit a featureset with a single geometry type). If this is omitted, the first geoJSON Geometry will define the type used to filter on.
-	* **f** (optional): Setting this to `geojson` returns the contents of the geoJSON file unprocessed.
+Making use of the [GeoHub repo](https://github.com/chelm/geohub), this sample provider allows a client to request geoJSON files from either a GitHub repository ([example](https://github.com/chelm/grunt-geo/blob/master/forks.geojson)) or from a GitHub gist ([example](https://gist.github.com/chelm/6178185)). For more details, see the [GeoHub Plugin Readme]().
 
 ##Known Limitations
 * Only a limited subset of the [Geoservices REST Specification](http://resources.arcgis.com/en/help/arcgis-rest-api/) is implemented.
