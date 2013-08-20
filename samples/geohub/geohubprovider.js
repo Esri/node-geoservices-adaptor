@@ -1,7 +1,7 @@
 var util = require("util"),
     dataproviderbase = require("../../src/dataproviderbase"),
     Geohub = require("geohub"),
-    TerraformerArcGIS = require("terraformer-arcgis-parser");
+    TerraformerArcGIS = require("terraformer/Parsers/ArcGIS");
 
 var geohubRepoDescription = "Use the following query parameters to output GeoServices info from a GeoJSON Source:" + "<ul>" + "<li><b>githubUser</b>: The repo owner's username</li>" + "<li><b>repoName</b>: The name of the repo containing the GeoJSON file</li>" + "<li><b>filePath</b>: The path to the GeoJSON file within the repo</li>" + "<li><b>geoJSONType</b> (optional): The geoJSON Geometry Type to extract (since a FeatureLayer may emit a featureset with only a single geometry type). " + "If this is omitted, the first geoJSON Geometry will define the type used to filter on. Note, this is ignored if f=geojson. It should be a valid geoJSON type as defined in the geoJSON specification (including case-sensitivity). GeometryCollection is not supported.</li>" + "</ul>" + "You can also specify the URL as .../geohub/rest/services/repo+<b>githubUsername</b>+<b>repoName</b>+<b>filePath</b>+<b>geoJSONType</b>/FeatureService/0<br/>" + "If you use the URL approach, encode path separators in the <b>filePath</b> portion of the URL";
 
@@ -218,77 +218,179 @@ Object.defineProperties(GeoHubProvider.prototype, {
         }
     },
     _readGeoHubGeoJSON: {
-        value: function(serviceId, layerId, callback) {
-            var c = parseServiceId(serviceId);
-            serviceId = c.serviceId;
-            
-            console.log("READING GEOHUB");
+        value: function(serviceId, layerId, query, callback) {
+        	var cache = this.getCache(serviceId, layerId);
+        	
+        	function waitForCacheToLoad(loadingCache, cb) {
+        		console.log(loadingCache.status);
+        		if (loadingCache.status === "loaded") {
+        			var geom = null;
+//         			if (query && query.geometry) {
+//         				geom = query.geometry;
+//         				if (query.geometryType === "esriGeometryEnvelope") {
+//         					// Terraformer doesn't handle esriGeometryEnvelope yet
+//         					geom = {
+//         						"rings": [
+//         							[
+//         								[geom.xmin,geom.ymin],
+//         								[geom.xmin,geom.ymax],
+//         								[geom.xmax,geom.ymax],
+//         								[geom.xmax,geom.ymin],
+//         								[geom.xmin,geom.ymin]
+//         							]
+//         						],
+//         						"spatialReference": geom.spatialReference
+//         					};
+//         				}
+//         				geom = TerraformerArcGIS.parse(geom);
+//         			}
+        			if (geom == null) {
+        				geom = {
+        					"type": "Polygon",
+							"coordinates": [
+								[ 
+									[-180, 90.0], [180.0, 90.0], 
+									[180.0, -90.0], [-180, -90.0], 
+									[-180.0, 90.0]
+								]
+							]
+						};
+        			}
+        			loadingCache.store.intersects(geom, function(err, results) {
+        				if (err) { return cb([], err); }
 
-            if (serviceId === "repo") {
-                if (!(c.hasOwnProperty("githubUser") && c.hasOwnProperty("repoName") && c.hasOwnProperty("filePath"))) {
-                    callback([], "You must specify githubUser, repoName, and filePath!");
-                    return;
-                }
+        				var featureCollection = {
+        					type: "FeatureCollection",
+        					features: results
+        				};
+        				cb(featureCollection, null);
+        			});
+        		} else {
+        			(function(lc, callb) {
+        				setTimeout(function () {
+        					waitForCacheToLoad(lc, callb);
+        				}, 100);
+        			})(loadingCache, cb);
+        		}
+        	}
+        	
+        	var cacheNeedsPopulating = false;
+			waitForCacheToLoad(cache, callback);
 
-                var user = c.githubUser;
-                var repo = c.repoName;
-                var file = c.filePath;
+        	if (cache.status === "waitingToLoad") {
+        		cache.status === "loading";
+        		// This is a new cache.
+        		cacheNeedsPopulating = true;
+        	
+				var c = parseServiceId(serviceId);
+				serviceId = c.serviceId;
+			
+				console.log("READING GEOHUB");
 
-                Geohub.repo(user, repo, file, function(err, geoJSONData) {
-                    if (err) {
-                        callback([], err);
-                    } else {
-                        callback(geoJSONData, null);
-                    }
-                });
-            } else if (serviceId == "gist") {
-                if (!c.hasOwnProperty("gistId")) {
-                    callback([], "You must specify a gistId query parameter.");
-                    return;
-                }
-                var gistId = c.gistId;
-                Geohub.gist({
-                    id: gistId
-                }, function(err, geoJSONData) {
-                    if (err) {
-                        console.log(err);
-                        callback([], err);
-                    } else {
-                        callback(geoJSONData, null);
-                    }
-                });
-            } else {
-                callback([], "Unknown GeoHub Type: " + serviceId);
-            }
+				if (serviceId === "repo") {
+					if (!(c.hasOwnProperty("githubUser") && c.hasOwnProperty("repoName") && c.hasOwnProperty("filePath"))) {
+						callback([], "You must specify githubUser, repoName, and filePath!");
+						return;
+					}
+
+					var user = c.githubUser;
+					var repo = c.repoName;
+					var file = c.filePath;
+
+	        		var addId = function(geoJSON, seedId) {
+	        			if (arguments.length < 2) {
+	        				seedId = 0;
+	        			}
+						if (!geoJSON.hasOwnProperty("id")) {
+							geoJSON["id"] = seedId;
+						}
+	        			if (geoJSON.type === "FeatureCollection") {
+	        				for (var i=0; i<geoJSON.features.length; i++) {
+	        					addId(geoJSON.features[i], ++seedId);
+	        				}
+	        			}
+	        		};
+
+					Geohub.repo(user, repo, file, function(err, geoJSONData) {
+						if (err) {
+							callback([], err);
+						} else {
+							addId(geoJSONData);
+							cache.store.add(geoJSONData, function(err,result) {
+								if (err) { 
+									callback([], err); 
+								} else {
+									console.log("******LOADED******");
+									cache.status = "loaded";
+								}
+							});
+						}
+					});
+				} else if (serviceId == "gist") {
+					if (!c.hasOwnProperty("gistId")) {
+						callback([], "You must specify a gistId query parameter.");
+						return;
+					}
+					var gistId = c.gistId;
+					Geohub.gist({
+						id: gistId
+					}, function(err, geoJSONData) {
+						if (err) {
+							console.log(err);
+							callback([], err);
+						} else {
+							addId(geoJSONData);
+							cache.store.add(geoJSONData, function(err,result) {
+								if (err) { 
+									callback([], err); 
+								} else {
+									cache.status = "loaded";
+								}
+							});
+						}
+					});
+				} else {
+					callback([], "Unknown GeoHub Type: " + serviceId);
+				}
+
+        	} 
         }
     },
     getFeatureServiceLayerDetails: {
         value: function(detailsTemplate, serviceId, layerId, callback) {
-            var c = parseServiceId(serviceId);
-            serviceId = c.serviceId;
+        	var provider = this;
+        	this._readGeoHubGeoJSON(serviceId, layerId, null, function(geoJSONData, err) {
+        		if (err) {
+        			return callback([], err);
+        		}
 
-            if (serviceId === "repo") {
-                detailsTemplate.description = geohubRepoDescription;
-            } else if (serviceId === "gist") {
-                detailsTemplate.description = geohubGistDescription;
-            } else {
-                detailsTemplate.description = "Whoops - unrecognized GeoHub type. Run Away! " + serviceId;;
-                console.log("Unrecognized GeoHub type: " + serviceId);
-            }
-            
-            if (c.geoJSONType) {
-            	detailsTemplate.geometryType = getEsriGeometryType(c.geoJSONType);
-            }
-            
-			callback(this.getLayerName(c.fullServiceId, layerId), 
-					 this.idField(c.fullServiceId, layerId),
-					 this.nameField(c.fullServiceId, layerId),
-					 this.fields(c.fullServiceId, layerId), null);
+				var c = parseServiceId(serviceId);
+				serviceId = c.serviceId;
+
+				if (serviceId === "repo") {
+					detailsTemplate.description = geohubRepoDescription;
+				} else if (serviceId === "gist") {
+					detailsTemplate.description = geohubGistDescription;
+				} else {
+					detailsTemplate.description = "Whoops - unrecognized GeoHub type. Run Away! " + serviceId;;
+					console.log("Unrecognized GeoHub type: " + serviceId);
+				}
+
+				if (c.geoJSONType) {
+					detailsTemplate.geometryType = getEsriGeometryType(c.geoJSONType);
+				}
+
+				debugger;
+				callback(provider.getLayerName(c.fullServiceId, layerId), 
+						 provider.idField(c.fullServiceId, layerId),
+						 provider.nameField(c.fullServiceId, layerId),
+						 provider.fields(c.fullServiceId, layerId), null);
+        	});
         }
     },
     featuresForQuery: {
         value: function(serviceId, layerId, query, callback) {
-            this._readGeoHubGeoJSON(serviceId, layerId, function(geoJSONData, err) {
+            this._readGeoHubGeoJSON(serviceId, layerId, query, function(geoJSONData, err) {
             	if (err) { return callback([], err); }
             	
 				var c = parseServiceId(serviceId);

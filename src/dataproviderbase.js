@@ -1,9 +1,86 @@
 var urls = require("./urls.js"),
-	TerraformerArcGIS = require("terraformer-arcgis-parser");
+	Terraformer = require("terraformer"),
+	TerraformerArcGIS = require("terraformer/Parsers/ArcGIS"),
+	geostore = require("terraformer/GeoStore"),
+	rtree = require("terraformer/RTree"),
+	memoryStore = require("terraformer/Stores/Memory");
+
+DataProviderCache = function(cacheLifetimeInSeconds, serviceId, layerId) {
+	this.cacheLifetimeInSeconds = 1000 * ((arguments.length > 0)?cacheLifetimeInSeconds:60*60);
+    this.serviceId = serviceId;
+    this.layerId = layerId;
+
+	this.expirationUTC = new Date();
+
+    this.store = new geostore.GeoStore({
+        store: new memoryStore.Memory(),
+        index: new rtree.RTree()
+    });
+
+    this.extendCache();
+    
+	this.status = "waitingToLoad";
+}
+
+DataProviderCache.prototype = {
+	get isExpired() {
+    	return new Date().getTime() >= this.expirationUTC;
+	},
+	canExtendCache: function() {
+		return true;
+	},
+	extendCache: function() {
+		if (this.canExtendCache()) {
+			this.expirationUTC = new Date().getTime() + this.cacheLifetimeInSeconds*1000;
+			return true;
+		} else {
+			return false;
+		}
+	},
+	validateCache: function() {
+		if (!this.isExpired) {
+			return true;
+		} else {
+			return this.extendCache();
+		}
+	}
+}
 
 DataProviderBase = function () {
 	this._urls = new urls.Urls(this);
 	this._devMode = (process.env.VCAP_APP_PORT === null);
+	this._caches = {};
+	
+	this.getCache = function(serviceId, layerId) {
+		if (arguments.length < 2) {
+			console.log("You must provide a serviceId and layerId");
+			return null; 
+		}
+		
+		var cachesForService = null;
+		if (!this._caches.hasOwnProperty(serviceId)) {
+			console.log("First cache for ServiceID: " + serviceId);
+			this._caches[serviceId] = {};
+		}
+		
+		var cache = null;
+		if (!this._caches[serviceId].hasOwnProperty(layerId)) {
+			console.log("NEW CACHE: Creating cache for " + serviceId + "-->" + layerId);
+			this._caches[serviceId][layerId] = cache = new DataProviderCache();
+		} else { 
+			cache = this._caches[serviceId][layerId];
+			if (!cache.validateCache()) {
+				console.log("CACHE INVALID: Creating cache for " + serviceId + "-->" + layerId);
+				// The cache is expired and should not be extended. Create a new one.
+				cache = new DataProviderCache(cache.cacheLifetimeInSeconds);
+				// And delete the old one.
+				delete this._caches[serviceId][layerId];
+				this._caches[serviceId][layerId] = cache;
+			}
+		}
+
+		return cache;		
+	}
 }
 
 DataProviderBase.prototype = {

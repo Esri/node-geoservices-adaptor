@@ -5,7 +5,8 @@
         "express":"3.x",
         "geohub": "*",
         "terraformer": "*",
-        "terraformer-arcgis-parser": "*"
+        "terraformer-arcgis-parser": "*",
+        "terraformer-rtree": "*"
     },
   	"engine": "node >= 0.8.0"
 }

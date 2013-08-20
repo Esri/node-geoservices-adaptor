@@ -42,6 +42,9 @@ Query = function(request) {
 	}
 	this.objectIds = _objectIds;
 	this.geometry = request.param("geometry"); // Not used
+	if (this.geometry) {
+		this.geometry = JSON.parse(this.geometry);
+	}
 	this.geometryType = request.param("geometryType"); // Not used
 
 	var _inSR = request.param("inSR");

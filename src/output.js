@@ -4,7 +4,7 @@ var util = require('util');
 var dataproviderbase = require("./dataproviderbase");
 
 var terraformer = require("terraformer"),
-	terraformerArcGIS = require("terraformer-arcgis-parser");
+	terraformerArcGIS = require("terraformer/Parsers/ArcGIS");
 
 var _infoJSON = JSON.parse(fs.readFileSync('resources/templates/info.json', 'utf8'));
 var _servicesJSON = JSON.parse(fs.readFileSync('resources/templates/services.json', 'utf8'));
