@@ -14,7 +14,8 @@ DataProviderCache = function(serviceId, layerId, cacheLifetimeInSeconds) {
 	this.expirationUTC = new Date();
 
     this.store = new geostore.GeoStore({
-        store: new levelDB.LevelStore({name: "./data/levelup/" + serviceId + "+" + layerId}),
+//         store: new levelDB.LevelStore({name: "./data/levelup/" + serviceId + "+" + layerId}),
+		store: new memoryStore.Memory(),
         index: new rtree.RTree()
     });
 
