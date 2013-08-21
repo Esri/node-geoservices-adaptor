@@ -58,7 +58,7 @@ app.configure(function() {
 	app.use(allowCrossDomain);
 	app.use(function(req,res,next) {
 		req["geoservicesOutFormat"] = (req.param("f") || "html").toLowerCase();;
-		console.log(req.url);
+// 		console.log(req.url);
 		next();
 	});
 

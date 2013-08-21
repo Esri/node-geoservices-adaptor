@@ -3,17 +3,18 @@ var urls = require("./urls.js"),
 	TerraformerArcGIS = require("terraformer/Parsers/ArcGIS"),
 	geostore = require("terraformer/GeoStore"),
 	rtree = require("terraformer/RTree"),
-	memoryStore = require("terraformer/Stores/Memory");
+	memoryStore = require("terraformer/Stores/Memory"),
+	levelDB = require("terraformer-geostore-leveldb");
 
-DataProviderCache = function(cacheLifetimeInSeconds, serviceId, layerId) {
-	this.cacheLifetimeInSeconds = 1000 * ((arguments.length > 0)?cacheLifetimeInSeconds:60*60);
+DataProviderCache = function(serviceId, layerId, cacheLifetimeInSeconds) {
+	this.cacheLifetimeInSeconds = 1000 * (arguments >= 3)?cacheLifetimeInSeconds:60*60;
     this.serviceId = serviceId;
     this.layerId = layerId;
 
 	this.expirationUTC = new Date();
 
     this.store = new geostore.GeoStore({
-        store: new memoryStore.Memory(),
+        store: new levelDB.LevelStore({name: "./data/levelup/" + serviceId + "+" + layerId}),
         index: new rtree.RTree()
     });
 
@@ -66,7 +67,7 @@ DataProviderBase = function () {
 		var cache = null;
 		if (!this._caches[serviceId].hasOwnProperty(layerId)) {
 			console.log("NEW CACHE: Creating cache for " + serviceId + "-->" + layerId);
-			this._caches[serviceId][layerId] = cache = new DataProviderCache();
+			this._caches[serviceId][layerId] = cache = new DataProviderCache(serviceId,layerId);
 		} else { 
 			cache = this._caches[serviceId][layerId];
 			if (!cache.validateCache()) {
@@ -193,7 +194,7 @@ DataProviderBase.prototype = {
 			callback(layerIds, provider.getLayerNamesForIds(layerIds), err);
 		});
 	},
-	
+
 	// JSON to be injected into the "Feature Service" response for each layer provided 
 	// (see also the layerIds property).
 	//
