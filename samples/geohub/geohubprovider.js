@@ -99,9 +99,27 @@ function GeoJSONGeometryTypes(geoJSONItem) {
 };
 
 function FilterGeoJSONByType(geoJSONItem, geometryType) {
+	var geomTypes = [];
+	switch (geometryType) {
+		case "Point":
+		case "MultiPoint":
+			geomTypes = ["Point","MultiPoint"];
+			break;
+		case "LineString":
+		case "MultiLineString":
+			geomTypes = ["LineString","MultiLineString"];
+			break;
+		case "Polygon":
+		case "MultiPolygon":
+			geomTypes = ["Polygon","MultiPolygon"];
+			break;
+		default:
+			geomTypes = [geometryType];
+	}
+	
     if (geoJSONItem.type === "FeatureCollection") {
         geoJSONItem.features = geoJSONItem.features.filter(function(item) {
-            return item.geometry.type === geometryType;
+            return geomTypes.indexOf(item.geometry.type) > -1;
         });
         return geoJSONItem;
     }
