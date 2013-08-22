@@ -4,6 +4,43 @@ var http = require("http");
 var path = require("path");
 var fs = require("fs");
 
+var cityBikesFields = [
+	{"name" : "id", "type" : "esriFieldTypeInteger", "alias" : "ID", "nullable" : "true"},
+	{"name" : "idx", "type" : "esriFieldTypeInteger", "alias" : "IDX", "nullable" : "true"},
+	{"name" : "name", "type" : "esriFieldTypeString", "alias" : "Name", "length" : "255", "nullable" : "true"},
+	{"name" : "number", "type" : "esriFieldTypeInteger", "alias" : "Number", "nullable" : "true"},
+	{"name" : "free", "type" : "esriFieldTypeInteger", "alias" : "Free", "nullable" : "true"},
+	{"name" : "bikes", "type" : "esriFieldTypeInteger", "alias" : "Bikes", "nullable" : "true"},
+	{"name" : "bikesClass", "type" : "esriFieldTypeString", "alias" : "Bikes Class", "length" : "255", "nullable" : "true"},
+	{"name" : "docksClass", "type" : "esriFieldTypeString", "alias" : "Docks Class", "length" : "255", "nullable" : "true"},
+	{"name" : "address", "type" : "esriFieldTypeString", "alias" : "Address", "length" : "255", "nullable" : "true"},
+	{"name" : "citybikesTimeString", "type" : "esriFieldTypeString", "alias" : "CityBikes Time", "length" : "255", "nullable" : "true"},
+	{"name" : "utcTime", "type" : "esriFieldTypeDate", "alias" : "UTC Timestamp", "length" : 36, "nullable" : "true"},
+	{"name" : "timezone", "type" : "esriFieldTypeString", "alias" : "Timezone Code", "length" : "5", "nullable" : "true"},
+	{"name" : "timezoneOffset", "type" : "esriFieldTypeInteger", "alias" : "Timezone Offset", "nullable" : "true"},
+	{"name" : "timezoneOffsetString", "type" : "esriFieldTypeString", "alias" : "Timezone Offset String", "length" : "8", "nullable" : "true"},
+	{"name" : "localTimeString", "type" : "esriFieldTypeString", "alias" : "Local Time", "length" : "255", "nullable" : "true"},
+];
+
+var bikeClassificationScheme = {
+	"0": { "min": 0, "max": 0, "label": "No bikes" },
+	"1": { "min": 1, "max": 1, "label": "1 bike" },
+	"few": { "min": 2, "max": 8, "label": "A few bikes" },
+	"plenty": { "min": 9, "max": 10000, "label": "Plenty of bikes" }
+};
+	
+var dockClassificationScheme = {
+	"0": { "min": 0, "max": 0, "label": "No docks" },
+	"1": { "min": 1, "max": 1, "label": "1 dock" },
+	"2": { "min": 2, "max": 2, "label": "2 docks" },
+	"3": { "min": 3, "max": 3, "label": "3 docks" },
+	"4": { "min": 4, "max": 4, "label": "4 docks" },
+	"few": { "min": 5, "max": 10, "label": "5-10 docks" },
+	"plenty": { "min": 11, "max": 10000, "label": "Plenty of docks" }
+};
+
+var timezoneAPIKey = "IMPMC00M2XNY";
+
 Object.size = function(obj) {
     var size = 0, key;
     for (key in obj) {
@@ -43,92 +80,6 @@ CityBikes = function () {
 		var cacheInvalid = (provider._cachedNetworks == null) || (now >= provider._cacheExpirationTime);
 		return cacheInvalid;
 	}
-
-	this._getTimezone = function(networkCacheEntry, callback) {
-		// We'll try to load some timezone information so that in addition to a UTC
-		// timestamp describing when each station in a network was last udpated, we
-		// can also give a client some information about displaying that time in a
-		// suitable local format.
-		//
-		// This is an example of how we fix the underlying data on the fly (the timestamps
-		// that are returned by Citybik.es are not UTC, but rather local time for the 
-		// server, in Madrid) and also how we augment that information with data which
-		// consumers of the service are likely to find useful (JavaScript handling of
-		// timezone-specific calculations and formatting is pretty poor).
-		var network = networkCacheEntry.network;
-		var networkName = networkCacheEntry.network.name;
-		if (this._networkTimezones.hasOwnProperty(networkName))
-		{
-			// Try to read the timezone information from a cache file.
-			networkCacheEntry["timezone"] = this._networkTimezones[networkName];
-			callback.call(this, networkCacheEntry);
-		}
-		else
-		{
-			// Try to load the timezone information from the timezonedb API. Note that this
-			// is rate limited and it's pretty easy during development to hit the limit,
-			// hence the use of the cache above.
-			this._networksAwaitingTimezone[networkName] = true;
-			var timezoneUrl = util.format("http://api.timezonedb.com/?key=%s&lat=%d&lng=%d&format=json", "IMPMC00M2XNY", network.lat, network.lng);
-			var provider = this;
-			http.get(timezoneUrl, function (res) {
-				var timezoneJSON = "";
-				res.setEncoding('utf8');
-				res.on('data', function(chunk) {
-					timezoneJSON += chunk;
-				});
-				res.on('end', function() {
-					var loadedTimezoneOK = false;
-					var timezone = null;
-					try
-					{
-						timezone = JSON.parse(timezoneJSON);
-						loadedTimezoneOK = true;
-					}
-					catch (err)
-					{
-						console.log(err)
-						console.log(timezoneJSON);
-					}
-				
-					if (loadedTimezoneOK)
-					{
-						if (timezone.status === "OK")
-						{
-							delete timezone["status"];
-							delete timezone["message"];
-							// Mark this timezone information as valid for a day.
-							timezone["cacheRefreshDue"] = (new Date()).getTime() + 24*60*60000;
-							networkCacheEntry["timezone"] = timezone;
-
-							// And associate it with whichever network asked for it.
-							provider._networkTimezones[networkName] = timezone;
-
-							// Stop tracking that we're still looking for it.				
-							delete provider._networksAwaitingTimezone[networkName];
-							console.log("Timezone: " + networkName + " (" + Object.size(provider._networksAwaitingTimezone) + ")");
-							console.log(timezone);
-							
-							// And if we're no longer looking for any timezones, save
-							// the file in a cache so we don't hit our rate-limit on the
-							// timezonedb API too soon.
-							if (Object.size(provider._networksAwaitingTimezone) == 0)
-							{
-								if (!fs.existsSync(path.dirname(provider._timezoneCacheFilename))) {
-									fs.mkDirSync(path.dirname(provider._timezoneCacheFilename));
-								}
-								fs.writeFile(provider._timezoneCacheFilename, JSON.stringify(provider._networkTimezones));
-								console.log("Wrote timezones to " + provider._timezoneCacheFilename);
-							}
-							
-							// Call back with our updated cache entry, setting "this"
-							callback.call(provider, networkCacheEntry);
-						}
-					}
-				});
-			});
-		}
-	};
 
 	this._networks = function(callback) {
 		if (_cacheInvalid(this))
@@ -227,63 +178,6 @@ CityBikes = function () {
 			callback(this._cachedNetworks, null);
 		}
 	};
-
-	// We add a field that gives some idea of the number of bikes available rather than
-	// raw numbers - this is easier to render off for AGOL. Better maps FTW!
-	//
-	// First, we describe this scheme in this._classificationScheme
-	this._bikeClassificationScheme = {
-		"0": { "min": 0, "max": 0, "label": "No bikes" },
-		"1": { "min": 1, "max": 1, "label": "1 bike" },
-		"few": { "min": 2, "max": 8, "label": "A few bikes" },
-		"plenty": { "min": 9, "max": 10000, "label": "Plenty of bikes" }
-	};
-	
-	this._dockClassificationScheme = {
-		"0": { "min": 0, "max": 0, "label": "No docks" },
-		"1": { "min": 1, "max": 1, "label": "1 dock" },
-		"2": { "min": 2, "max": 2, "label": "2 docks" },
-		"3": { "min": 3, "max": 3, "label": "3 docks" },
-		"4": { "min": 4, "max": 4, "label": "4 docks" },
-		"few": { "min": 5, "max": 10, "label": "5-10 docks" },
-		"plenty": { "min": 11, "max": 10000, "label": "Plenty of docks" }
-	};	
-
-	this._getClassValue = function(classificationScheme, value) {
-		var classes = [];
-		for (var k in classificationScheme)
-		{
-			classes.push(k);
-		}
-		
-		for (var i=0; i<classes.length; i++)
-		{
-			var className = classes[i];
-			var classRange = classificationScheme[className];
-			var min = classRange.min;
-			var max = classRange.max;
-
-			if (value >= min && value <= max)
-			{
-				return classRange.label;
-			}
-		}
-		
-		return value + " out of range!";
-	}
-
-	// Then we provide a way to calculate the value from the scheme for a network's station.
-	this._getBikeRange = function(station) {
-		var bikesAvailable = station.attributes.bikes;
-
-		station.attributes["bikesClass"] = this._getClassValue(this._bikeClassificationScheme, bikesAvailable);
-	};
-	
-	this._getDockRange = function(station) {
-		var docksFree = station.attributes.free;
-		
-		station.attributes["docksClass"] = this._getClassValue(this._dockClassificationScheme, docksFree);
-	}
 
 	this._stationsForNetwork = function(n, callback) {
 		// Given a networkCacheEntry (see this._networks and this._cachedNetworks),
@@ -442,6 +336,129 @@ CityBikes = function () {
 			});
 		}
 	};
+	
+	this._getTimezone = function(networkCacheEntry, callback) {
+		// We'll try to load some timezone information so that in addition to a UTC
+		// timestamp describing when each station in a network was last udpated, we
+		// can also give a client some information about displaying that time in a
+		// suitable local format.
+		//
+		// This is an example of how we fix the underlying data on the fly (the timestamps
+		// that are returned by Citybik.es are not UTC, but rather local time for the 
+		// server, in Madrid) and also how we augment that information with data which
+		// consumers of the service are likely to find useful (JavaScript handling of
+		// timezone-specific calculations and formatting is pretty poor).
+		var network = networkCacheEntry.network;
+		var networkName = networkCacheEntry.network.name;
+		if (this._networkTimezones.hasOwnProperty(networkName))
+		{
+			// Try to read the timezone information from a cache file.
+			networkCacheEntry["timezone"] = this._networkTimezones[networkName];
+			callback.call(this, networkCacheEntry);
+		}
+		else
+		{
+			// Try to load the timezone information from the timezonedb API. Note that this
+			// is rate limited and it's pretty easy during development to hit the limit,
+			// hence the use of the cache above.
+			this._networksAwaitingTimezone[networkName] = true;
+			var timezoneUrl = util.format("http://api.timezonedb.com/?key=%s&lat=%d&lng=%d&format=json", timezoneAPIKey, network.lat, network.lng);
+			var provider = this;
+			http.get(timezoneUrl, function (res) {
+				var timezoneJSON = "";
+				res.setEncoding('utf8');
+				res.on('data', function(chunk) {
+					timezoneJSON += chunk;
+				});
+				res.on('end', function() {
+					var loadedTimezoneOK = false;
+					var timezone = null;
+					try
+					{
+						timezone = JSON.parse(timezoneJSON);
+						loadedTimezoneOK = true;
+					}
+					catch (err)
+					{
+						console.log(err)
+						console.log(timezoneJSON);
+					}
+				
+					if (loadedTimezoneOK)
+					{
+						if (timezone.status === "OK")
+						{
+							delete timezone["status"];
+							delete timezone["message"];
+							// Mark this timezone information as valid for a day.
+							timezone["cacheRefreshDue"] = (new Date()).getTime() + 24*60*60000;
+							networkCacheEntry["timezone"] = timezone;
+
+							// And associate it with whichever network asked for it.
+							provider._networkTimezones[networkName] = timezone;
+
+							// Stop tracking that we're still looking for it.				
+							delete provider._networksAwaitingTimezone[networkName];
+							console.log("Timezone: " + networkName + " (" + Object.size(provider._networksAwaitingTimezone) + ")");
+							console.log(timezone);
+							
+							// And if we're no longer looking for any timezones, save
+							// the file in a cache so we don't hit our rate-limit on the
+							// timezonedb API too soon.
+							if (Object.size(provider._networksAwaitingTimezone) == 0)
+							{
+								if (!fs.existsSync(path.dirname(provider._timezoneCacheFilename))) {
+									fs.mkDirSync(path.dirname(provider._timezoneCacheFilename));
+								}
+								fs.writeFile(provider._timezoneCacheFilename, JSON.stringify(provider._networkTimezones));
+								console.log("Wrote timezones to " + provider._timezoneCacheFilename);
+							}
+							
+							// Call back with our updated cache entry, setting "this"
+							callback.call(provider, networkCacheEntry);
+						}
+					}
+				});
+			});
+		}
+	};
+
+	// We add a field that gives some idea of the number of bikes available rather than
+	// raw numbers - this is easier to render off for AGOL. Better maps FTW!
+	this._getClassValue = function(classificationScheme, value) {
+		var classes = [];
+		for (var k in classificationScheme)
+		{
+			classes.push(k);
+		}
+		
+		for (var i=0; i<classes.length; i++)
+		{
+			var className = classes[i];
+			var classRange = classificationScheme[className];
+			var min = classRange.min;
+			var max = classRange.max;
+
+			if (value >= min && value <= max)
+			{
+				return classRange.label;
+			}
+		}
+		
+		return value + " out of range!";
+	}
+
+	this._getBikeRange = function(station) {
+		var bikesAvailable = station.attributes.bikes;
+
+		station.attributes["bikesClass"] = this._getClassValue(bikeClassificationScheme, bikesAvailable);
+	};
+	
+	this._getDockRange = function(station) {
+		var docksFree = station.attributes.free;
+		
+		station.attributes["docksClass"] = this._getClassValue(dockClassificationScheme, docksFree);
+	}
 
 	// Someone created an instance of us. Let's get our caches built.
 	var citybikesProvider = this;
@@ -505,23 +522,7 @@ Object.defineProperties(CityBikes.prototype, {
 			// this could be different for each feature service and layer, but in the case
 			// of Citybik.es the source schema does not change across networks so we just
 			// use a constant schema for our FeatureLayers.
-			return [
-				{"name" : "id", "type" : "esriFieldTypeInteger", "alias" : "ID", "nullable" : "true"},
-				{"name" : "idx", "type" : "esriFieldTypeInteger", "alias" : "IDX", "nullable" : "true"},
-				{"name" : "name", "type" : "esriFieldTypeString", "alias" : "Name", "length" : "255", "nullable" : "true"},
-				{"name" : "number", "type" : "esriFieldTypeInteger", "alias" : "Number", "nullable" : "true"},
-				{"name" : "free", "type" : "esriFieldTypeInteger", "alias" : "Free", "nullable" : "true"},
-				{"name" : "bikes", "type" : "esriFieldTypeInteger", "alias" : "Bikes", "nullable" : "true"},
-				{"name" : "bikesClass", "type" : "esriFieldTypeString", "alias" : "Bikes Class", "length" : "255", "nullable" : "true"},
-				{"name" : "docksClass", "type" : "esriFieldTypeString", "alias" : "Docks Class", "length" : "255", "nullable" : "true"},
-				{"name" : "address", "type" : "esriFieldTypeString", "alias" : "Address", "length" : "255", "nullable" : "true"},
-				{"name" : "citybikesTimeString", "type" : "esriFieldTypeString", "alias" : "CityBikes Time", "length" : "255", "nullable" : "true"},
-				{"name" : "utcTime", "type" : "esriFieldTypeDate", "alias" : "UTC Timestamp", "length" : 36, "nullable" : "true"},
-				{"name" : "timezone", "type" : "esriFieldTypeString", "alias" : "Timezone Code", "length" : "5", "nullable" : "true"},
-				{"name" : "timezoneOffset", "type" : "esriFieldTypeInteger", "alias" : "Timezone Offset", "nullable" : "true"},
-				{"name" : "timezoneOffsetString", "type" : "esriFieldTypeString", "alias" : "Timezone Offset String", "length" : "8", "nullable" : "true"},
-				{"name" : "localTimeString", "type" : "esriFieldTypeString", "alias" : "Local Time", "length" : "255", "nullable" : "true"},
-			];
+			return cityBikesFields;
 		}
 	},
 	featuresForQuery: {
