@@ -225,6 +225,11 @@ Object.defineProperties(GeoHubProvider.prototype, {
             return "geohub";
         }
     },
+    serverVersion: {
+    	get: function() {
+    		return 10.0;
+    	}
+    },
     getServiceIds: {
         value: function(callback) {
             // Override the service name - every data provider should override this.
