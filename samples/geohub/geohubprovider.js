@@ -101,10 +101,6 @@ function GeoJSONGeometryTypes(geoJSONItem) {
 function FilterGeoJSONByType(geoJSONItem, geometryType) {
 	var geomTypes = [];
 	switch (geometryType) {
-		case "Point":
-		case "MultiPoint":
-			geomTypes = ["Point","MultiPoint"];
-			break;
 		case "LineString":
 		case "MultiLineString":
 			geomTypes = ["LineString","MultiLineString"];
