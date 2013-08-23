@@ -413,7 +413,7 @@ function o(mJ,mH,f,d) {
 	args.push(function(result, err) {
 		callback(result, err);
 	});
-	var m = (f==="json")?mJ:mH;
+	var m = (f==="json" || f==="pjson")?mJ:mH;
 	m.apply(d,args);
 };
 
