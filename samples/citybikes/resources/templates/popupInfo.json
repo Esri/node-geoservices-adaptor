@@ -1,0 +1,147 @@
+"popupInfo": {
+	"title": "{name}",
+	"fieldInfos": [{
+		"fieldName": "id",
+		"label": "ID",
+		"isEditable": true,
+		"tooltip": "",
+		"visible": true,
+		"format": {
+			"places": 0,
+			"digitSeparator": false
+		},
+		"stringFieldOption": "textbox"
+	}, {
+		"fieldName": "idx",
+		"label": "IDX",
+		"isEditable": true,
+		"tooltip": "",
+		"visible": true,
+		"format": {
+			"places": 0,
+			"digitSeparator": false
+		},
+		"stringFieldOption": "textbox"
+	}, {
+		"fieldName": "name",
+		"label": "Name",
+		"isEditable": true,
+		"tooltip": "",
+		"visible": true,
+		"stringFieldOption": "textbox"
+	}, {
+		"fieldName": "number",
+		"label": "Number",
+		"isEditable": true,
+		"tooltip": "",
+		"visible": true,
+		"format": {
+			"places": 0,
+			"digitSeparator": false
+		},
+		"stringFieldOption": "textbox"
+	}, {
+		"fieldName": "free",
+		"label": "Open Docks",
+		"isEditable": true,
+		"tooltip": "",
+		"visible": true,
+		"format": {
+			"places": 0,
+			"digitSeparator": false
+		},
+		"stringFieldOption": "textbox"
+	}, {
+		"fieldName": "bikes",
+		"label": "Bikes",
+		"isEditable": true,
+		"tooltip": "",
+		"visible": true,
+		"format": {
+			"places": 0,
+			"digitSeparator": false
+		},
+		"stringFieldOption": "textbox"
+	}, {
+		"fieldName": "bikesClass",
+		"label": "Bikes Class",
+		"isEditable": true,
+		"tooltip": "",
+		"visible": true,
+		"stringFieldOption": "textbox"
+	}, {
+		"fieldName": "docksClass",
+		"label": "Docks Class",
+		"isEditable": true,
+		"tooltip": "",
+		"visible": true,
+		"stringFieldOption": "textbox"
+	}, {
+		"fieldName": "address",
+		"label": "Address",
+		"isEditable": true,
+		"tooltip": "",
+		"visible": true,
+		"stringFieldOption": "textbox"
+	}, {
+		"fieldName": "citybikesTimeString",
+		"label": "CityBikes Time",
+		"isEditable": true,
+		"tooltip": "",
+		"visible": true,
+		"stringFieldOption": "textbox"
+	}, {
+		"fieldName": "utcTime",
+		"label": "UTC Timestamp",
+		"isEditable": true,
+		"tooltip": "",
+		"visible": true,
+		"format": {
+			"dateFormat": "shortDateShortTime"
+		},
+		"stringFieldOption": "textbox"
+	}, {
+		"fieldName": "timezone",
+		"label": "Timezone Code",
+		"isEditable": true,
+		"tooltip": "",
+		"visible": true,
+		"stringFieldOption": "textbox"
+	}, {
+		"fieldName": "timezoneOffset",
+		"label": "Timezone Offset",
+		"isEditable": true,
+		"tooltip": "",
+		"visible": true,
+		"format": {
+			"places": 0,
+			"digitSeparator": true
+		},
+		"stringFieldOption": "textbox"
+	}, {
+		"fieldName": "timezoneOffsetString",
+		"label": "Timezone Offset String",
+		"isEditable": true,
+		"tooltip": "",
+		"visible": true,
+		"stringFieldOption": "textbox"
+	}, {
+		"fieldName": "localTimeString",
+		"label": "Local Time",
+		"isEditable": true,
+		"tooltip": "",
+		"visible": true,
+		"stringFieldOption": "textbox"
+	}],
+	"description": "There were {bikes} bikes available and {free} available docks when last checked at {utcTime}.\n        ",
+	"showAttachments": true,
+	"mediaInfos": [{
+		"title": null,
+		"type": "piechart",
+		"caption": "{bikes} bikes\n{free} open docks",
+		"value": {
+			"fields": ["free", "bikes"],
+			"normalizeField": null
+		}
+	}]
+}
