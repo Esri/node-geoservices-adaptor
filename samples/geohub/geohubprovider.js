@@ -269,28 +269,37 @@ Object.defineProperties(GeoHubProvider.prototype, {
             }
         }
     },
+    geometryType: {
+    	value: function(serviceId, layerId) {
+            var c = parseServiceId(serviceId);
+            var r = "esriGeometryPoint";
+            if (c.geoJSONType) {
+            	r = getEsriGeometryType(c.geoJSONType);
+            }
+            return r;
+    	}
+    },
     getFeatureServiceLayerDetails: {
         value: function(detailsTemplate, serviceId, layerId, callback) {
             var c = parseServiceId(serviceId);
-            serviceId = c.serviceId;
+            geohubServiceId = c.serviceId;
 
-            if (serviceId === "repo") {
+            if (geohubServiceId === "repo") {
                 detailsTemplate.description = geohubRepoDescription;
-            } else if (serviceId === "gist") {
+            } else if (geohubServiceId === "gist") {
                 detailsTemplate.description = geohubGistDescription;
             } else {
-                detailsTemplate.description = "Whoops - unrecognized GeoHub type. Run Away! " + serviceId;;
-                console.log("Unrecognized GeoHub type: " + serviceId);
+                detailsTemplate.description = "Whoops - unrecognized GeoHub type. Run Away! " + geohubServiceId;
+                console.log("Unrecognized GeoHub type: " + geohubServiceId);
             }
             
-            if (c.geoJSONType) {
-            	detailsTemplate.geometryType = getEsriGeometryType(c.geoJSONType);
-            }
-            
-			callback(this.getLayerName(c.fullServiceId, layerId), 
-					 this.idField(c.fullServiceId, layerId),
-					 this.nameField(c.fullServiceId, layerId),
-					 this.fields(c.fullServiceId, layerId), null);
+			callback({
+				layerName: this.getLayerName(serviceId, layerId), 
+				idField: this.idField(serviceId, layerId),
+				nameField: this.nameField(serviceId, layerId),
+				fields: this.fields(serviceId, layerId),
+				geometryType: this.geometryType(serviceId, layerId)
+			}, null);
         }
     },
     featuresForQuery: {

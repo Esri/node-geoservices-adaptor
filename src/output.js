@@ -32,6 +32,9 @@ var _serviceDetailsJSON = {
 	"url": "http://www.arcgis.com"
 };
 
+var drawingInfo_Point = JSON.parse(fs.readFileSync("resources/templates/drawingInfo/point.json", 'utf8'));
+var drawingInfo_Line = JSON.parse(fs.readFileSync("resources/templates/drawingInfo/line.json", 'utf8'));
+var drawingInfo_Polygon = JSON.parse(fs.readFileSync("resources/templates/drawingInfo/polygon.json", 'utf8'));
 
 function _clone(object) {
 	if (object) {
@@ -115,7 +118,34 @@ function featureServiceJSON(dataProvider, serviceId, callback) {
 
 function featureServiceLayerJSON(dataProvider, serviceId, layerId, callback) {
 	var t = _clone(_featureServiceLayerJSON);
-	dataProvider.getFeatureServiceLayerDetails(t, serviceId, layerId, function(layerName, idField, nameField, fields, err) {
+	dataProvider.getFeatureServiceLayerDetails(t, serviceId, layerId, function(layerDetails, err) {
+		var layerName = layerDetails.layerName, 
+			idField = layerDetails.idField,
+			nameField = layerDetails.nameField, 
+			fields = layerDetails.fields,
+			geomType = layerDetails.geometryType;
+		var drawingInfo = null;
+		switch(geomType) {
+			case "esriGeometryPoint":
+				drawingInfo = drawingInfo_Point;
+				break;
+			case "esriGeometryPolyline":
+				drawingInfo = drawingInfo_Line;
+				break;
+			case "esriGeometryPolygon":
+				drawingInfo = drawingInfo_Polygon;
+				break;
+			default:
+				console.log("Could not determine the geometry type: " + geomType);
+				console.log("layerDetails");
+				break;
+		}
+		if (geomType) {
+			t["geometryType"] = geomType;
+		}
+		if (drawingInfo) {
+			t["drawingInfo"] = drawingInfo;
+		}
 		t["currentVersion"] = dataProvider.serverVersion;
 		t["name"] = layerName; // dataProvider.featureServiceLayerName(serviceId, layerId);
 		t["id"] = layerId;
@@ -199,26 +229,22 @@ function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId,
 						
 						featureSet.fields = dataProvider.fields(serviceId, layerId);
 						featureSet.objectIdFieldName = dataProvider.idField(serviceId, layerId);
+						featureSet.features = [];
 						
 						if (query.outSR === 102100)
 						{
-							var projectedOutput = [];
-			
 							for (var i=0; i<queryResult.length; i++)
 							{
 								var feature = JSON.parse(JSON.stringify(queryResult[i]));
  								feature.geometry = projectGeographicGeomToMercator(feature.geometry);
-								projectedOutput.push(feature);
+								featureSet.features.push(feature);
 							}
-							
-							featureSet.features = projectedOutput;
 							featureSet.spatialReference.wkid = 102100;
 						}
 						else
 						{
 							featureSet.features = queryResult;
 						}
-						
 						if (query.hasOwnProperty("outputGeometryType")) {
 							featureSet.geometryType = query["outputGeometryType"];
 						}

@@ -595,12 +595,15 @@ Object.defineProperties(CityBikes.prototype, {
 					detailsTemplate.extent.ymin = y - h;
 					detailsTemplate.extent.ymax = y + h;
 				}
-				callback(this.getLayerName(serviceId, layerId), 
-						 this.idField(serviceId, layerId), 
-						 this.nameField(serviceId, layerId),
-						 this.fields(serviceId, layerId), null);
+				callback({
+					layerName: this.getLayerName(serviceId, layerId), 
+					idField: this.idField(serviceId, layerId),
+					nameField: this.nameField(serviceId, layerId),
+					fields: this.fields(serviceId, layerId),
+					geometryType: this.geometryType(serviceId, layerId)
+				}, null);
 			} else {
-				callback(detailsTemplate, null, null, null,
+				callback({},
 						 "Invalid CityBikes Service ID: " + serviceId);
 			}
 		}
