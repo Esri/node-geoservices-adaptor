@@ -385,7 +385,6 @@ function featureServiceLayersHTML(dataProvider, serviceId, callback) {
 			html = util.format(t, dataProvider.urls.getLayerUrl(serviceId, layer.id),
 							   layer.name, layer.id) + html;
 			layerHTMLItems[layer.id] = html;
-			retrievedCount++;
 		}
 
 		var layersHTML = "";
