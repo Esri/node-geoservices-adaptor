@@ -39,6 +39,8 @@ var dockClassificationScheme = {
 	"plenty": { "min": 11, "max": 10000, "label": "Plenty of docks" }
 };
 
+var drawingInfo = JSON.parse(fs.readFileSync(path.join(path.dirname(module.filename),"resources","templates","layerDefinition-drawingInfo.json"), 'utf8'));
+
 var timezoneAPIKey = "IMPMC00M2XNY";
 
 Object.size = function(obj) {
@@ -568,6 +570,7 @@ Object.defineProperties(CityBikes.prototype, {
 	},
 	getFeatureServiceLayerDetails: {
 		value: function(detailsTemplate, serviceId, layerId, callback) {
+			detailsTemplate["drawingInfo"] = drawingInfo;
 			// We'll take the default JSON that the engine has calculated for us, but we'll
 			// inject an extent if we have one stored so that clients can connect to us
 			// more easily.
