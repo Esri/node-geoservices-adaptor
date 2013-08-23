@@ -38,6 +38,7 @@ function getSvcForRequest(request) {
 
 // App configuration
 app.configure(function() {
+	app.use(express.compress());
 	app.use(express.methodOverride());
 	app.use(express.bodyParser());
  
@@ -65,7 +66,6 @@ app.configure(function() {
 	});
 
 	app.use(app.router);
-	app.use(express.compress());
 	app.use(express.static(path.join(__dirname,"resources"), {maxAge: 31557600000}));
 });
 
