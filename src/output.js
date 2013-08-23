@@ -393,7 +393,7 @@ function featureServiceLayerHTML(dataProvider, serviceId, layerId, callback) {
 			dataProvider.urls.getServiceUrl(serviceId), json.name, json.type,
 			dataProvider.urls.getLayerUrl(serviceId, layerId), json.name,
 			json.name, layerId,
-			url,url,
+			url,url,url,
 			featureServiceLayerItemHTML(json),
 			dataProvider.urls.getLayerQueryUrl(serviceId, layerId));
 	
