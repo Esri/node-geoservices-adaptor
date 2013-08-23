@@ -26,7 +26,9 @@ function useCallback(request) {
 function getSvcForRequest(request) {
 	var svcs = app.get("dataProviders");
 	if (svcs.hasOwnProperty(request.params.dataProviderName)) {
-		return svcs[request.params.dataProviderName].dataProvider;
+		var provider = svcs[request.params.dataProviderName].dataProvider;
+		provider._request = request;
+		return provider;
 	}
 	else
 	{
