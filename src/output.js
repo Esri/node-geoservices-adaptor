@@ -124,27 +124,30 @@ function featureServiceLayerJSON(dataProvider, serviceId, layerId, callback) {
 			nameField = layerDetails.nameField, 
 			fields = layerDetails.fields,
 			geomType = layerDetails.geometryType;
-		var drawingInfo = null;
-		switch(geomType) {
-			case "esriGeometryPoint":
-				drawingInfo = drawingInfo_Point;
-				break;
-			case "esriGeometryPolyline":
-				drawingInfo = drawingInfo_Line;
-				break;
-			case "esriGeometryPolygon":
-				drawingInfo = drawingInfo_Polygon;
-				break;
-			default:
-				console.log("Could not determine the geometry type: " + geomType);
-				console.log("layerDetails");
-				break;
-		}
 		if (geomType) {
 			t["geometryType"] = geomType;
 		}
-		if (drawingInfo) {
-			t["drawingInfo"] = drawingInfo;
+		if (!t.hasOwnProperty("drawingInfo")) {
+			// If the provider has already given us drawingInfo, let's do it.
+			var drawingInfo = null;
+			switch(geomType) {
+				case "esriGeometryPoint":
+					drawingInfo = drawingInfo_Point;
+					break;
+				case "esriGeometryPolyline":
+					drawingInfo = drawingInfo_Line;
+					break;
+				case "esriGeometryPolygon":
+					drawingInfo = drawingInfo_Polygon;
+					break;
+				default:
+					console.log("Could not determine the geometry type: " + geomType);
+					console.log("layerDetails");
+					break;
+			}
+			if (drawingInfo) {
+				t["drawingInfo"] = drawingInfo;
+			}
 		}
 		t["currentVersion"] = dataProvider.serverVersion;
 		t["name"] = layerName; // dataProvider.featureServiceLayerName(serviceId, layerId);
