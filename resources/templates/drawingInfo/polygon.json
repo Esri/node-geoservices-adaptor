@@ -1,0 +1,30 @@
+{
+"renderer": {
+"type": "simple",
+"symbol": {
+"type": "esriSFS",
+"style": "esriSFSSolid",
+"color": [
+32,
+174,
+230,
+191
+],
+"outline": {
+"type": "esriSLS",
+"style": "esriSLSSolid",
+"color": [
+12,
+79,
+105,
+89
+],
+"width": 1.5
+}
+},
+"label": "",
+"description": ""
+},
+"transparency": 0,
+"labelingInfo": null
+}

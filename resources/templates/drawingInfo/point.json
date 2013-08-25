@@ -1,0 +1,20 @@
+{
+"renderer": {
+"type": "simple",
+"symbol": {
+"type": "esriPMS",
+"url": "blue_small_dot.png",
+"imageData": "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAA+UlEQVQYV42QPU7DMBiG/SvXDZSUSjAhmaE7vQkszM0NegVOwBGyV0LlJmVnwBJbECUEuanlP2qXVKJi4BtsfdbzvbYfCH5KlC85HWTX0EMRjwIK0jTqURaXdexhXMbz6opQvBj1mcgYSaNKW/C+1tIad/N8e/YEYxLPB8uLPBOM4O6CtGvrwGutZFs3Ezh+qKanvFcO++wX1DUfaw1W7abYgm/350d8dpjWgTG1atq7BI44m1GC/kw01oOV0hGsphmlZe/gfd3UZpuojCnSZ9jJ8ZITLBBMEvblQwCtdVJ/fk32ehBGC4ygQDtjwIMAnA/SO7/T81/h3/9YcxdBNn3dAAAAAElFTkSuQmCC",
+"contentType": "image/png",
+"width": 9.75,
+"height": 9.75,
+"angle": 0,
+"xoffset": 0,
+"yoffset": 0
+},
+"label": "",
+"description": ""
+},
+"transparency": 0,
+"labelingInfo": null
+}

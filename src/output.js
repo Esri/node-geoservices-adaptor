@@ -32,6 +32,9 @@ var _serviceDetailsJSON = {
 	"url": "http://www.arcgis.com"
 };
 
+var drawingInfo_Point = JSON.parse(fs.readFileSync("resources/templates/drawingInfo/point.json", 'utf8'));
+var drawingInfo_Line = JSON.parse(fs.readFileSync("resources/templates/drawingInfo/line.json", 'utf8'));
+var drawingInfo_Polygon = JSON.parse(fs.readFileSync("resources/templates/drawingInfo/polygon.json", 'utf8'));
 
 function _clone(object) {
 	if (object) {
@@ -115,7 +118,37 @@ function featureServiceJSON(dataProvider, serviceId, callback) {
 
 function featureServiceLayerJSON(dataProvider, serviceId, layerId, callback) {
 	var t = _clone(_featureServiceLayerJSON);
-	dataProvider.getFeatureServiceLayerDetails(t, serviceId, layerId, function(layerName, idField, nameField, fields, err) {
+	dataProvider.getFeatureServiceLayerDetails(t, serviceId, layerId, function(layerDetails, err) {
+		var layerName = layerDetails.layerName, 
+			idField = layerDetails.idField,
+			nameField = layerDetails.nameField, 
+			fields = layerDetails.fields,
+			geomType = layerDetails.geometryType;
+		if (geomType) {
+			t["geometryType"] = geomType;
+		}
+		if (!t.hasOwnProperty("drawingInfo")) {
+			// If the provider has already given us drawingInfo, let's do it.
+			var drawingInfo = null;
+			switch(geomType) {
+				case "esriGeometryPoint":
+					drawingInfo = drawingInfo_Point;
+					break;
+				case "esriGeometryPolyline":
+					drawingInfo = drawingInfo_Line;
+					break;
+				case "esriGeometryPolygon":
+					drawingInfo = drawingInfo_Polygon;
+					break;
+				default:
+					console.log("Could not determine the geometry type: " + geomType);
+					console.log("layerDetails");
+					break;
+			}
+			if (drawingInfo) {
+				t["drawingInfo"] = drawingInfo;
+			}
+		}
 		t["currentVersion"] = dataProvider.serverVersion;
 		t["name"] = layerName; // dataProvider.featureServiceLayerName(serviceId, layerId);
 		t["id"] = layerId;
@@ -199,28 +232,23 @@ function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId,
 						
 						featureSet.fields = dataProvider.fields(serviceId, layerId);
 						featureSet.objectIdFieldName = dataProvider.idField(serviceId, layerId);
+						featureSet.features = [];
 						
 						if (query.outSR === 102100)
 						{
-							var projectedOutput = [];
-			
 							for (var i=0; i<queryResult.length; i++)
 							{
 								var feature = JSON.parse(JSON.stringify(queryResult[i]));
  								feature.geometry = projectGeographicGeomToMercator(feature.geometry);
-								projectedOutput.push(feature);
+								featureSet.features.push(feature);
 							}
-							
-							featureSet.features = projectedOutput;
 							featureSet.spatialReference.wkid = 102100;
 						}
 						else
 						{
 							featureSet.features = queryResult;
 						}
-						
 						if (query.hasOwnProperty("outputGeometryType")) {
-// 							debugger;
 							featureSet.geometryType = query["outputGeometryType"];
 						}
 			
@@ -352,14 +380,23 @@ function featureServiceLayerItemHTML(dataProvider, serviceId, layerId, callback)
 	}
 };
 
+function getFullFeatureServiceLayerURL(dataProvider, serviceId, layerId) {
+	var protocol = dataProvider._request.protocol;
+	var server = dataProvider._request.get('host');
+	var r = protocol + "://" + server + dataProvider._request.url;
+	return encodeURIComponent(r);
+}
+
 function featureServiceLayerHTML(dataProvider, serviceId, layerId, callback) {
 	featureServiceLayerJSON(dataProvider, serviceId, layerId, function (json, err) {
+		var url = getFullFeatureServiceLayerURL(dataProvider, serviceId, layerId);
 		var r = util.format(_featureServiceLayerHTML,
 			json.name, layerId,
 			dataProvider.urls.getServicesUrl(), dataProvider.urls.getServicesUrl(),
 			dataProvider.urls.getServiceUrl(serviceId), json.name, json.type,
 			dataProvider.urls.getLayerUrl(serviceId, layerId), json.name,
 			json.name, layerId,
+			url,url,url,
 			featureServiceLayerItemHTML(json),
 			dataProvider.urls.getLayerQueryUrl(serviceId, layerId));
 	
@@ -371,34 +408,28 @@ function featureServiceLayersHTML(dataProvider, serviceId, callback) {
 	featureServiceLayersJSON(dataProvider, serviceId, function(json, err) {
 		var layerHTMLItems = {};
 		var t = '<h3>Layer: <a href="%s">%s</a> (%d)</h3><br/>';
-		var layersHTML = "";
-		var retrievedCount = 0;
 		for (var i=0; i<json.layers.length; i++) {
 			var layer = json.layers[i];
-			featureServiceLayerItemHTML(layer, serviceId, layer.id, function(html, err) {
-				if (err) return callback("", err);
-
-				html = util.format(t, dataProvider.urls.getLayerUrl(serviceId, layer.id),
-								   layer.name, layer.id) + html;
-				layerHTMLItems[layer.id] = html;
-				retrievedCount++;
-
-				if (retrievedCount == json.layers.length) {
-					for (var j=0; j<json.layers.length; j++) {
-						layersHTML += layerHTMLItems[json.layers[j].id];
-					}
-					var r = util.format(_featureServiceLayersHTML,
-						serviceId, 
-						dataProvider.urls.getServicesUrl(), dataProvider.urls.getServicesUrl(),
-						dataProvider.urls.getServiceUrl(serviceId),
-						dataProvider.name, "FeatureServer",
-						dataProvider.urls.getLayersUrl(serviceId),
-						serviceId,
-						layersHTML);
-					callback(r, err);
-				}
-			});
+			var html = featureServiceLayerItemHTML(layer, serviceId, layer.id);
+			html = util.format(t, dataProvider.urls.getLayerUrl(serviceId, layer.id),
+							   layer.name, layer.id) + html;
+			layerHTMLItems[layer.id] = html;
 		}
+
+		var layersHTML = "";
+		for (var j=0; j<json.layers.length; j++) {
+			layersHTML += layerHTMLItems[json.layers[j].id];
+		}
+
+		var r = util.format(_featureServiceLayersHTML,
+			serviceId, 
+			dataProvider.urls.getServicesUrl(), dataProvider.urls.getServicesUrl(),
+			dataProvider.urls.getServiceUrl(serviceId),
+			dataProvider.name, "FeatureServer",
+			dataProvider.urls.getLayersUrl(serviceId),
+			serviceId,
+			layersHTML);
+		callback(r, err);
 	});
 };
 
@@ -411,7 +442,7 @@ function o(mJ,mH,f,d) {
 	args.push(function(result, err) {
 		callback(result, err);
 	});
-	var m = (f==="json")?mJ:mH;
+	var m = (f==="json" || f==="pjson")?mJ:mH;
 	m.apply(d,args);
 };
 

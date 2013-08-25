@@ -26,7 +26,9 @@ function useCallback(request) {
 function getSvcForRequest(request) {
 	var svcs = app.get("dataProviders");
 	if (svcs.hasOwnProperty(request.params.dataProviderName)) {
-		return svcs[request.params.dataProviderName].dataProvider;
+		var provider = svcs[request.params.dataProviderName].dataProvider;
+		provider._request = request;
+		return provider;
 	}
 	else
 	{
@@ -36,6 +38,7 @@ function getSvcForRequest(request) {
 
 // App configuration
 app.configure(function() {
+	app.use(express.compress());
 	app.use(express.methodOverride());
 	app.use(express.bodyParser());
  
@@ -63,7 +66,6 @@ app.configure(function() {
 	});
 
 	app.use(app.router);
-	app.use(express.compress());
 	app.use(express.static(path.join(__dirname,"resources"), {maxAge: 31557600000}));
 });
 

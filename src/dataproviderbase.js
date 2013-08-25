@@ -213,10 +213,27 @@ DataProviderBase.prototype = {
 	//   allow consumers to home in on the data when added to a map.
 	getFeatureServiceLayerDetails: function(detailsTemplate, serviceId, layerId, callback) {
 		if (!this._devMode) console.log("Implement featureServiceLayerDetails() to return layer information for a layer definition");
-		callback(this.getLayerName(serviceId, layerId), 
-				 this.idField(serviceId, layerId),
-				 this.nameField(serviceId, layerId),
-				 this.fields(serviceId, layerId), null);
+		callback({
+			layerName: this.getLayerName(serviceId, layerId), 
+			idField: this.idField(serviceId, layerId),
+			nameField: this.nameField(serviceId, layerId),
+			fields: this.fields(serviceId, layerId),
+			geometryType: this.geometryType(serviceId, layerId)
+		}, null);
+	},
+
+	// Geometry Type to be returned for the "Layer (Feature Service)" json.
+	//
+	// Note:
+	// - Clients may rely on this to determine the correct way to render the output 
+	//   from "Query". This should be set correctly for the single type of geometry that this
+	//   service endpoint will render.
+	// - This will be used to determine the value of the drawingInfo attribute for
+	//   "Layer (Feature Service)". To override the drawingInfo, override the 
+	//   getFeatureServiceLayerDetails() function.
+	geometryType: function(serviceId, layerId) {
+		if (!this._devMode) console.log("Implement geometryType() to provide the geometry type for a layer (esriGeometryPoint, esriGeometryPolyline, or esriGeometryPolygon)");
+		return "esriGeometryPoint";
 	},
 
 	// Fields list to be returned for the "Layer (Feature Service)" and 

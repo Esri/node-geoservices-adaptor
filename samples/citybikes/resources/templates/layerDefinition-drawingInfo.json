@@ -1,0 +1,80 @@
+{
+	"renderer": {
+		"type": "uniqueValue",
+		"field1": "bikesClass",
+		"defaultSymbol": null,
+		"uniqueValueInfos": [{
+			"value": "A few bikes",
+			"symbol": {
+				"color": [255, 215, 0, 255],
+				"size": 7.5,
+				"angle": 0,
+				"xoffset": 0,
+				"yoffset": 0,
+				"type": "esriSMS",
+				"style": "esriSMSCircle",
+				"outline": {
+					"color": [0, 0, 128, 255],
+					"width": 0,
+					"type": "esriSLS",
+					"style": "esriSLSSolid"
+				}
+			},
+			"label": "A few bikes"
+		}, {
+			"value": "Plenty of bikes",
+			"symbol": {
+				"color": [50, 205, 50, 255],
+				"size": 9,
+				"angle": 0,
+				"xoffset": 0,
+				"yoffset": 0,
+				"type": "esriSMS",
+				"style": "esriSMSCircle",
+				"outline": {
+					"color": [0, 0, 128, 255],
+					"width": 0,
+					"type": "esriSLS",
+					"style": "esriSLSSolid"
+				}
+			},
+			"label": "Plenty of bikes"
+		}, {
+			"value": "1 bike",
+			"symbol": {
+				"color": [255, 127, 80, 255],
+				"size": 5.25,
+				"angle": 0,
+				"xoffset": 0,
+				"yoffset": 0,
+				"type": "esriSMS",
+				"style": "esriSMSCircle",
+				"outline": {
+					"color": [0, 0, 128, 255],
+					"width": 0,
+					"type": "esriSLS",
+					"style": "esriSLSSolid"
+				}
+			},
+			"label": "1 bike"
+		}, {
+			"value": "No bikes",
+			"symbol": {
+				"color": [0, 0, 128, 128],
+				"size": 3,
+				"angle": 0,
+				"xoffset": 0,
+				"yoffset": 0,
+				"type": "esriSMS",
+				"style": "esriSMSX",
+				"outline": {
+					"color": [240, 128, 128, 255],
+					"width": 1,
+					"type": "esriSLS",
+					"style": "esriSLSSolid"
+				}
+			},
+			"label": "No bikes"
+		}]
+	}
+}

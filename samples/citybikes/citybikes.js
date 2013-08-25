@@ -39,6 +39,8 @@ var dockClassificationScheme = {
 	"plenty": { "min": 11, "max": 10000, "label": "Plenty of docks" }
 };
 
+var drawingInfo = JSON.parse(fs.readFileSync(path.join(path.dirname(module.filename),"resources","templates","layerDefinition-drawingInfo.json"), 'utf8'));
+
 var timezoneAPIKey = "IMPMC00M2XNY";
 
 Object.size = function(obj) {
@@ -568,6 +570,7 @@ Object.defineProperties(CityBikes.prototype, {
 	},
 	getFeatureServiceLayerDetails: {
 		value: function(detailsTemplate, serviceId, layerId, callback) {
+			detailsTemplate["drawingInfo"] = drawingInfo;
 			// We'll take the default JSON that the engine has calculated for us, but we'll
 			// inject an extent if we have one stored so that clients can connect to us
 			// more easily.
@@ -592,12 +595,15 @@ Object.defineProperties(CityBikes.prototype, {
 					detailsTemplate.extent.ymin = y - h;
 					detailsTemplate.extent.ymax = y + h;
 				}
-				callback(this.getLayerName(serviceId, layerId), 
-						 this.idField(serviceId, layerId), 
-						 this.nameField(serviceId, layerId),
-						 this.fields(serviceId, layerId), null);
+				callback({
+					layerName: this.getLayerName(serviceId, layerId), 
+					idField: this.idField(serviceId, layerId),
+					nameField: this.nameField(serviceId, layerId),
+					fields: this.fields(serviceId, layerId),
+					geometryType: this.geometryType(serviceId, layerId)
+				}, null);
 			} else {
-				callback(detailsTemplate, null, null, null,
+				callback({},
 						 "Invalid CityBikes Service ID: " + serviceId);
 			}
 		}
