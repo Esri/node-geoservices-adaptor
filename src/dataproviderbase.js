@@ -85,6 +85,13 @@ DataProviderBase = function () {
 
 		return cache;		
 	}
+	
+	this.deleteCache = function(cache) {
+		var serviceId = cache.serviceId,
+			layerId = cache.layerId;
+		delete this._caches[serviceId][layerId];
+		delete cache;
+	}
 }
 
 DataProviderBase.prototype = {
@@ -137,6 +144,13 @@ DataProviderBase.prototype = {
 	getServiceIds: function(callback) {
 		if (!this._devMode) console.log("Implement serviceIds() to return an array of service ID references for this provider");
 		callback(["firstService","secondService"], null);
+	},
+
+	// A string to be used to name each Service in the Catalog response. It is 
+	// also used in the "Feature Service" response and breadcrumb...
+	getServiceName: function(serviceId) {
+		if (!this._devMode) console.log("Implement getServiceName() to specify a human readable name for a serviceId");
+		return serviceId;
 	},
 
 	// An array of objects, each of which will have name and url properties.
