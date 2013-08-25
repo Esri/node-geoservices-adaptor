@@ -41,10 +41,11 @@ var fieldTypePriorities = {
 	"esriFieldTypeInteger": ["esriFieldTypeDate"]
 };
 
-function parseServiceId(serviceId) {
+function parseServiceId(serviceId, layerId) {
     var r = {
     	fullServiceId: serviceId,
-    	typelessFullServiceId: serviceId
+    	typelessFullServiceId: serviceId,
+    	cacheId: serviceId
     };
     var parts = serviceId.split("+");
     r.serviceId = parts[0];
@@ -59,6 +60,9 @@ function parseServiceId(serviceId) {
         r.name = util.format("%s::%s::%s", r.githubUser, r.repoName, r.filePath);
         break;
     case "gist":
+		if (typeof layerId !== "undefined" && layerId !== null) {
+			r.cacheId += "_" + layerId;
+		}
         r.gistId = parts[1];
         r.geoJSONType = (parts.length > 2) ? parts[2] : null;
         r.name = util.format("%s", r.gistId);
@@ -97,7 +101,6 @@ function addId(geoJSON, seedId) {
 		seedId = 0;
 	}
 	if (!geoJSON.hasOwnProperty("id")) {
-		console.log("Adding   ID " + seedId);
 		geoJSON["id"] = seedId;
 	} else {
 		console.log("Existing ID " + seedId);
@@ -232,17 +235,20 @@ function getMaxType(f1, f2) {
 	}
 }
 
-function calculateFields(geoJSONItem, fields, idField) {
+function calculateFields(geoJSONItem, fields, idField, nameField) {
 	if (typeof fields === "undefined" || fields===null) {
 		fields = {};
 	}
 	if (typeof idField === "undefined" || idField===null) {
 		idField = [];
 	}
+	if (typeof nameField === "undefined" || nameField===null) {
+		nameField = [];
+	}
 
     if (geoJSONItem.type === "FeatureCollection") {
         for (var i=0; i < geoJSONItem.features.length; i++) {
-            calculateFields(geoJSONItem.features[i], fields, idField);
+            calculateFields(geoJSONItem.features[i], fields, idField, nameField);
         }
     } else if (geoJSONItem.type === "Feature") {
     	if (geoJSONItem.properties) {
@@ -259,6 +265,9 @@ function calculateFields(geoJSONItem, fields, idField) {
     			}
     		}
     		for (var i=0; i < itemFields.length; i++) {
+	    		if (nameField.length == 0 && itemFields[i].type === "esriFieldTypeString") {
+	    			nameField.push(itemFields[i]);
+	    		}
     			var k = itemFields[i].name; // + "_" + itemFields[i].type;
     			if (!fields.hasOwnProperty(k)) {
     				fields[k] = itemFields[i];
@@ -276,6 +285,10 @@ function calculateFields(geoJSONItem, fields, idField) {
 					alias: 'id'
 				};
 				idField.push(fields["id"]);
+			}
+			
+			if (nameField.length == 0) {
+				nameField.push(idField[0]);
 			}
     	}
     }
@@ -344,7 +357,7 @@ function outputArcGISJSON(geoJSONOutput, cache, query, callback) {
 		}
 
 		var newId = i;
-		if (!arcgisOutput[i].attributes.hasOwnProperty(idField)) {
+// 		if (!arcgisOutput[i].attributes.hasOwnProperty(idField)) {
 			if (arcgisOutput[i].hasOwnProperty("geojsonid")) {
 				newId = arcgisOutput[i].geojsonid;
 				arcgisOutput[i].attributes[idField] = newId;
@@ -352,7 +365,7 @@ function outputArcGISJSON(geoJSONOutput, cache, query, callback) {
 			} else {
 				console.log("Having to set id on geoJSON with AUTO: " + newId);
 			}
-		}
+// 		}
     }
 
     callback(arcgisOutput, null);
@@ -425,7 +438,7 @@ Object.defineProperties(GeoHubProvider.prototype, {
             	case "repo":
             		return "Layer " + 0;
             	case "gist":
-            		return "Gist Layer" + c.name;
+            		return "Gist " + c.name + " Layer " + layerId;
             }
         }
     },
@@ -450,7 +463,7 @@ Object.defineProperties(GeoHubProvider.prototype, {
     },
     geometryType: {
     	value: function(serviceId, layerId) {
-            var c = parseServiceId(serviceId);
+            var c = parseServiceId(serviceId, layerId);
             var r = "esriGeometryPoint";
             if (c.geoJSONType) {
             	r = getEsriGeometryType(c.geoJSONType);
@@ -462,9 +475,18 @@ Object.defineProperties(GeoHubProvider.prototype, {
     	value: function(serviceId, layerId) {
     		// Do not call this before getFeatureServiceLayerDetails() or featuresForQuery()
     		// if you want actual results.
-			var c = parseServiceId(serviceId);
-        	var cache = this.getCache(c.typelessFullServiceId, layerId);
+			var c = parseServiceId(serviceId, layerId);
+        	var cache = this.getCache(c.cacheId);
         	return cache.layerDetails.idField;
+        }
+    },
+    nameField: {
+    	value: function(serviceId, layerId) {
+    		// Do not call this before getFeatureServiceLayerDetails() or featuresForQuery()
+    		// if you want actual results.
+			var c = parseServiceId(serviceId, layerId);
+        	var cache = this.getCache(c.cacheId);
+        	return cache.layerDetails.nameField;
         }
     },
     getFeatureServiceLayerDetails: {
@@ -476,7 +498,7 @@ Object.defineProperties(GeoHubProvider.prototype, {
     	value: function(detailsTemplate, serviceId, layerId, query, callback) {
             var provider = this;
             this._readGeoHubGeoJSON(serviceId, layerId, query, function(data, err) {
-                var c = parseServiceId(serviceId);
+                var c = parseServiceId(serviceId, layerId);
                 geohubServiceId = c.serviceId;
 
 				if (detailsTemplate) {
@@ -505,7 +527,6 @@ Object.defineProperties(GeoHubProvider.prototype, {
                 var geoJSONData = data.geoJSONData;
                 var cache = data.cache;
                 var bounds = Terraformer.Tools.calculateBounds(data.geoJSONData);
-                debugger;
                 
                 if (!cache.layerDetails.hasOwnProperty("extent")) {
 					cache.layerDetails.extent = {
@@ -525,16 +546,18 @@ Object.defineProperties(GeoHubProvider.prototype, {
                 });
 
                 var idFieldContainer = [];
+                var nameFieldContainer = [];
                 if (!cache.layerDetails.hasOwnProperty("fields")) {
-					var fields = calculateFields(geoJSONData, null, idFieldContainer);
+					var fields = calculateFields(geoJSONData, null, idFieldContainer, nameFieldContainer);
 					var idField = idFieldContainer[0].name;
 					cache.layerDetails.fields = fields;
 					cache.layerDetails.idField = idField;
+					cache.layerDetails.nameField = nameFieldContainer[0].name
 				}
                 callback({
                     layerName: provider.getLayerName(serviceId, layerId),
                     idField: cache.layerDetails.idField,
-                    nameField: provider.nameField(serviceId, layerId),
+                    nameField: cache.layerDetails.nameField,
                     fields: cache.layerDetails.fields,
                     geometryType: getEsriGeometryType(typeInfo.type),
                     geoJSONData: geoJSONData,
@@ -550,7 +573,7 @@ Object.defineProperties(GeoHubProvider.prototype, {
 
             	var geoJSONData = layerDetails.geoJSONData;
             	
-				var c = parseServiceId(serviceId);
+				var c = parseServiceId(serviceId, layerId);
 				serviceId = c.serviceId;
 
 				query.geohubParams = c;
@@ -576,10 +599,10 @@ Object.defineProperties(GeoHubProvider.prototype, {
                         } else if (query.format === "geojson") {
                             // OK, we can just return the geoJSON for that file.
                             query.generatedFormat = "geojson";
-                            callback(geoJSONData[layerId], null);
+                            callback(geoJSONData, null);
                         } else if (query.format === "json") {
                             // Otherwise we return the Esri JSON for that file.
-                            return outputArcGISJSON(geoJSONData[layerId], layerDetails.cache, query, callback);
+                            outputArcGISJSON(geoJSONData, layerDetails.cache, query, callback);
                         }
                     }
                 } else if (serviceId === "repo") {
@@ -594,8 +617,11 @@ Object.defineProperties(GeoHubProvider.prototype, {
 		}
 	},
     _loadDataFromCacheWhenReady: {
-    	value: function(loadingCache, query, callback) {
-			console.log(loadingCache.status);
+    	value: function(serviceId, layerId, query, callback) {
+			var c = parseServiceId(serviceId, layerId);
+    		var loadingCache = this.getCache(c.cacheId);
+			console.log(loadingCache.status + " :: " + c.cacheId);
+			
 			if (loadingCache.status === "invalid") {
 				// Cache finished processing but couldn't load.
 				this.deleteCache(loadingCache);
@@ -650,23 +676,23 @@ Object.defineProperties(GeoHubProvider.prototype, {
 				(function(lc, cb) {
 					setTimeout(function () {
 						// We weren't ready yet, let's try again in a few
-						provider._loadDataFromCacheWhenReady(lc, query, cb);
+						provider._loadDataFromCacheWhenReady(serviceId, layerId, query, cb);
 					}, 100);
 				})(loadingCache, callback);
 			}
 		}
 	},
 	_populateCacheIfNecessary: {
-		value: function(serviceId, layerId, query, cache, callback) {
-        	if (cache.status === "waitingToLoad") {
-        		cache.status === "loading";
+		value: function(serviceId, layerId, query, callback) {
+			var c = parseServiceId(serviceId, layerId);
+			var cache = null;
+			if (c.serviceId === "repo") {
+				cache = this.getCache(c.cacheId);
+				if (cache.status === "waitingToLoad") {
 
-				var c = parseServiceId(serviceId);
-				serviceId = c.serviceId;
-			
-				console.log("READING GEOHUB");
+					console.log("READING REPO");
 
-				if (serviceId === "repo") {
+	        		cache.status === "loading";
 					if (!(c.hasOwnProperty("githubUser") && c.hasOwnProperty("repoName") && c.hasOwnProperty("filePath"))) {
 						cache.status = "invalid";
 						console.log("You must specify githubUser, repoName, and filePath!");
@@ -695,12 +721,15 @@ Object.defineProperties(GeoHubProvider.prototype, {
 							});
 						}
 					});
-				} else if (serviceId == "gist") {
-					if (!c.hasOwnProperty("gistId")) {
-						callback("You must specify a gistId query parameter.");
-						return;
-					}
+				}
+			} else if (c.serviceId == "gist") {
+				if (!c.hasOwnProperty("gistId")) {
+					callback("You must specify a gistId query parameter.");
+					return;
+				}
+				if (!this.cacheExists(c.cacheId)) {
 					var gistId = c.gistId;
+					var provider = this;
 					Geohub.gist({
 						id: gistId
 					}, function(err, geoJSONData) {
@@ -709,30 +738,52 @@ Object.defineProperties(GeoHubProvider.prototype, {
 							callback(err);
 							return;
 						} else {
-							addId(geoJSONData);
-							cache.store.add(geoJSONData, function(err,result) {
-								if (err) { 
-									callback(err); 
-									return;
+							var cachesLoading = geoJSONData.length;
+							var cachesToLoad = [];
+							for (var i=0; i<geoJSONData.length; i++) {
+								var cLocal = parseServiceId(serviceId, i);
+								var cacheLocal = provider.getCache(cLocal.cacheId);
+
+								if (cacheLocal.status === "loaded") {
+									console.log("****** Error - loading to loaded cache! " + c.cacheId);
+									cachesLoading--;
 								} else {
-									cache.status = "loaded";
+									cachesToLoad.push(cacheLocal);
+									cacheLocal.status = "loading";
+									var d = geoJSONData[i];
+									addId(d);
+									cacheLocal.store.add(d, function(err,result) {
+										cachesLoading--;
+										if (err) { 
+											callback(err); 
+											return;
+										} else {
+											if (cachesLoading == 0) {
+												for (var j=0; j < cachesToLoad.length; j++) {
+													cachesToLoad[j].status = "loaded";
+												}
+											}
+										}
+									});
 								}
-							});
+							}
 						}
 					});
 				} else {
-					callback("Unknown GeoHub Type: " + serviceId);
-					return;
+					console.log("Using existing cache " + c.cacheId);
 				}
-        	} 
+			} else {
+				callback("Unknown GeoHub Type: " + c.serviceId);
+				return;
+			}
 		}
 	},
     _readGeoHubGeoJSON: {
         value: function(serviceId, layerId, query, callback) {
-        	var c = parseServiceId(serviceId);
-        	var cache = this.getCache(c.typelessFullServiceId, layerId);
+//         	var c = parseServiceId(serviceId, layerId);
+//         	var cache = this.getCache(c.cacheId);
         	
-			this._populateCacheIfNecessary(serviceId, layerId, query, cache, function(err) {
+			this._populateCacheIfNecessary(serviceId, layerId, query, function(err) {
 				// We'll only get called if there was an error populating the cache.
 				if (err) {
 					callback(null, err);
@@ -740,7 +791,7 @@ Object.defineProperties(GeoHubProvider.prototype, {
 				}
 			});
 
-			this._loadDataFromCacheWhenReady(cache, query, function(result, err) {
+			this._loadDataFromCacheWhenReady(serviceId, layerId, query, function(result, err) {
 				callback(result, err);
 				return;
 			});

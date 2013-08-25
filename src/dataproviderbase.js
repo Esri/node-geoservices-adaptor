@@ -6,10 +6,10 @@ var urls = require("./urls.js"),
 	memoryStore = require("terraformer/Stores/Memory"),
 	levelDB = require("terraformer-geostore-leveldb");
 
-DataProviderCache = function(serviceId, layerId, cacheLifetimeInSeconds) {
+DataProviderCache = function(cacheId, cacheLifetimeInSeconds) {
+	console.log("Creating new cache: " + cacheId);
 	this.cacheLifetimeInSeconds = 1000 * (arguments >= 3)?cacheLifetimeInSeconds:60*60;
-    this.serviceId = serviceId;
-    this.layerId = layerId;
+    this.cacheId = cacheId;
 
 	this.expirationUTC = new Date();
 
@@ -55,31 +55,25 @@ DataProviderBase = function () {
 	this._devMode = (process.env.VCAP_APP_PORT === null);
 	this._caches = {};
 	
-	this.getCache = function(serviceId, layerId) {
-		if (arguments.length < 2) {
-			console.log("You must provide a serviceId and layerId");
+	this.getCache = function(cacheId) {
+		if (arguments.length < 1) {
+			console.log("You must provide a cacheId");
 			return null; 
 		}
 		
-		var cachesForService = null;
-		if (!this._caches.hasOwnProperty(serviceId)) {
-			console.log("First cache for ServiceID: " + serviceId);
-			this._caches[serviceId] = {};
-		}
-		
 		var cache = null;
-		if (!this._caches[serviceId].hasOwnProperty(layerId)) {
-			console.log("NEW CACHE: Creating cache for " + serviceId + "-->" + layerId);
-			this._caches[serviceId][layerId] = cache = new DataProviderCache(serviceId,layerId);
+		if (!this._caches.hasOwnProperty(cacheId)) {
+			console.log("Creating cache for cacheId: " + cacheId);
+			this._caches[cacheId] = cache = new DataProviderCache(cacheId);
 		} else { 
-			cache = this._caches[serviceId][layerId];
+			cache = this._caches[cacheId];
 			if (!cache.validateCache()) {
-				console.log("CACHE INVALID: Creating cache for " + serviceId + "-->" + layerId);
+				console.log("CACHE INVALID: Creating cache for " + cacheId);
 				// The cache is expired and should not be extended. Create a new one.
-				cache = new DataProviderCache(cache.cacheLifetimeInSeconds);
+				cache = new DataProviderCache(cacheId, cache.cacheLifetimeInSeconds);
 				// And delete the old one.
-				delete this._caches[serviceId][layerId];
-				this._caches[serviceId][layerId] = cache;
+				delete this._caches[cacheId];
+				this._caches[cacheId] = cache;
 			}
 		}
 
@@ -87,10 +81,12 @@ DataProviderBase = function () {
 	}
 	
 	this.deleteCache = function(cache) {
-		var serviceId = cache.serviceId,
-			layerId = cache.layerId;
-		delete this._caches[serviceId][layerId];
+		delete this._caches[cacheId];
 		delete cache;
+	}
+	
+	this.cacheExists = function(cacheId) {
+		return this._caches.hasOwnProperty(cacheId);
 	}
 }
 
