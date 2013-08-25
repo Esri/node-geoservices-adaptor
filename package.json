@@ -4,7 +4,8 @@
     "dependencies":{
         "express":"3.x",
         "geohub": "*",
-        "terraformer": "*"
+        "terraformer": "*",
+        "terraformer-geostore-leveldb": "*"
     },
   	"engine": "node >= 0.8.0"
 }

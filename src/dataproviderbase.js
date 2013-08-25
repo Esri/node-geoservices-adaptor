@@ -21,6 +21,8 @@ DataProviderCache = function(serviceId, layerId, cacheLifetimeInSeconds) {
 
     this.extendCache();
     
+    this.layerDetails = {};
+    
 	this.status = "waitingToLoad";
 }
 
