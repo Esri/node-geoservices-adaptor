@@ -540,6 +540,11 @@ Object.defineProperties(CityBikes.prototype, {
 			return cityBikesFields;
 		}
 	},
+	getLayerName: {
+		value: function(serviceId, layerId) {
+			return "Current Status";
+		}
+	},
 	featuresForQuery: {
 		value: function(serviceId, layerId, query, callback) {
 			// Get the bike networks (which map to FeatyreServices). They may be cached,
