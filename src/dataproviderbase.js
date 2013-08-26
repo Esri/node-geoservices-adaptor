@@ -1,12 +1,76 @@
 var urls = require("./urls.js"),
-	TerraformerArcGIS = require("terraformer-arcgis-parser");
+	Terraformer = require("terraformer"),
+	TerraformerArcGIS = require("terraformer/Parsers/ArcGIS"),
+	DataProviderCache = require("./dataprovidercache").DataProviderCache;
 
 DataProviderBase = function () {
 	this._urls = new urls.Urls(this);
 	this._devMode = (process.env.VCAP_APP_PORT === null);
+	this._caches = {};
 }
 
 DataProviderBase.prototype = {
+	/// ---------------------------------------------------------------------------------
+	/// CACHE HANDLING
+	/// ---------------------------------------------------------------------------------
+
+	getCache: function(serviceId, layerId) {
+		if (arguments.length < 2) {
+			console.log("You must provide a serviceId and layerId");
+			return null; 
+		}
+		
+		var cache = null;
+		if (!this._caches.hasOwnProperty(serviceId)) {
+			console.log("Creating cache store for service: " + serviceId);
+			this._caches[serviceId] = {};
+		}
+		
+		if (!this._caches[serviceId].hasOwnProperty(layerId)) {
+			console.log("Creating cache for service " + serviceId + ", layer " + layerId);
+			cache = new DataProviderCache(serviceId, layerId);
+			this._caches[serviceId][layerId] = cache;
+		} else { 
+			cache = this._caches[serviceId][layerId];
+			if (!cache.validateCache()) {
+				console.log("CACHE INVALID: Creating cache for " + cacheId);
+				// The cache is expired and should not be extended. Create a new one.
+				cache = new DataProviderCache(serviceId, layerId, cache.cacheLifetimeInSeconds);
+				// And delete the old one.
+				delete this._caches[serviceId][layerId];
+				this._caches[serviceId][layerId] = cache;
+			}
+		}
+
+		return cache;		
+	},
+	
+	deleteCache: function(cache) {
+		if (this.cacheExists(cache.serviceId, cache.layerId)) {
+			delete this._caches[cache.serviceId][cache.layerId];
+		}
+		delete cache;
+	},
+	
+	cacheExists: function(serviceId, layerId) {
+		return this._caches.hasOwnProperty(serviceId) &&
+			   this._caches[serviceId].hasOwnProperty(layerId);
+	},
+	
+	cachesForService: function(serviceId) {
+		var cs = [];
+		if (this._caches.hasOwnProperty(serviceId)) {
+			for (var layerId in this._caches[serviceId]) {
+				cs.push(this._caches[serviceId][layerId]);
+			}
+		}
+		return cs;
+	},
+
+	/// ---------------------------------------------------------------------------------
+	/// REST REQUEST HANDLING
+	/// ---------------------------------------------------------------------------------
+
 	// A single instance of Urls which can be used to return URLs relevant to this service.
 	// This is used, for example, where Service URLs are written out in a service's HTML output.
 	get urls() {
@@ -56,6 +120,13 @@ DataProviderBase.prototype = {
 	getServiceIds: function(callback) {
 		if (!this._devMode) console.log("Implement serviceIds() to return an array of service ID references for this provider");
 		callback(["firstService","secondService"], null);
+	},
+
+	// A string to be used to name each Service in the Catalog response. It is 
+	// also used in the "Feature Service" response and breadcrumb...
+	getServiceName: function(serviceId) {
+		if (!this._devMode) console.log("Implement getServiceName() to specify a human readable name for a serviceId");
+		return serviceId;
 	},
 
 	// An array of objects, each of which will have name and url properties.
@@ -116,7 +187,7 @@ DataProviderBase.prototype = {
 			callback(layerIds, provider.getLayerNamesForIds(layerIds), err);
 		});
 	},
-	
+
 	// JSON to be injected into the "Feature Service" response for each layer provided 
 	// (see also the layerIds property).
 	//
