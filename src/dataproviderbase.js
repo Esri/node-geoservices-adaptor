@@ -1,62 +1,20 @@
 var urls = require("./urls.js"),
 	Terraformer = require("terraformer"),
 	TerraformerArcGIS = require("terraformer/Parsers/ArcGIS"),
-	geostore = require("terraformer/GeoStore"),
-	rtree = require("terraformer/RTree"),
-	memoryStore = require("terraformer/Stores/Memory"),
-	levelDB = require("terraformer-geostore-leveldb");
-
-DataProviderCache = function(serviceId, layerId, cacheLifetimeInSeconds) {
-	this.cacheLifetimeInSeconds = 1000 * (arguments >= 3)?cacheLifetimeInSeconds:60*60;
-	this.serviceId = serviceId;
-	this.layerId = layerId;
-    this.cacheId = serviceId + "_" + layerId;
-	console.log("Creating new cache: " + this.cacheId);
-
-	this.expirationUTC = new Date();
-
-    this.store = new geostore.GeoStore({
-		store: new memoryStore.Memory(),
-        index: new rtree.RTree()
-    });
-
-    this.extendCache();
-    
-    this.layerDetails = {};
-    
-	this.status = "waitingToLoad";
-}
-
-DataProviderCache.prototype = {
-	get isExpired() {
-    	return new Date().getTime() >= this.expirationUTC;
-	},
-	canExtendCache: function() {
-		return true;
-	},
-	extendCache: function() {
-		if (this.canExtendCache()) {
-			this.expirationUTC = new Date().getTime() + this.cacheLifetimeInSeconds*1000;
-			return true;
-		} else {
-			return false;
-		}
-	},
-	validateCache: function() {
-		if (!this.isExpired) {
-			return true;
-		} else {
-			return this.extendCache();
-		}
-	}
-}
+	DataProviderCache = require("./dataprovidercache").DataProviderCache;
 
 DataProviderBase = function () {
 	this._urls = new urls.Urls(this);
 	this._devMode = (process.env.VCAP_APP_PORT === null);
 	this._caches = {};
-	
-	this.getCache = function(serviceId, layerId) {
+}
+
+DataProviderBase.prototype = {
+	/// ---------------------------------------------------------------------------------
+	/// CACHE HANDLING
+	/// ---------------------------------------------------------------------------------
+
+	getCache: function(serviceId, layerId) {
 		if (arguments.length < 2) {
 			console.log("You must provide a serviceId and layerId");
 			return null; 
@@ -85,21 +43,21 @@ DataProviderBase = function () {
 		}
 
 		return cache;		
-	}
+	},
 	
-	this.deleteCache = function(cache) {
+	deleteCache: function(cache) {
 		if (this.cacheExists(cache.serviceId, cache.layerId)) {
 			delete this._caches[cache.serviceId][cache.layerId];
 		}
 		delete cache;
-	}
+	},
 	
-	this.cacheExists = function(serviceId, layerId) {
+	cacheExists: function(serviceId, layerId) {
 		return this._caches.hasOwnProperty(serviceId) &&
 			   this._caches[serviceId].hasOwnProperty(layerId);
-	}
+	},
 	
-	this.cachesForService = function(serviceId) {
+	cachesForService: function(serviceId) {
 		var cs = [];
 		if (this._caches.hasOwnProperty(serviceId)) {
 			for (var layerId in this._caches[serviceId]) {
@@ -107,10 +65,12 @@ DataProviderBase = function () {
 			}
 		}
 		return cs;
-	}
-}
+	},
 
-DataProviderBase.prototype = {
+	/// ---------------------------------------------------------------------------------
+	/// REST REQUEST HANDLING
+	/// ---------------------------------------------------------------------------------
+
 	// A single instance of Urls which can be used to return URLs relevant to this service.
 	// This is used, for example, where Service URLs are written out in a service's HTML output.
 	get urls() {
