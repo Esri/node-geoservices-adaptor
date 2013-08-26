@@ -110,9 +110,7 @@ Object.defineProperties(CityBikes.prototype, {
 				// Load the latest list of bike share networks
 				console.log("Caching Networks...");
 				var added = 0;
-				var provider = this;
-				http.get(cityBikesNetworksURL, 
-						 function(res)
+				http.get(cityBikesNetworksURL, (function(res)
 				{
 					res.setEncoding('utf8');
 					var networksJSON = "";
@@ -121,7 +119,8 @@ Object.defineProperties(CityBikes.prototype, {
 						networksJSON = networksJSON + chunk;
 					});
 
-					res.on('end', function() {
+					res.on('end', (function() 
+					{
 						// Finished eating our HTTP response.
 						console.log("Caching Networks...");
 
@@ -170,11 +169,11 @@ Object.defineProperties(CityBikes.prototype, {
 								nc[network.name] = networkCacheEntry;
 						
 								// Set up the timezone for this network
-								provider._getTimezone(networkCacheEntry, function() {
+								this._getTimezone(networkCacheEntry, function() {
 									if (process.env.VCAP_APP_PORT) {
 										// Don't pre-cache unless deployed
 										console.log("Precaching stations for " + networkCacheEntry.network.name);
-										provider._stationsForNetwork(networkCacheEntry, function(stations) {
+										this._stationsForNetwork(networkCacheEntry, function(stations) {
 											return null;
 										});
 									}
@@ -185,15 +184,15 @@ Object.defineProperties(CityBikes.prototype, {
 						}
 				
 						// Mark the networks cache as valid for the next little while.
-						provider._cacheExpirationTime = new Date();
-						provider._cacheExpirationTime.setTime(provider._cacheExpirationTime.getTime() + provider._networksCacheTime);
+						this._cacheExpirationTime = new Date();
+						this._cacheExpirationTime.setTime(this._cacheExpirationTime.getTime() + this._networksCacheTime);
 						console.log("Cached " + added + " new networks!");
-						console.log("Networks cache expires at: " + provider._cacheExpirationTime);
+						console.log("Networks cache expires at: " + this._cacheExpirationTime);
 			
 						// And callback with the networks cache.
 						callback(nc, null);
-					});
-				});
+					}).bind(this));
+				}).bind(this));
 			}
 			else
 			{
@@ -219,8 +218,8 @@ Object.defineProperties(CityBikes.prototype, {
 				// OK, we need to go and ask api.citybik.es for the info.
 				// Note, we can only ask for the current state of ALL stations in a given network.
 				var cityBikesUrl = n.network.url;
-				var provider = this;
-				http.get(cityBikesUrl, function (res) {
+				http.get(cityBikesUrl, (function (res)
+				{
 					res.setEncoding('utf8');
 					var stationsJSON = "";
 			
@@ -228,7 +227,8 @@ Object.defineProperties(CityBikes.prototype, {
 						stationsJSON = stationsJSON + chunk;
 					});
 
-					res.on('end', function() {
+					res.on('end', (function() 
+					{
 						// Done eating the stations HTTP response for a given network.
 						var stationsData = JSON.parse(stationsJSON);
 
@@ -320,8 +320,8 @@ Object.defineProperties(CityBikes.prototype, {
 							};
 						
 							// Get that nice smart-value for AGOL rendering (see _getBikeRange()).
-							provider._getBikeRange(stationFeature);
-							provider._getDockRange(stationFeature);
+							this._getBikeRange(stationFeature);
+							this._getDockRange(stationFeature);
 						
 							// Remove some attributes we don't want to output.
 							delete stationFeature.attributes["lat"];
@@ -347,7 +347,7 @@ Object.defineProperties(CityBikes.prototype, {
 
 						// And mark when the cache will next be invalid.
 						n.stations.cacheExpirationTime =
-							new Date(n.stations.lastReadTime.getTime() + provider._stationCacheTime);
+							new Date(n.stations.lastReadTime.getTime() + this._stationCacheTime);
 
 						console.log(util.format('Cached %d stations for %s at %s (expires %s)',
 												stationsData.length, n.network.name,
@@ -356,8 +356,8 @@ Object.defineProperties(CityBikes.prototype, {
 
 						// Good. Call back with the results of our hard work.				
 						callback(n.stations.cachedStations, null);
-					});
-				});
+					}).bind(this));
+				}).bind(this));
 			}
 		}
 	},
@@ -388,14 +388,16 @@ Object.defineProperties(CityBikes.prototype, {
 				// hence the use of the cache above.
 				this._networksAwaitingTimezone[networkName] = true;
 				var timezoneUrl = util.format("http://api.timezonedb.com/?key=%s&lat=%d&lng=%d&format=json", timezoneAPIKey, network.lat, network.lng);
-				var provider = this;
-				http.get(timezoneUrl, function (res) {
+
+				http.get(timezoneUrl, (function (res) 
+				{
 					var timezoneJSON = "";
 					res.setEncoding('utf8');
 					res.on('data', function(chunk) {
 						timezoneJSON += chunk;
 					});
-					res.on('end', function() {
+					res.on('end', (function() 
+					{
 						var loadedTimezoneOK = false;
 						var timezone = null;
 						try
@@ -420,31 +422,31 @@ Object.defineProperties(CityBikes.prototype, {
 								networkCacheEntry["timezone"] = timezone;
 
 								// And associate it with whichever network asked for it.
-								provider._networkTimezones[networkName] = timezone;
+								this._networkTimezones[networkName] = timezone;
 
 								// Stop tracking that we're still looking for it.				
-								delete provider._networksAwaitingTimezone[networkName];
-								console.log("Timezone: " + networkName + " (" + Object.size(provider._networksAwaitingTimezone) + ")");
+								delete this._networksAwaitingTimezone[networkName];
+								console.log("Timezone: " + networkName + " (" + Object.size(this._networksAwaitingTimezone) + ")");
 								console.log(timezone);
 							
 								// And if we're no longer looking for any timezones, save
 								// the file in a cache so we don't hit our rate-limit on the
 								// timezonedb API too soon.
-								if (Object.size(provider._networksAwaitingTimezone) == 0)
+								if (Object.size(this._networksAwaitingTimezone) == 0)
 								{
-									if (!fs.existsSync(path.dirname(provider._timezoneCacheFilename))) {
-										fs.mkDirSync(path.dirname(provider._timezoneCacheFilename));
+									if (!fs.existsSync(path.dirname(this._timezoneCacheFilename))) {
+										fs.mkDirSync(path.dirname(this._timezoneCacheFilename));
 									}
-									fs.writeFile(provider._timezoneCacheFilename, JSON.stringify(provider._networkTimezones));
-									console.log("Wrote timezones to " + provider._timezoneCacheFilename);
+									fs.writeFile(this._timezoneCacheFilename, JSON.stringify(this._networkTimezones));
+									console.log("Wrote timezones to " + this._timezoneCacheFilename);
 								}
 							
 								// Call back with our updated cache entry, setting "this"
-								callback.call(provider, networkCacheEntry);
+								callback.call(this, networkCacheEntry);
 							}
 						}
-					});
-				});
+					}).bind(this));
+				}).bind(this));
 			}
 		}
 	},
@@ -542,22 +544,22 @@ Object.defineProperties(CityBikes.prototype, {
 		value: function(serviceId, layerId, query, callback) {
 			// Get the bike networks (which map to FeatyreServices). They may be cached,
 			// or may need to be fetched. So they are returned with a callback.
-			var provider = this;
-			this._networks(function(networks) {
+
+			this._networks((function(networks) {
 				// Now we have the full list of networks let's pick out the one we're 
 				// after (which matches the "serviceId" and get all the bike stations in 
 				// that network. Again, this may be cached, or may need to be got afresh.
 				// Note that we know we only have a single layer (stations) for any
 				// feature service (network) so we ignore the layerId.
 				var network = networks[serviceId];
-				provider._stationsForNetwork(network, function(stationFeatures, err) {
+				this._stationsForNetwork(network, (function(stationFeatures, err) {
 					// We have the stations for the network. These are our features
 					// that match the query. So call back to our caller with our results.
-					var idField = provider.idField(serviceId, layerId);
-					var fields = provider.fields(serviceId, layerId);
+					var idField = this.idField(serviceId, layerId);
+					var fields = this.fields(serviceId, layerId);
 					callback(stationFeatures, idField, fields, err);
-				});
-			});
+				}).bind(this));
+			}).bind(this));
 		}
 	},
 	getFeatureServiceDetails: {
@@ -573,10 +575,10 @@ Object.defineProperties(CityBikes.prototype, {
 					detailsTemplate.initialExtent = network.calculatedExtent;
 				}
 			}
-			var provider = this;
-			this.getLayerIds(serviceId, function(layerIds, err) {
-				callback(layerIds, provider.getLayerNamesForIds(serviceId, layerIds), err);
-			});
+
+			this.getLayerIds(serviceId, (function(layerIds, err) {
+				callback(layerIds, this.getLayerNamesForIds(serviceId, layerIds), err);
+			}).bind(this));
 		}
 	},
 	getFeatureServiceLayerDetails: {
