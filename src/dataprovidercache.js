@@ -8,23 +8,27 @@ DataProviderCache = function(serviceId, layerId, cacheLifetimeInSeconds) {
 	this.layerId = layerId;
     this.cacheId = serviceId + "_" + layerId;
 
-	this.expirationUTC = new Date();
-
-    this.store = new geostore.GeoStore({
-		store: new memoryStore.Memory(),
-        index: new rtree.RTree()
-    });
-
-    this.extendCache();
+	this.expirationUTC = null;
+	this.store = null;
+	this._status = null;
+	this.resetCache();
     
     this.layerDetails = {};
-    
-	this.status = "waitingToLoad";
 }
 
 DataProviderCache.prototype = {
 	get isExpired() {
     	return new Date().getTime() >= this.expirationUTC;
+	},
+	get status() {
+		return this._status;
+	},
+	set status(newStatus) {
+		var oldStatus = this._status;
+		this._status = newStatus;
+		if (newStatus === "loaded") {
+			this.extendCache();
+		}
 	},
 	canExtendCache: function() {
 		return true;
@@ -43,6 +47,16 @@ DataProviderCache.prototype = {
 		} else {
 			return this.extendCache();
 		}
+	},
+	resetCache: function() {
+		this.expirationUTC = new Date();
+
+		this.store = new geostore.GeoStore({
+			store: new memoryStore.Memory(),
+			index: new rtree.RTree()
+		});
+
+		this._status = "waitingToLoad";
 	}
 }
 
