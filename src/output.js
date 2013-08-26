@@ -332,10 +332,10 @@ function featureServiceHTML(dataProvider, serviceId, callback) {
 	
 		var r = util.format(
 			_featureServiceHTML,
-			dataProvider.name, "Feature Server",
+			dataProvider.name, "FeatureServer",
 			dataProvider.urls.getServicesUrl(), dataProvider.urls.getServicesUrl(), 
-			dataProvider.urls.getServiceUrl(serviceId), dataProvider.getServiceName(serviceId), "Feature Server",
-			dataProvider.getServiceName(serviceId), "Feature Server",
+			dataProvider.urls.getServiceUrl(serviceId), dataProvider.getServiceName(serviceId), "FeatureServer",
+			dataProvider.getServiceName(serviceId), "FeatureServer",
 			json.serviceDescription,
 			json.hasVersionedData,
 			json.maxRecordCount,
@@ -394,7 +394,7 @@ function featureServiceLayerHTML(dataProvider, serviceId, layerId, callback) {
 		var r = util.format(_featureServiceLayerHTML,
 			json.name, layerId,
 			dataProvider.urls.getServicesUrl(), dataProvider.urls.getServicesUrl(),
-			dataProvider.urls.getServiceUrl(serviceId), dataProvider.getServiceName(serviceId), json.type,
+			dataProvider.urls.getServiceUrl(serviceId), dataProvider.getServiceName(serviceId), "FeatureServer",
 			dataProvider.urls.getLayerUrl(serviceId, layerId), json.name,
 			json.name, layerId,
 			url,url,url,
@@ -425,7 +425,7 @@ function featureServiceLayersHTML(dataProvider, serviceId, callback) {
 		var r = util.format(_featureServiceLayersHTML,
 			serviceId, 
 			dataProvider.urls.getServicesUrl(), dataProvider.urls.getServicesUrl(),
-			dataProvider.urls.getServiceUrl(serviceId), dataProvider.getServiceName(serviceId), "Feature Server",
+			dataProvider.urls.getServiceUrl(serviceId), dataProvider.getServiceName(serviceId), "FeatureServer",
 			dataProvider.urls.getLayersUrl(serviceId),
 			serviceId,
 			layersHTML);
