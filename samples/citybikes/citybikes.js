@@ -66,8 +66,8 @@ var timezoneAPIKey = "IMPMC00M2XNY";
 
 var timezoneCacheFilename = path.join(path.dirname(module.filename),"data","timezones.json");
 
-var allNetworksServiceId = "all_networks",
-	allNetworksServiceName = "All Networks";
+var allNetworksServiceId = "world_bikeshares",
+	allNetworksServiceName = "World Bikeshares";
 
 Object.size = function(obj) {
     var size = 0, key;
@@ -276,7 +276,7 @@ Object.defineProperties(CityBikes.prototype, {
 				
 				results.push(networkFeature);
 
-				this._stationsForNetwork(n, 30*60*1000, (function(stationFeatures, err) {
+				this._stationsForNetwork(n, 24*60*1000, (function(stationFeatures, err) {
 					if (err) { 
 						console.log("Couldn't read stations for network " + this.name);
 						this.docks = this.bikes = -1;
