@@ -1,7 +1,7 @@
 var map = null,
 	worldLayerName = "world",
 	bikeshareLayerName = "local",
-	urlRoot = "http://geonode.geeknixta.com",
+	urlRoot = location.protocol + "//" + location.host,
 	worldLayerURL = "/citybikes/rest/services/world_bikeshares/FeatureServer/1",
 	worldLayer = null,
 	bikeshareLayer = null,
