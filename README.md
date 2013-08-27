@@ -34,7 +34,7 @@ At a glance, this is how it works:
 * **output**: Construct JSON output. Format HTML output for JSON.
 * **dataproviderbase**: Describe the service (fields, idField, nameField, etc.) and return features when requested. Inherit from this and selectively override to add a data provider. It also provides an in-memory `GeoStore` caching framework which data providers may opt in to.
 
-By using the Esri [Terraformer](https://github.com/esri/terraformer) library, the application is able to support spatial caching and indexing for data providers. Terraformer also provides outputting in [geoJSON](http://www.geojson.org/geojson-spec.html) by specifying `f=geojson`.
+By using the Esri [Terraformer](https://github.com/esri/terraformer) library's `GeoStore` component, the application is able to support spatial caching and indexing for data providers. Terraformer also provides outputting in [geoJSON](http://www.geojson.org/geojson-spec.html) by specifying `f=geojson`.
 
 **Note:** This is very much a proof of concept and a developer's playground. Just try to find the tests. Tests?! What tests?. For robustness, look at [Koop]().
 
