@@ -280,11 +280,11 @@ function dataProvidersHTML(dataProviders) {
 	return util.format(_dataProvidersHTML, s);
 };
 
-function getHtmlForFeatureServiceEntry(svc) {
+function getHtmlForFeatureServiceEntry(dataProvider, svc) {
 	var featureServiceEntryHtmlTemplate = '<li><a href="%s">%s</a> (%s)</li>\n';
 	return util.format(featureServiceEntryHtmlTemplate,
 						svc.url,
-						svc.name,
+						dataProvider.getServiceName(svc.name),
 						svc.type);
 }
 
@@ -309,7 +309,7 @@ function servicesHTML(dataProvider, callback) {
 	servicesJSON(dataProvider, function(json, err) {
 		var serviceListHTML = "";
 		for (var i=0; i < json.services.length; i++) {
-			serviceListHTML += getHtmlForFeatureServiceEntry(json.services[i]);
+			serviceListHTML += getHtmlForFeatureServiceEntry(dataProvider, json.services[i]);
 		}
 		var r = util.format(_servicesHTML,
 			dataProvider.urls.getServicesUrl(), dataProvider.urls.getServicesUrl(),
@@ -382,9 +382,7 @@ function featureServiceLayerItemHTML(dataProvider, serviceId, layerId, callback)
 };
 
 function getFullFeatureServiceLayerURL(dataProvider, serviceId, layerId) {
-	var protocol = dataProvider._request.protocol;
-	var server = dataProvider._request.get('host');
-	var r = protocol + "://" + server + dataProvider._request.url;
+	var r = dataProvider.baseUrl + dataProvider.urls.getLayerUrl(serviceId, layerId);
 	return encodeURIComponent(r);
 }
 

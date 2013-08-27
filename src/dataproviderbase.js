@@ -66,7 +66,18 @@ DataProviderBase.prototype = {
 		}
 		return cs;
 	},
-
+	
+	/// ---------------------------------------------------------------------------------
+	/// Helper function (_request should be set by ExpressJS)
+	/// ---------------------------------------------------------------------------------
+	get baseUrl() {
+		if (this.hasOwnProperty("_request") && this._request) {
+			var protocol = this._request.protocol;
+			var server = this._request.get('host');
+			return protocol + "://" + server;
+		}
+		return "";
+	},
 	/// ---------------------------------------------------------------------------------
 	/// REST REQUEST HANDLING
 	/// ---------------------------------------------------------------------------------

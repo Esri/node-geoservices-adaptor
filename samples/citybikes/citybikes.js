@@ -5,6 +5,25 @@ var dataproviderbase = require("../../src/dataproviderbase"),
 	fs = require("fs");
 
 var cityBikesNetworksURL = "http://api.citybik.es/networks.json";
+var newMapTemplate = "http://www.arcgis.com/home/webmap/viewer.html?url=%s&source=sd";
+
+var networksFields = [
+	{"name" : "id", "type" : "esriFieldTypeInteger", "alias" : "ID", "nullable" : "true"},
+	{"name" : "name", "type" : "esriFieldTypeString", "alias" : "Name", "length" : "255", "nullable" : "true"},
+	{"name" : "apiurl", "type" : "esriFieldTypeString", "alias" : "CityBik.es URL", "length" : null, "nullable" : "true"},
+	{"name" : "url", "type" : "esriFieldTypeString", "alias" : "Service URL", "length" : null, "nullable" : "true"},
+	{"name" : "agolmap", "type" : "esriFieldTypeString", "alias" : "View In New Map", "length" : null, "nullable" : "true"},
+	{"name" : "stations", "type" : "esriFieldTypeInteger", "alias" : "Stations", "nullable" : "true"},
+	{"name" : "docks", "type" : "esriFieldTypeInteger", "alias" : "Open Docks", "nullable" : "true"},
+	{"name" : "bikes", "type" : "esriFieldTypeInteger", "alias" : "Docked Bikes", "nullable" : "true"},
+	{"name" : "citybikesTimeString", "type" : "esriFieldTypeString", "alias" : "CityBikes Time", "length" : "255", "nullable" : "true"},
+	{"name" : "utcTime", "type" : "esriFieldTypeDate", "alias" : "UTC Timestamp", "length" : 36, "nullable" : "true"},
+	{"name" : "timezone", "type" : "esriFieldTypeString", "alias" : "Timezone Code", "length" : "5", "nullable" : "true"},
+	{"name" : "timezoneOffset", "type" : "esriFieldTypeInteger", "alias" : "Timezone Offset", "nullable" : "true"},
+	{"name" : "timezoneOffsetString", "type" : "esriFieldTypeString", "alias" : "Timezone Offset String", "length" : "8", "nullable" : "true"},
+	{"name" : "localTimeString", "type" : "esriFieldTypeString", "alias" : "Local Time", "length" : "255", "nullable" : "true"},
+];
+
 
 var cityBikesFields = [
 	{"name" : "id", "type" : "esriFieldTypeInteger", "alias" : "ID", "nullable" : "true"},
@@ -45,7 +64,10 @@ var drawingInfo = JSON.parse(fs.readFileSync(path.join(path.dirname(module.filen
 
 var timezoneAPIKey = "IMPMC00M2XNY";
 
-var timezoneCacheFilename = path.join(path.dirname(module.filename),"data","timezones.json")
+var timezoneCacheFilename = path.join(path.dirname(module.filename),"data","timezones.json");
+
+var allNetworksServiceId = "all_networks",
+	allNetworksServiceName = "All Networks";
 
 Object.size = function(obj) {
     var size = 0, key;
@@ -68,6 +90,8 @@ CityBikes = function () {
 	// A dictionary of timezones matched to cities.
 	this._networkTimezones = {};
 	this._networksAwaitingTimezone = {};
+	
+	this.loadCacheOnStart = true;//process.env.VCAP_APP_PORT;
 
 	if (fs.existsSync(timezoneCacheFilename))
 	{
@@ -169,15 +193,15 @@ Object.defineProperties(CityBikes.prototype, {
 								nc[network.name] = networkCacheEntry;
 						
 								// Set up the timezone for this network
-								this._getTimezone(networkCacheEntry, function() {
-									if (process.env.VCAP_APP_PORT) {
+								this._getTimezone(networkCacheEntry, (function() {
+									if (this.loadCacheOnStart) {
 										// Don't pre-cache unless deployed
 										console.log("Precaching stations for " + networkCacheEntry.network.name);
-										this._stationsForNetwork(networkCacheEntry, function(stations) {
+										this._stationsForNetwork(networkCacheEntry, null, function(stations) {
 											return null;
 										});
 									}
-								});
+								}).bind(this));
 						
 								added++
 							}
@@ -201,20 +225,93 @@ Object.defineProperties(CityBikes.prototype, {
 			}
 		}
 	},
+	_getGMTOffsetString: {
+		value: function(timezone) {
+			// Build a string suitable to append to a Date/Time string
+			// to specify offset from GMT.
+			var offsetSeconds = timezone.gmtOffset,
+				offsetMinutes = Math.round(Math.abs(offsetSeconds)/60),
+				offsetMinRem = offsetMinutes%60,
+				offsetHours = (offsetMinutes-offsetMinRem)/60,
+				gmtOffStr = offsetSeconds<0?"-":"+";
+			gmtOffStr += offsetHours==0?"00":((offsetHours<10?"0":"") + offsetHours);
+			gmtOffStr += offsetMinRem==0?"00":((offsetMinRem<10?"0":"") + offsetMinRem);
+			return gmtOffStr;
+		}
+	},
+	_networkFeatures: {
+		value: function(networks, callback) {
+			var results = [];
+			var networksToLoad = Object.keys(networks).length;
+			for (var networkName in networks) {
+				var n = networks[networkName];
+				var nData = n.network;
+				var svcUrl = this.baseUrl + this.urls.getLayerUrl(networkName, 0);
+
+				var networkFeature = {
+					geometry: {
+						x: nData.lng,
+						y: nData.lat,
+						spatialReference: {
+							wkid: 4326
+						}
+					},
+					attributes: {
+						id: nData.id,
+						name: nData.name,
+						apiurl: nData.url,
+						url: svcUrl,
+						agolmap: util.format(newMapTemplate, svcUrl),
+						stations: n.stations.cachedStations.length,
+						docks: 0,
+						bikes: 0,
+						citybikesTimeString: "",
+						utcTime: n.stations.lastReadTime,
+						timezone: n.timezone.abbreviation,
+						timezoneOffset: +(n.timezone.gmtOffset),
+						timezoneOffsetString: this._getGMTOffsetString(n.timezone),
+						localTimeString: ""
+					}
+				};
+				
+				results.push(networkFeature);
+
+				this._stationsForNetwork(n, 30*60*1000, (function(stationFeatures, err) {
+					if (err) { 
+						console.log("Couldn't read stations for network " + this.name);
+						this.docks = this.bikes = -1;
+					} else {
+						for (var i=0; i<stationFeatures.length; i++) {
+							this.docks += stationFeatures[i].attributes.free;
+							this.bikes += stationFeatures[i].attributes.bikes;
+						}
+					}
+
+					networksToLoad--;
+					if (networksToLoad == 0) {
+						callback(results, null);
+					}
+				}).bind(networkFeature.attributes));
+			}
+		}
+	},
 	_stationsForNetwork: {
-		value: function(n, callback) {
+		value: function(n, cacheExtendedValidityDuration, callback) {
 			// Given a networkCacheEntry (see this._networks and this._cachedNetworks),
 			// give me the latest information on all the stations. Note, the cached stations
 			// for a network are valid for 60 seconds.
-			if (n.stations.lastReadTime != -1 &&
-				n.stations.cacheExpirationTime > new Date())
-			{
+			var cacheValid = false;
+			if (n.stations.lastReadTime != -1) {
+				cacheValid = n.stations.cacheExpirationTime > new Date();
+				if (!cacheValid && typeof cacheExtendedValidityDuration !== null) {
+					cacheValid = ((new Date()) - n.stations.lastReadTime) < cacheExtendedValidityDuration;
+				}
+			}
+			if (cacheValid) {
 				// Easy, we already have the info cached.
 				console.log("Returning cached station results for " + n.network.name);
 				callback(n.stations.cachedStations, null);
-			}
-			else
-			{
+			} else {
 				// OK, we need to go and ask api.citybik.es for the info.
 				// Note, we can only ask for the current state of ALL stations in a given network.
 				var cityBikesUrl = n.network.url;
@@ -265,15 +362,7 @@ Object.defineProperties(CityBikes.prototype, {
 							{
 								var gmtOffset = parseInt(n.timezone.gmtOffset);
 								localEpochMS = localEpochMS + (gmtOffset * 1000);
-								// Build a string suitable to append to a Date/Time string
-								// to specify offset from GMT.
-								var offsetSeconds = n.timezone.gmtOffset,
-									offsetMinutes = Math.round(Math.abs(offsetSeconds)/60),
-									offsetMinRem = offsetMinutes%60,
-									offsetHours = (offsetMinutes-offsetMinRem)/60;
-								gmtOffStr += offsetSeconds<0?"-":"+";
-								gmtOffStr += offsetHours==0?"00":((offsetHours<10?"0":"") + offsetHours);
-								gmtOffStr += offsetMinRem==0?"00":((offsetMinRem<10?"0":"") + offsetMinRem);
+								gmtOffStr = this._getGMTOffsetString(n.timezone);
 								station["timezone"] = n.timezone.abbreviation;
 								station["timezoneOffset"] = parseInt(n.timezone.gmtOffset);
 							}
@@ -292,6 +381,13 @@ Object.defineProperties(CityBikes.prototype, {
 							// Fix the lat/lng					
 							var x = station.lng / 1000000;
 							var y = station.lat / 1000000;
+							if (x < -180 || x > 180 || y < -90 || y > 90) {
+								console.log("Invalid GeoLocation!! " + y + "," + x);
+								console.log(station);
+								x = n.network.lng;
+								y = n.network.lat;
+								console.log("Corrected GeoLocation!! " + y + "," + x);
+							}
 							// And build that extent so that the "Layer (Feature Service)"
 							// JSON can specify the extent of the layer. That way, when it's
 							// added to a map, it can be zoomed to easily.
@@ -308,7 +404,7 @@ Object.defineProperties(CityBikes.prototype, {
 							}
 						
 							// Now build that GeoService formatted feature that we need.
-							var stationFeature = { 
+							var stationFeature = {
 								geometry: {
 									x: x,
 									y: y,
@@ -318,6 +414,10 @@ Object.defineProperties(CityBikes.prototype, {
 								},
 								attributes: JSON.parse(JSON.stringify(station))
 							};
+							
+							// Fix the bike data if need be.
+							stationFeature.attributes.bikes = +stationFeature.attributes.bikes;
+							stationFeature.attributes.free = +stationFeature.attributes.free;
 						
 							// Get that nice smart-value for AGOL rendering (see _getBikeRange()).
 							this._getBikeRange(stationFeature);
@@ -349,10 +449,11 @@ Object.defineProperties(CityBikes.prototype, {
 						n.stations.cacheExpirationTime =
 							new Date(n.stations.lastReadTime.getTime() + this._stationCacheTime);
 
-						console.log(util.format('Cached %d stations for %s at %s (expires %s)',
+						console.log(util.format('Cached %d stations for %s at %s (expires %s) %d bytes',
 												stationsData.length, n.network.name,
 												n.stations.lastReadTime,
-												n.stations.cacheExpirationTime));
+												n.stations.cacheExpirationTime,
+												JSON.stringify(n.stations).length));
 
 						// Good. Call back with the results of our hard work.				
 						callback(n.stations.cachedStations, null);
@@ -514,11 +615,22 @@ Object.defineProperties(CityBikes.prototype, {
 			// name (the Citybik.es identifier) as the ServiceID.
 			var out = [];
 			if (this._isReady) {
+				out.push(allNetworksServiceId);
 				for (var networkName in this._cachedNetworks) {
 					out.push(networkName);
 				}
 			}
 			callback(out.sort());
+		}
+	},
+	getServiceName: {
+		value: function(serviceId) {
+			return serviceId === allNetworksServiceId?allNetworksServiceName:serviceId;
+		}
+	},
+	getLayerName: {
+		value: function(serviceId, layerId) {
+			return serviceId===allNetworksServiceId?allNetworksServiceName:"Current Status";
 		}
 	},
 	idField: {
@@ -537,33 +649,37 @@ Object.defineProperties(CityBikes.prototype, {
 			// this could be different for each feature service and layer, but in the case
 			// of Citybik.es the source schema does not change across networks so we just
 			// use a constant schema for our FeatureLayers.
-			return cityBikesFields;
-		}
-	},
-	getLayerName: {
-		value: function(serviceId, layerId) {
-			return "Current Status";
+			return serviceId===allNetworksServiceId?networksFields:cityBikesFields;
 		}
 	},
 	featuresForQuery: {
 		value: function(serviceId, layerId, query, callback) {
 			// Get the bike networks (which map to FeatyreServices). They may be cached,
 			// or may need to be fetched. So they are returned with a callback.
-
-			this._networks((function(networks) {
-				// Now we have the full list of networks let's pick out the one we're 
-				// after (which matches the "serviceId" and get all the bike stations in 
-				// that network. Again, this may be cached, or may need to be got afresh.
-				// Note that we know we only have a single layer (stations) for any
-				// feature service (network) so we ignore the layerId.
-				var network = networks[serviceId];
-				this._stationsForNetwork(network, (function(stationFeatures, err) {
-					// We have the stations for the network. These are our features
-					// that match the query. So call back to our caller with our results.
-					var idField = this.idField(serviceId, layerId);
-					var fields = this.fields(serviceId, layerId);
-					callback(stationFeatures, idField, fields, err);
-				}).bind(this));
+			this._networks((function(networks, err) {
+				if (err) { return callback(null, null, null, err); }
+				
+				var idField = this.idField(serviceId, layerId);
+				var fields = this.fields(serviceId, layerId);
+				
+				if (serviceId === allNetworksServiceId) {
+					this._networkFeatures(networks, function(results, err) {
+						debugger;
+						callback(results, idField, fields, err);
+					});
+				} else {
+					// Now we have the full list of networks let's pick out the one we're 
+					// after (which matches the "serviceId" and get all the bike stations in 
+					// that network. Again, this may be cached, or may need to be got afresh.
+					// Note that we know we only have a single layer (stations) for any
+					// feature service (network) so we ignore the layerId.
+					var network = networks[serviceId];
+					this._stationsForNetwork(network, null, (function(stationFeatures, err) {
+						// We have the stations for the network. These are our features
+						// that match the query. So call back to our caller with our results.
+						callback(stationFeatures, idField, fields, err);
+					}).bind(this));
+				}
 			}).bind(this));
 		}
 	},
@@ -588,41 +704,51 @@ Object.defineProperties(CityBikes.prototype, {
 	},
 	getFeatureServiceLayerDetails: {
 		value: function(detailsTemplate, serviceId, layerId, callback) {
-			detailsTemplate["drawingInfo"] = drawingInfo;
-			// We'll take the default JSON that the engine has calculated for us, but we'll
-			// inject an extent if we have one stored so that clients can connect to us
-			// more easily.
-			if (this._cachedNetworks &&
-				this._cachedNetworks.hasOwnProperty(serviceId)) {
-				var network = this._cachedNetworks[serviceId].network;
-				if (network.hasOwnProperty("calculatedExtent"))
-				{
-					// If we have an accurate extent based off cached station locations,
-					// use that.
-					detailsTemplate.extent = network.calculatedExtent;
-				}
-				else
-				{
-					// Otherwise, use the lat/lon of the network as returned by CityBik.es
-					// and build an extent around that.
-					var x = network.lng;
-					var y = network.lat;
-					var w = 0.25, h = 0.25;
-					detailsTemplate.extent.xmin = x - w;
-					detailsTemplate.extent.xmax = x + w;
-					detailsTemplate.extent.ymin = y - h;
-					detailsTemplate.extent.ymax = y + h;
-				}
+			if (serviceId === allNetworksServiceId) {
 				callback({
 					layerName: this.getLayerName(serviceId, layerId), 
 					idField: this.idField(serviceId, layerId),
 					nameField: this.nameField(serviceId, layerId),
 					fields: this.fields(serviceId, layerId),
-					geometryType: this.geometryType(serviceId, layerId)
+					geometryType: "esriGeometryPoint"
 				}, null);
 			} else {
-				callback({},
-						 "Invalid CityBikes Service ID: " + serviceId);
+				detailsTemplate["drawingInfo"] = drawingInfo;
+				// We'll take the default JSON that the engine has calculated for us, but we'll
+				// inject an extent if we have one stored so that clients can connect to us
+				// more easily.
+				if (this._cachedNetworks &&
+					this._cachedNetworks.hasOwnProperty(serviceId)) {
+					var network = this._cachedNetworks[serviceId].network;
+					if (network.hasOwnProperty("calculatedExtent"))
+					{
+						// If we have an accurate extent based off cached station locations,
+						// use that.
+						detailsTemplate.extent = network.calculatedExtent;
+					}
+					else
+					{
+						// Otherwise, use the lat/lon of the network as returned by CityBik.es
+						// and build an extent around that.
+						var x = network.lng;
+						var y = network.lat;
+						var w = 0.25, h = 0.25;
+						detailsTemplate.extent.xmin = x - w;
+						detailsTemplate.extent.xmax = x + w;
+						detailsTemplate.extent.ymin = y - h;
+						detailsTemplate.extent.ymax = y + h;
+					}
+					callback({
+						layerName: this.getLayerName(serviceId, layerId), 
+						idField: this.idField(serviceId, layerId),
+						nameField: this.nameField(serviceId, layerId),
+						fields: this.fields(serviceId, layerId),
+						geometryType: this.geometryType(serviceId, layerId)
+					}, null);
+				} else {
+					callback({},
+							 "Invalid CityBikes Service ID: " + serviceId);
+				}
 			}
 		}
 	}
