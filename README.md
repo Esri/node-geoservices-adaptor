@@ -3,24 +3,26 @@ node-geoservices-adaptor
 
 This is a [node.js](http://nodejs.org) implementation of the [ArcGIS REST API](http://resources.arcgis.com/en/help/arcgis-rest-api/).
 
-This allows simple read-only access by ArcGIS tools, apps, and APIs, including [ArcGIS Runtime SDKs](https://developers.arcgis.com/en/documentation/) (iOS, Android, Mac OS X, Windows Phone, etc.), [ArcGIS API for JavaScript](https://developers.arcgis.com/en/javascript/), [esri-leaflet](http://esri.github.io/esri-leaflet/), [ArcGIS Desktop](http://www.esri.com/software/arcgis/arcgis-for-desktop) etc.
+It allows simple read-only access by ArcGIS tools, apps, and APIs, including [ArcGIS Runtime SDKs](https://developers.arcgis.com/en/documentation/) (iOS, Android, Mac OS X, Windows Phone, etc.), [ArcGIS API for JavaScript](https://developers.arcgis.com/en/javascript/), [esri-leaflet](http://esri.github.io/esri-leaflet/), [ArcGIS Desktop](http://www.esri.com/software/arcgis/arcgis-for-desktop) etc.
 
-View live at http://geonode.geeknixta.com
+It also provides HTML to let users browse available services.
+
+View a [live demo](http://geonode.geeknixta.com).
+
+![Sample Image]
 
 ##Introduction
-The application handles mapping ArcGIS Server-style FeatureService REST requests to "data providers", and the presentation of "data provider" output back to the caller in appropriate ArcGIS JSON Output format.
+The application handles ArcGIS REST API requests to custom "data providers", and returns their output in ArcGIS JSON format.
 
-This prototype application has two sample data providers:
+Here are two sample "data providers":
 
-* CityBikes: Provide data from http://api.citybik.es.
-* GeoHub: Provide data from geoJSON files stored in GitHub Repositories and Gists.
+* **CityBikes**: Provide data from http://api.citybik.es.
+* **GeoHub**: Provide data from geoJSON files stored in GitHub Repositories and Gists.
 
-You can similarly create your own data providers:
+The framework lets you build your own "data providers":
 
-1. Build your own subclass of `dataproviderbase.DataProviderBase` (see [citybike.js](https://github.com/ArcGIS/node-geoservices-adaptor/blob/master/dataProviders/citybikes.js) for a sample). Override only what you need to.
-2. Add instances of your subclass to the `dataProviders` array in `index.js`
-
-The application handles generating appropriate HTML for each endpoint to help explore the services and reach a FeatureLayer endpoint for consumption by the ArcGIS tools and APIs ([example here](http://geonode.geeknixta.com/citybikes/rest/services/citibikenyc/FeatureServer/0)).
+1. Subclass `dataproviderbase.DataProviderBase`. Override only what you need to.
+2. Add instances of your subclass to the `dataProviders` array in `index.js`.
 
 At a glance, this is how it works:
 
@@ -32,7 +34,7 @@ At a glance, this is how it works:
 
 By using the Esri [Terraformer](https://github.com/esri/terraformer) library's `GeoStore` component, the application is able to support spatial caching and indexing for data providers. Terraformer also provides outputting in [geoJSON](http://www.geojson.org/geojson-spec.html) by specifying `f=geojson`.
 
-**Note:** This is very much a proof of concept and a developer's playground. Just try to find the tests. Tests?! What tests?. For robustness, look at [Koop]().
+**Note:** This project is very much a proof of concept on how to implement the ArcGIS REST API. Another good example can be found in [Koop](https://github.com/esri/koop).
 
 ## Requirements
 * [node.js](http://nodejs.org)
