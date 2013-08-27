@@ -386,7 +386,7 @@ Object.defineProperties(CityBikes.prototype, {
 							// Fix the lat/lng					
 							var x = station.lng / 1000000;
 							var y = station.lat / 1000000;
-							if (x < -180 || x > 180 || y < -90 || y > 90) {
+							if (x < -180 || x > 180 || y < -90 || y > 90 || x == 0 || y == 0) {
 								console.log("Invalid GeoLocation!! " + y + "," + x);
 								console.log(station);
 								x = n.network.lng;
