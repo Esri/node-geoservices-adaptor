@@ -67,7 +67,11 @@ var timezoneAPIKey = "IMPMC00M2XNY";
 var timezoneCacheFilename = path.join(path.dirname(module.filename),"data","timezones.json");
 
 var allNetworksServiceId = "world_bikeshares",
-	allNetworksServiceName = "World Bikeshares";
+	allNetworksServiceName = "World Bikeshares",
+	allNetworksAllDataLayerId = 0,
+	allNetworksAllDataLayerName = "All Bikeshares",
+	allNetworksGoodDataLayerId = 1,
+	allNetworksGoodDataLayerName = "Bikeshares with Stations";
 
 Object.size = function(obj) {
     var size = 0, key;
@@ -285,6 +289,7 @@ Object.defineProperties(CityBikes.prototype, {
 							this.docks += stationFeatures[i].attributes.free;
 							this.bikes += stationFeatures[i].attributes.bikes;
 						}
+						this.docks = Math.max(0,this.docks);
 					}
 
 					networksToLoad--;
@@ -623,6 +628,15 @@ Object.defineProperties(CityBikes.prototype, {
 			callback(out.sort());
 		}
 	},
+	getLayerIds: {
+		value: function(serviceId, callback) {
+			if (serviceId === allNetworksServiceId) {
+				callback([allNetworksAllDataLayerId, allNetworksGoodDataLayerId], null);
+			} else {
+				callback([0], null);
+			}
+		}
+	},
 	getServiceName: {
 		value: function(serviceId) {
 			return serviceId === allNetworksServiceId?allNetworksServiceName:serviceId;
@@ -630,7 +644,18 @@ Object.defineProperties(CityBikes.prototype, {
 	},
 	getLayerName: {
 		value: function(serviceId, layerId) {
-			return serviceId===allNetworksServiceId?allNetworksServiceName:"Current Status";
+			if (serviceId===allNetworksServiceId) {
+				switch (layerId) {
+					case allNetworksAllDataLayerId:
+						return allNetworksAllDataLayerName;
+					case allNetworksGoodDataLayerId:
+						return allNetworksGoodDataLayerName;
+					default:
+						return "Unknown Layer ID: " + layerId;
+				}
+			} else {
+				return "Current Status";
+			}
 		}
 	},
 	idField: {
@@ -664,7 +689,12 @@ Object.defineProperties(CityBikes.prototype, {
 				
 				if (serviceId === allNetworksServiceId) {
 					this._networkFeatures(networks, function(results, err) {
-						debugger;
+						if (layerId == allNetworksGoodDataLayerId) {
+							// Filter out Stations == 0
+							results = results.filter(function (feature) {
+								return feature.attributes.stations > 0;
+							});
+						}
 						callback(results, idField, fields, err);
 					});
 				} else {
