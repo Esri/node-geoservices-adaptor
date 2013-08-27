@@ -5,11 +5,11 @@ This is a [node.js](http://nodejs.org) implementation of the [ArcGIS REST API](h
 
 It allows simple read-only access by ArcGIS tools, apps, and APIs, including [ArcGIS Runtime SDKs](https://developers.arcgis.com/en/documentation/) (iOS, Android, Mac OS X, Windows Phone, etc.), [ArcGIS API for JavaScript](https://developers.arcgis.com/en/javascript/), [esri-leaflet](http://esri.github.io/esri-leaflet/), [ArcGIS Desktop](http://www.esri.com/software/arcgis/arcgis-for-desktop) etc.
 
-It also provides HTML to let users browse available services.
+It also provides HTML to let users browse available services and view them in maps.
 
 View a [live demo](http://geonode.geeknixta.com).
 
-![Sample Image]
+![Sample Image](docs/citibike-svc.png)
 
 ##Introduction
 The application handles ArcGIS REST API requests to custom "data providers", and returns their output in ArcGIS JSON format.
