@@ -1,0 +1,29 @@
+{
+  "name": "terraformer-arcgis-parser",
+  "version": "0.1.6",
+  "description": "ArcGIS parser",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "vows --spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:esri/Terraformer.git"
+  },
+  "keywords": [
+    "ArcGIS",
+    "GIS",
+    "Geography"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "terraformer": "latest"
+  },
+  "devDependencies": {
+    "vows": "~0.7.0"
+  } 
+}

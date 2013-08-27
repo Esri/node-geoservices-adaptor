@@ -1,0 +1,21 @@
+{
+  "name": "terraformer-rtree",
+  "version": "0.2.3",
+  "description": "Terraformer RTree",
+  "main": "index.js",
+  "scripts": {
+    "test": "vows --spec"
+  },
+  "repository": "git@github.com:esri/Terraformer.git",
+  "devDependencies": {
+    "vows": "latest"
+  },
+  "dependencies": {
+    "terraformer": "latest"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "terraformer": "latest"
+  }
+}

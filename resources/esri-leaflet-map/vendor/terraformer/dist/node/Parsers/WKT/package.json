@@ -1,0 +1,29 @@
+{
+  "name": "terraformer-wkt-parser",
+  "version": "0.1.7",
+  "description": "Well-Known Text parser",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "vows --spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:esri/Terraformer.git"
+  },
+  "keywords": [
+    "WKT",
+    "GIS",
+    "Geography"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "terraformer": "latest"
+  },
+  "devDependencies": {
+    "vows": "~0.7.0"
+  } 
+}
