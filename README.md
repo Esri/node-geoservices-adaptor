@@ -24,17 +24,19 @@ You can similarly create your own data providers:
 1. Build your own subclass of `dataproviderbase.DataProviderBase` (see [citybike.js](https://github.com/ArcGIS/node-geoservices-adaptor/blob/master/dataProviders/citybikes.js) for a sample). Override only what you need to.
 2. Add instances of your subclass to the `dataProviders` array in `index.js`
 
-The application handles generating appropriate HTML for each endpoint to help explore the services and reach a FeatureLayer endpoint for consumption by the ArcGIS tools and APIs.
+The application handles generating appropriate HTML for each endpoint to help explore the services and reach a FeatureLayer endpoint for consumption by the ArcGIS tools and APIs ([example here](http://geonode.geeknixta.com/citybikes/rest/services/citibikenyc/FeatureServer/0)).
 
 At a glance, this is how it works:
 
-![Structure](structure.png)
+![Structure](docs/structure.png)
 
 * **urls**: Construct Adaptor and Template REST Endpoints.
 * **output**: Construct JSON output. Format HTML output for JSON.
-* **dataproviderbase**: Describe the service (fields, idField, nameField, etc.) and return features when requested. Inherit from this and selectively override to add a provider.
+* **dataproviderbase**: Describe the service (fields, idField, nameField, etc.) and return features when requested. Inherit from this and selectively override to add a data provider. It also provides an in-memory `GeoStore` caching framework which data providers may opt in to.
 
-Making use of the [Terraformer](https://github.com/esri/terraformer) library, the application is able to support outputting in [geoJSON](http://www.geojson.org/geojson-spec.html) by specifying `f=geojson`.
+By using the Esri [Terraformer](https://github.com/esri/terraformer) library, the application is able to support spatial caching and indexing for data providers. Terraformer also provides outputting in [geoJSON](http://www.geojson.org/geojson-spec.html) by specifying `f=geojson`.
+
+**Note:** This is very much a proof of concept and a developer's playground. Just try to find the tests. Tests?! What tests?. For robustness, look at [Koop]().
 
 ## Requirements
 * [node.js](http://nodejs.org)
@@ -49,7 +51,7 @@ Making use of the [Terraformer](https://github.com/esri/terraformer) library, th
 The Citybikes sample data provider makes use of the [awesome API](http://api.citybik.es) at [CityBik.es](http://citybik.es) providing bike share data (almost) globally. This sample Data Provider adapts the data into Geoservices format output. The root REST endpoint 
 for the CityBikes data provider can be found live here (this is where you might point ArcCatalog): http://geonode.geeknixta.com/citybikes/rest/services
 ###GeoHub
-Making use of the [GeoHub repo](https://github.com/chelm/geohub), this sample provider allows a client to request geoJSON files from either a GitHub repository ([example](https://github.com/chelm/grunt-geo/blob/master/forks.geojson)) or from a GitHub gist ([example](https://gist.github.com/chelm/6178185)). For more details, see the [GeoHub Plugin Readme](samples/geohub/README.md).
+Making use of the [GeoHub repo](https://github.com/chelm/geohub), this sample provider allows a client to request geoJSON files from either a GitHub repository ([example](https://github.com/chelm/grunt-geo/blob/master/forks.geojson)) or from a GitHub gist ([example](https://gist.github.com/chelm/6178185)). This sample uses the `dataproviderbase` GeoStore cache framework. For more details, see the [GeoHub Plugin Readme](samples/geohub/README.md).
 
 ##Known Limitations
 * Only a limited subset of the [Geoservices REST Specification](http://resources.arcgis.com/en/help/arcgis-rest-api/) is implemented.
