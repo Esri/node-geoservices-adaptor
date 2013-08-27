@@ -395,7 +395,10 @@ function featureServiceLayerHTML(dataProvider, serviceId, layerId, callback) {
 			dataProvider.urls.getServiceUrl(serviceId), dataProvider.getServiceName(serviceId), "FeatureServer",
 			dataProvider.urls.getLayerUrl(serviceId, layerId), json.name,
 			json.name, layerId,
-			url,url,url,
+			url,
+			dataProvider.baseUrl,url,
+			dataProvider.baseUrl,url,
+			url,
 			featureServiceLayerItemHTML(json),
 			dataProvider.urls.getLayerQueryUrl(serviceId, layerId));
 	
