@@ -1,18 +1,14 @@
 node-geoservices-adaptor
 ========================
 
-This is a [node.js](http://nodejs.org) implementation of part of the [ArcGIS REST API](http://resources.arcgis.com/en/help/arcgis-rest-api/).
+This is a [node.js](http://nodejs.org) implementation of the [ArcGIS REST API](http://resources.arcgis.com/en/help/arcgis-rest-api/).
 
-Enough of the API is implemented to allow simple read-only access by ArcGIS tools, apps, and APIs, including [ArcGIS Runtime SDKs](https://developers.arcgis.com/en/documentation/) (iOS, Android, Mac OS X, Windows Phone, etc.), [ArcGIS API for JavaScript](https://developers.arcgis.com/en/javascript/), [esri-leaflet](http://esri.github.io/esri-leaflet/), [ArcGIS Desktop](http://www.esri.com/software/arcgis/arcgis-for-desktop) etc.
+This allows simple read-only access by ArcGIS tools, apps, and APIs, including [ArcGIS Runtime SDKs](https://developers.arcgis.com/en/documentation/) (iOS, Android, Mac OS X, Windows Phone, etc.), [ArcGIS API for JavaScript](https://developers.arcgis.com/en/javascript/), [esri-leaflet](http://esri.github.io/esri-leaflet/), [ArcGIS Desktop](http://www.esri.com/software/arcgis/arcgis-for-desktop) etc.
 
 View live at http://geonode.geeknixta.com
 
 ##Introduction
-The application handles mapping ArcGIS Server-style FeatureService REST requests to 1 or more "data providers", and the presentation of "data provider" output back to the caller in appropriate ArcGIS JSON Output format.
-
-Each data provider interprets the mapped requests to declare feature services and layers, and to return query results.
-
-The application will do as much work as possible to correctly generate outgoing JSON, but each adaptor has access to the generated JSON to modify it as appropriate.
+The application handles mapping ArcGIS Server-style FeatureService REST requests to "data providers", and the presentation of "data provider" output back to the caller in appropriate ArcGIS JSON Output format.
 
 This prototype application has two sample data providers:
 
