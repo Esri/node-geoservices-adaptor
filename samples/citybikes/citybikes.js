@@ -309,7 +309,7 @@ Object.defineProperties(CityBikes.prototype, {
 				
 				results.push(networkFeature);
 
-				this._stationsForNetwork(n, 24*60*1000, (function(stationFeatures, err) {
+				this._stationsForNetwork(n, 30*60*1000, (function(stationFeatures, err) {
 					if (err) { 
 						console.log("Couldn't read stations for network " + this.name);
 						this.docks = this.bikes = -1;
@@ -587,11 +587,11 @@ Object.defineProperties(CityBikes.prototype, {
 								// timezonedb API too soon.
 								if (Object.size(this._networksAwaitingTimezone) == 0)
 								{
-									if (!fs.existsSync(path.dirname(this._timezoneCacheFilename))) {
-										fs.mkDirSync(path.dirname(this._timezoneCacheFilename));
+									if (!fs.existsSync(path.dirname(timezoneCacheFilename))) {
+										fs.mkDirSync(path.dirname(timezoneCacheFilename));
 									}
-									fs.writeFile(this._timezoneCacheFilename, JSON.stringify(this._networkTimezones));
-									console.log("Wrote timezones to " + this._timezoneCacheFilename);
+									fs.writeFile(timezoneCacheFilename, JSON.stringify(this._networkTimezones));
+									console.log("Wrote timezones to " + timezoneCacheFilename);
 								}
 							
 								// Call back with our updated cache entry, setting "this"
