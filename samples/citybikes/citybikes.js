@@ -72,6 +72,10 @@ var allNetworksServiceId = "world_bikeshares",
 	allNetworksAllDataLayerName = "All Bikeshares",
 	allNetworksGoodDataLayerId = 1,
 	allNetworksGoodDataLayerName = "Bikeshares with Stations";
+	
+var extentMinWidth = 0.1, // In 4326 units (decimal degrees)
+	extentMinHeight = 0.1; // In 4326 units (decimal degrees)
+
 var states = {
 	empty: "empty",
 	loading: "loading",
@@ -160,13 +164,12 @@ Object.defineProperties(CityBikes.prototype, {
 					network.lng = network.lng / 1000000;
 					var x = network.lng;
 					var y = network.lat;
-					var w = 0.5, h = 0.5;
 					// Build an extent based off this lat/lng for the FeatureService
 					network["calculatedExtent"] = {
-						xmin: x - (w/2),
-						xmax: x + (w/2),
-						ymin: y - (h/2),
-						ymax: y + (h/2),
+						xmin: x - (extentMinWidth/2),
+						xmax: x + (extentMinWidth/2),
+						ymin: y - (extentMinHeight/2),
+						ymax: y + (extentMinHeight/2),
 						spatialReference: {
 							"wkid": 4326,
 							"latestWkid": 4326
@@ -471,6 +474,15 @@ Object.defineProperties(CityBikes.prototype, {
 						
 								// And add the stations cache to our overall cache structure.
 								n.stations.cachedStations.push(stationFeature);
+							}
+							
+							if (minX == maxX) {
+								minX -= extentMinWidth/2;
+								maxX += extentMinWidth/2;
+							}
+							if (minY == maxY) {
+								minY -= extentMinHeight/2;
+								maxY += extentMinHeight/2;
 							}
 							// Store the calculated extent
 							n.stations["extent"] = n.network["calculatedExtent"] = {
