@@ -62,6 +62,12 @@ var dockClassificationScheme = {
 	"plenty": { "min": 11, "max": 10000, "label": "Plenty of docks" }
 };
 
+var featureFilterFunctions = {
+	"cristolib": function(item) {
+		return !(item.attributes.bikes == 0 && item.attributes.free == 0);
+	}
+};
+
 var drawingInfo = JSON.parse(fs.readFileSync(path.join(path.dirname(module.filename),"resources","templates","layerDefinition-drawingInfo.json"), 'utf8'));
 
 var timezoneAPIKey = "IMPMC00M2XNY"; // Replace this with your own key from timezonedb.com
@@ -464,20 +470,6 @@ Object.defineProperties(CityBikes.prototype, {
 					y = n.network.lat;
 					console.log("Corrected GeoLocation!! " + y + "," + x);
 				}
-				// And build that extent so that the "Layer (Feature Service)"
-				// JSON can specify the extent of the layer. That way, when it's
-				// added to a map, it can be zoomed to easily.
-				if (i==0) {
-					minX = x;
-					maxX = x;
-					minY = y;
-					maxY = y;
-				} else {
-					if (x < minX) minX = x;
-					if (x > maxX) maxX = x;
-					if (y < minY) minY = y;
-					if (y > maxY) maxY = y;
-				}
 		
 				// Now build that GeoService formatted feature that we need.
 				var stationFeature = {
@@ -510,8 +502,30 @@ Object.defineProperties(CityBikes.prototype, {
 				delete stationFeature.attributes["coordinates"];
 				delete stationFeature.attributes["timestamp"];
 		
-				// And add the stations cache to our overall cache structure.
-				n.stations.cachedStations.push(stationFeature);
+				var includeFeature = true;
+				if (featureFilterFunctions.hasOwnProperty(n.network.name)) {
+					includeFeature = featureFilterFunctions[n.network.name](stationFeature);
+				}
+	
+				if (includeFeature) {
+					// And build that extent so that the "Layer (Feature Service)"
+					// JSON can specify the extent of the layer. That way, when it's
+					// added to a map, it can be zoomed to easily.
+					if (n.stations.cachedStations.length == 0) {
+						minX = x;
+						maxX = x;
+						minY = y;
+						maxY = y;
+					} else {
+						if (x < minX) minX = x;
+						if (x > maxX) maxX = x;
+						if (y < minY) minY = y;
+						if (y > maxY) maxY = y;
+					}
+
+					// And add the stations cache to our overall cache structure.
+					n.stations.cachedStations.push(stationFeature);
+				}
 			}
 			
 			if (minX == maxX) {
@@ -531,7 +545,7 @@ Object.defineProperties(CityBikes.prototype, {
 					"latestWkid": 4326
 				}
 			};
-	
+			
 			// Flag when we last parsed the stations for this network.
 			n.stations.lastReadTime = new Date();
 
@@ -773,6 +787,7 @@ Object.defineProperties(CityBikes.prototype, {
 				if (serviceId === allNetworksServiceId) {
 					this._networkFeatures(networks, function(results, err) {
 						if (layerId == allNetworksGoodDataLayerId) {
+							// Filter out 
 							// Filter out Stations == 0
 							results = results.filter(function (feature) {
 								return feature.attributes.stations > 0;

@@ -50,6 +50,7 @@ function getExtent(layerEndpoint, callback) {
 
 function openBikeshareLayer(g) {
 	var url = g.attributes.url;
+	lastWorldExtent = map.extent;
 	getExtent(url, function(err, extent) {
 		if (!err) {
 			if (extentHandler) {
@@ -100,11 +101,11 @@ function openWorldLayer() {
 			});
 		}
 
-		map.centerAndZoom(defaultCenter, defaultZoom);
-
-		extentHandler = map.on("extent-change", function(extent) {
-			lastWorldExtent = extent;
-		});
+		if (lastWorldExtent) {
+			map.setExtent(lastWorldExtent);
+		} else {
+			map.centerAndZoom(defaultCenter, defaultZoom);
+		}
 	});
 }
 
