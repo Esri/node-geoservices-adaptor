@@ -68,6 +68,12 @@ var timezoneCacheFilename = path.join(path.dirname(module.filename),"data","time
 
 var allNetworksServiceId = "world_bikeshares",
 	allNetworksServiceName = "World Bikeshares";
+	
+var states = {
+	empty: "empty",
+	loading: "loading",
+	loaded: "loaded"
+};
 
 Object.size = function(obj) {
     var size = 0, key;
@@ -83,6 +89,7 @@ CityBikes = function () {
 	this._isReady = false;
 	this._cachedNetworks = null;
 	this._cacheExpirationTime = new Date();
+	this._networkCacheStatus = states.empty;
 	
 	this._networksCacheTime = 30 * 60000;
 	this._stationCacheTime = 1 * 60000;
@@ -127,96 +134,122 @@ Object.defineProperties(CityBikes.prototype, {
 			return cacheInvalid;
 		}
 	},
+	_cacheNetworks: {
+		value: function(networksJSON, callback) {
+			// Finished eating our HTTP response.
+			console.log("Caching Networks...");
+			var added = 0;
+
+			// JSON from the CityBik.es API.
+			var networks = JSON.parse(networksJSON);
+			// A blank cache
+			var nc = {};
+
+			// update cache
+			for (var i=0; i<networks.length; i++)
+			{
+				var network = networks[i];
+				if (!(network.name in nc))
+				{
+					// No entry in the cache for this network.
+					// 1. Fix the "lat" and "lng" that we get back.
+					network.lat = network.lat / 1000000;
+					network.lng = network.lng / 1000000;
+					var x = network.lng;
+					var y = network.lat;
+					var w = 0.5, h = 0.5;
+					// Build an extent based off this lat/lng for the FeatureService
+					network["calculatedExtent"] = {
+						xmin: x - (w/2),
+						xmax: x + (w/2),
+						ymin: y - (h/2),
+						ymax: y + (h/2),
+						spatialReference: {
+							"wkid": 4326,
+							"latestWkid": 4326
+						}
+					};
+
+					// Create a new cache entry based off this...
+					var networkCacheEntry = {
+						"network": network, 
+						"stations": { 
+								lastReadTime: -1,
+								cacheExpirationTime: new Date(),
+								cachedStations: [],
+								status: states.empty
+							},
+						"timezone": null
+					};
+			
+					// And store it in the cache
+					nc[network.name] = networkCacheEntry;
+		
+					// Set up the timezone for this network
+					this._getTimezone(networkCacheEntry, (function() {
+						if (this.loadCacheOnStart) {
+							// Don't pre-cache unless deployed
+							console.log("Precaching stations for " + networkCacheEntry.network.name);
+							this._stationsForNetwork(networkCacheEntry, null, function(stations) {
+								return null;
+							});
+						}
+					}).bind(this));
+		
+					added++
+				}
+			}
+
+			// Mark the networks cache as valid for the next little while.
+			this._cacheExpirationTime = new Date();
+			this._cacheExpirationTime.setTime(this._cacheExpirationTime.getTime() + this._networksCacheTime);
+			console.log("Cached " + added + " new networks!");
+			console.log("Networks cache expires at: " + this._cacheExpirationTime);
+
+			// And callback with the networks cache.
+			this._networkCacheStatus = states.loaded;
+			callback(nc, null);
+		}
+	},
 	_networks: {
 		value: function(callback) {
 			if (this._cacheInvalid(this))
 			{
-				// Load the latest list of bike share networks
-				console.log("Caching Networks...");
-				var added = 0;
-				http.get(cityBikesNetworksURL, (function(res)
-				{
-					res.setEncoding('utf8');
-					var networksJSON = "";
-
-					res.on('data', function(chunk) {
-						networksJSON = networksJSON + chunk;
-					});
-
-					res.on('end', (function() 
+				console.log(this._networkCacheStatus);
+				if (this._networkCacheStatus !== states.loading) {
+					this._networkCacheStatus = states.loading;
+					// Load the latest list of bike share networks
+					console.log("Requesting Networks...");
+					http.get(cityBikesNetworksURL, (function(res)
 					{
-						// Finished eating our HTTP response.
-						console.log("Caching Networks...");
+						res.setEncoding('utf8');
+						var networksJSON = "";
 
-						// JSON from the CityBik.es API.
-						var networks = JSON.parse(networksJSON);
-						// A blank cache
-						var nc = {};
+						res.on('data', function(chunk) {
+							networksJSON = networksJSON + chunk;
+						});
 
-						// update cache
-						for (var i=0; i<networks.length; i++)
+						res.on('end', (function() 
 						{
-							var network = networks[i];
-							if (!(network.name in nc))
-							{
-								// No entry in the cache for this network.
-								// 1. Fix the "lat" and "lng" that we get back.
-								network.lat = network.lat / 1000000;
-								network.lng = network.lng / 1000000;
-								var x = network.lng;
-								var y = network.lat;
-								var w = 0.5, h = 0.5;
-								// Build an extent based off this lat/lng for the FeatureService
-								network["calculatedExtent"] = {
-									xmin: x - (w/2),
-									xmax: x + (w/2),
-									ymin: y - (h/2),
-									ymax: y + (h/2),
-									spatialReference: {
-										"wkid": 4326,
-										"latestWkid": 4326
-									}
-								};
-
-								// Create a new cache entry based off this...
-								var networkCacheEntry = {
-									"network": network, 
-									"stations": { 
-											lastReadTime: -1,
-											cacheExpirationTime: new Date(),
-											cachedStations: []
-										},
-									"timezone": null
-								};
-							
-								// And store it in the cache
-								nc[network.name] = networkCacheEntry;
-						
-								// Set up the timezone for this network
-								this._getTimezone(networkCacheEntry, (function() {
-									if (this.loadCacheOnStart) {
-										// Don't pre-cache unless deployed
-										console.log("Precaching stations for " + networkCacheEntry.network.name);
-										this._stationsForNetwork(networkCacheEntry, null, function(stations) {
-											return null;
-										});
-									}
-								}).bind(this));
-						
-								added++
-							}
-						}
-				
-						// Mark the networks cache as valid for the next little while.
-						this._cacheExpirationTime = new Date();
-						this._cacheExpirationTime.setTime(this._cacheExpirationTime.getTime() + this._networksCacheTime);
-						console.log("Cached " + added + " new networks!");
-						console.log("Networks cache expires at: " + this._cacheExpirationTime);
-			
-						// And callback with the networks cache.
-						callback(nc, null);
+							this._cacheNetworks(networksJSON, callback);
+						}).bind(this));
 					}).bind(this));
-				}).bind(this));
+				} else {
+					console.log("Waiting for networks cache");
+					// Cache is still loading.
+					((function waitForCache(cb) {
+						var provider = this;
+						setTimeout(function () {
+							if (this._networkCacheStatus !== states.loaded) {
+								// We weren't ready yet, let's try again in a few
+								waitForCache(cb);
+							} else {
+								console.log("Networks Cached. Done waiting!");
+								cb(provider._cachedNetworks, null);
+							}
+						}, 100);
+					}).bind(this))(callback);
+				}
 			}
 			else
 			{
@@ -312,153 +345,172 @@ Object.defineProperties(CityBikes.prototype, {
 				console.log("Returning cached station results for " + n.network.name);
 				callback(n.stations.cachedStations, null);
 			} else {
-				// OK, we need to go and ask api.citybik.es for the info.
-				// Note, we can only ask for the current state of ALL stations in a given network.
-				var cityBikesUrl = n.network.url;
-				http.get(cityBikesUrl, (function (res)
-				{
-					res.setEncoding('utf8');
-					var stationsJSON = "";
-			
-					res.on('data', function(chunk) {
-						stationsJSON = stationsJSON + chunk;
-					});
-
-					res.on('end', (function() 
+				if (n.stations.status !== states.loading) {
+					console.log("Loading stations for " + n.network.name);
+					n.stations.status = states.loading;
+					// OK, we need to go and ask api.citybik.es for the info.
+					// Note, we can only ask for the current state of ALL stations in a given network.
+					var cityBikesUrl = n.network.url;
+					http.get(cityBikesUrl, (function (res)
 					{
-						// Done eating the stations HTTP response for a given network.
-						var stationsData = JSON.parse(stationsJSON);
+						res.setEncoding('utf8');
+						var stationsJSON = "";
+			
+						res.on('data', function(chunk) {
+							stationsJSON = stationsJSON + chunk;
+						});
 
-						// Clear the cache.
-						n.stations.cachedStations = [];
-						// We'll build an accurate envelope of all stations for later.
-						var minX = 0;
-						var minY = 0;
-						var maxX = 0;
-						var maxY = 0;
-						for (var i=0; i < stationsData.length; i++)
+						res.on('end', (function() 
 						{
-							var station = stationsData[i];
+							// Done eating the stations HTTP response for a given network.
+							var stationsData = JSON.parse(stationsJSON);
 
-							// Get the non-UTC timestamp returned by api.citybik.es					
-							var tmp = new Date(station.timestamp);
-							station["citybikesTimeString"] = station.timestamp;
-
-							// The timestamps are CEST - fix by - 2 hours.
-							tmp.setTime(tmp.getTime() - (2 * 60 * 60 * 1000));
-							var epochMS = new Date(tmp).getTime();
-							// Return the corrected time as a new attribute.
-							station["utcTime"] = epochMS;
-
-							// We'll also try to get a timestamp local to someone in the network.
-							var localEpochMS = new Date(epochMS).getTime();
-
-							// We're also going to try to give any client some info about how
-							// to convert the UTC timestamp to something appropriate for the 
-							// network itself, or to do time calculations.
-							gmtOffStr = "";
-
-							if (n.timezone)
+							// Clear the cache.
+							n.stations.cachedStations = [];
+							// We'll build an accurate envelope of all stations for later.
+							var minX = 0;
+							var minY = 0;
+							var maxX = 0;
+							var maxY = 0;
+							for (var i=0; i < stationsData.length; i++)
 							{
-								var gmtOffset = parseInt(n.timezone.gmtOffset);
-								localEpochMS = localEpochMS + (gmtOffset * 1000);
-								gmtOffStr = this._getGMTOffsetString(n.timezone);
-								station["timezone"] = n.timezone.abbreviation;
-								station["timezoneOffset"] = parseInt(n.timezone.gmtOffset);
-							}
-							else
-							{
-								// We haven't been able to get timezone information for this
-								// network so we must default to everything beting UTC (akaGMT).
-								gmtOffStr += "+0000";
-								station["timezone"] = "GMT";
-								station["timezoneOffset"] = 0;
-								console.log("Uh oh - no timezone for " + n.network.name);
-							}
-							station["timezoneOffsetString"] = "GMT" + gmtOffStr;
-							station["localTimeString"] = new Date(localEpochMS).toUTCString() + gmtOffStr;
+								var station = stationsData[i];
 
-							// Fix the lat/lng					
-							var x = station.lng / 1000000;
-							var y = station.lat / 1000000;
-							if (x < -180 || x > 180 || y < -90 || y > 90) {
-								console.log("Invalid GeoLocation!! " + y + "," + x);
-								console.log(station);
-								x = n.network.lng;
-								y = n.network.lat;
-								console.log("Corrected GeoLocation!! " + y + "," + x);
-							}
-							// And build that extent so that the "Layer (Feature Service)"
-							// JSON can specify the extent of the layer. That way, when it's
-							// added to a map, it can be zoomed to easily.
-							if (i==0) {
-								minX = x;
-								maxX = x;
-								minY = y;
-								maxY = y;
-							} else {
-								if (x < minX) minX = x;
-								if (x > maxX) maxX = x;
-								if (y < minY) minY = y;
-								if (y > maxY) maxY = y;
-							}
+								// Get the non-UTC timestamp returned by api.citybik.es					
+								var tmp = new Date(station.timestamp);
+								station["citybikesTimeString"] = station.timestamp;
+
+								// The timestamps are CEST - fix by - 2 hours.
+								tmp.setTime(tmp.getTime() - (2 * 60 * 60 * 1000));
+								var epochMS = new Date(tmp).getTime();
+								// Return the corrected time as a new attribute.
+								station["utcTime"] = epochMS;
+
+								// We'll also try to get a timestamp local to someone in the network.
+								var localEpochMS = new Date(epochMS).getTime();
+
+								// We're also going to try to give any client some info about how
+								// to convert the UTC timestamp to something appropriate for the 
+								// network itself, or to do time calculations.
+								gmtOffStr = "";
+
+								if (n.timezone)
+								{
+									var gmtOffset = parseInt(n.timezone.gmtOffset);
+									localEpochMS = localEpochMS + (gmtOffset * 1000);
+									gmtOffStr = this._getGMTOffsetString(n.timezone);
+									station["timezone"] = n.timezone.abbreviation;
+									station["timezoneOffset"] = parseInt(n.timezone.gmtOffset);
+								}
+								else
+								{
+									// We haven't been able to get timezone information for this
+									// network so we must default to everything beting UTC (akaGMT).
+									gmtOffStr += "+0000";
+									station["timezone"] = "GMT";
+									station["timezoneOffset"] = 0;
+									console.log("Uh oh - no timezone for " + n.network.name);
+								}
+								station["timezoneOffsetString"] = "GMT" + gmtOffStr;
+								station["localTimeString"] = new Date(localEpochMS).toUTCString() + gmtOffStr;
+
+								// Fix the lat/lng					
+								var x = station.lng / 1000000;
+								var y = station.lat / 1000000;
+								if (x < -180 || x > 180 || y < -90 || y > 90) {
+									console.log("Invalid GeoLocation!! " + y + "," + x);
+									console.log(station);
+									x = n.network.lng;
+									y = n.network.lat;
+									console.log("Corrected GeoLocation!! " + y + "," + x);
+								}
+								// And build that extent so that the "Layer (Feature Service)"
+								// JSON can specify the extent of the layer. That way, when it's
+								// added to a map, it can be zoomed to easily.
+								if (i==0) {
+									minX = x;
+									maxX = x;
+									minY = y;
+									maxY = y;
+								} else {
+									if (x < minX) minX = x;
+									if (x > maxX) maxX = x;
+									if (y < minY) minY = y;
+									if (y > maxY) maxY = y;
+								}
 						
-							// Now build that GeoService formatted feature that we need.
-							var stationFeature = {
-								geometry: {
-									x: x,
-									y: y,
-									spatialReference: {
-										wkid: 4326
-									}
-								},
-								attributes: JSON.parse(JSON.stringify(station))
-							};
+								// Now build that GeoService formatted feature that we need.
+								var stationFeature = {
+									geometry: {
+										x: x,
+										y: y,
+										spatialReference: {
+											wkid: 4326
+										}
+									},
+									attributes: JSON.parse(JSON.stringify(station))
+								};
 							
-							// Fix the bike data if need be.
-							stationFeature.attributes.bikes = +stationFeature.attributes.bikes;
-							stationFeature.attributes.free = +stationFeature.attributes.free;
+								// Fix the bike data if need be.
+								stationFeature.attributes.bikes = +stationFeature.attributes.bikes;
+								stationFeature.attributes.free = +stationFeature.attributes.free;
 						
-							// Get that nice smart-value for AGOL rendering (see _getBikeRange()).
-							this._getBikeRange(stationFeature);
-							this._getDockRange(stationFeature);
+								// Get that nice smart-value for AGOL rendering (see _getBikeRange()).
+								this._getBikeRange(stationFeature);
+								this._getDockRange(stationFeature);
 						
-							// Remove some attributes we don't want to output.
-							delete stationFeature.attributes["lat"];
-							delete stationFeature.attributes["lng"];
-							delete stationFeature.attributes["coordinates"];
-							delete stationFeature.attributes["timestamp"];
+								// Remove some attributes we don't want to output.
+								delete stationFeature.attributes["lat"];
+								delete stationFeature.attributes["lng"];
+								delete stationFeature.attributes["coordinates"];
+								delete stationFeature.attributes["timestamp"];
 						
-							// And add the stations cache to our overall cache structure.
-							n.stations.cachedStations.push(stationFeature);
-						}
-						// Store the calculated extent
-						n.stations["extent"] = n.network["calculatedExtent"] = {
-							xmin: minX, ymin: minY,
-							xmax: maxX, ymax: maxY,
-							spatialReference: {
-								"wkid": 4326,
-								"latestWkid": 4326
+								// And add the stations cache to our overall cache structure.
+								n.stations.cachedStations.push(stationFeature);
 							}
-						};
+							// Store the calculated extent
+							n.stations["extent"] = n.network["calculatedExtent"] = {
+								xmin: minX, ymin: minY,
+								xmax: maxX, ymax: maxY,
+								spatialReference: {
+									"wkid": 4326,
+									"latestWkid": 4326
+								}
+							};
 					
-						// Flag when we last parsed the stations for this network.
-						n.stations.lastReadTime = new Date();
+							// Flag when we last parsed the stations for this network.
+							n.stations.lastReadTime = new Date();
 
-						// And mark when the cache will next be invalid.
-						n.stations.cacheExpirationTime =
-							new Date(n.stations.lastReadTime.getTime() + this._stationCacheTime);
+							// And mark when the cache will next be invalid.
+							n.stations.cacheExpirationTime =
+								new Date(n.stations.lastReadTime.getTime() + this._stationCacheTime);
 
-						console.log(util.format('Cached %d stations for %s at %s (expires %s) %d bytes',
-												stationsData.length, n.network.name,
-												n.stations.lastReadTime,
-												n.stations.cacheExpirationTime,
-												JSON.stringify(n.stations).length));
+							console.log(util.format('Cached %d stations for %s at %s (expires %s) %d bytes',
+													stationsData.length, n.network.name,
+													n.stations.lastReadTime,
+													n.stations.cacheExpirationTime,
+													JSON.stringify(n.stations).length));
 
-						// Good. Call back with the results of our hard work.				
-						callback(n.stations.cachedStations, null);
+							// Good. Call back with the results of our hard work.	
+							n.stations.status = states.loaded;			
+							callback(n.stations.cachedStations, null);
+						}).bind(this));
 					}).bind(this));
-				}).bind(this));
+				} else {
+					console.log("Waiting for " + n.network.name + " stations cache");
+					var nce = n;
+					(function waitForStations(cb) {
+						setTimeout(function () {
+							if (nce.stations.status !== states.loaded) {
+								// We weren't ready yet, let's try again in a few
+								waitForStations(cb);
+							} else {
+								console.log("Stations Cached for " + nce.network.name + ". Done waiting!");
+								cb(nce.stations.cachedStations, null);
+							}
+						}, 100);
+					})(callback);
+				}
 			}
 		}
 	},
@@ -664,7 +716,6 @@ Object.defineProperties(CityBikes.prototype, {
 				
 				if (serviceId === allNetworksServiceId) {
 					this._networkFeatures(networks, function(results, err) {
-						debugger;
 						callback(results, idField, fields, err);
 					});
 				} else {
