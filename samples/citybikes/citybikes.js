@@ -62,7 +62,7 @@ var dockClassificationScheme = {
 
 var drawingInfo = JSON.parse(fs.readFileSync(path.join(path.dirname(module.filename),"resources","templates","layerDefinition-drawingInfo.json"), 'utf8'));
 
-var timezoneAPIKey = "IMPMC00M2XNY";
+var timezoneAPIKey = "IMPMC00M2XNY"; // Replace this with your own key from timezonedb.com
 
 var timezoneCacheFilename = path.join(path.dirname(module.filename),"data","timezones.json");
 
