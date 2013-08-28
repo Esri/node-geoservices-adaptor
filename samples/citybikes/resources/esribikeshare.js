@@ -7,7 +7,7 @@ var networkTemplate = {
 		"radius": 20000,
 		"lat": 34056490,
 		"lng": -117195681,
-		"id": 1
+		"id": 10000
 	},
 	stationTemplate = {
 		"name": "Esri Campus",
