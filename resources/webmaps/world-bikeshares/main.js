@@ -9,48 +9,43 @@ var map = null,
 	extentHandler = null,
 	switchScale = 500000,
 	defaultZoom = 3,
-	defaultCenter = [-35,0];
-	worldText = "World Bikeshare View",
-	localText = "Local Bikeshare View";
+	defaultCenter = [-35, 25],
+	worldText = "World Bikeshare View";
 
 var mapOptions = {
-        basemap: "gray",
-        sliderStyle: "small",
-        wrapAround180: true,
-        center: defaultCenter,
-        zoom: defaultZoom
-    },
-    bikesharePopupTemplate = null;
+		basemap: "gray",
+		sliderStyle: "small",
+		wrapAround180: true,
+		center: defaultCenter,
+		zoom: defaultZoom
+	},
+	bikesharePopupTemplate = null;
 
 function getParameterByName(name) {
-    name = name.replace(/[\[]/, "\[").replace(/[\]]/, "\]");
-    var regex = new RegExp("[\?&]" + name + "=([^&#]*)"),
-        results = regex.exec(location.search);
-    return results == null ? null : decodeURIComponent(results[1].replace(/\+/g, " "));
+	name = name.replace(/[\[]/, "\[").replace(/[\]]/, "\]");
+	var regex = new RegExp("[\?&]" + name + "=([^&#]*)"),
+		results = regex.exec(location.search);
+	return results == null ? null : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
 function getExtent(layerEndpoint, callback) {
-	var featureServiceDescriptionUrl = layerEndpoint + "?f=json";
-	var jsonfile = new XMLHttpRequest();
-	jsonfile.open("GET", featureServiceDescriptionUrl, true);
-	jsonfile.onreadystatechange = function() {
-		if (jsonfile.readyState == 4) {
-			var gotExtent = false;
-			if (jsonfile.status == 200) {
-				require(["esri/geometry/Extent"], function(Extent) {
-					var extent = JSON.parse(jsonfile.responseText).extent;
-					extent = new Extent(extent);
-					gotExtent = true;
-					return callback(null, extent);	
-				});
-			}
-			if (!gotExtent) {
-				console.trace();
-				callback("Could not get extent", null);
-			}
-		}
-	};
-	jsonfile.send(null);
+    var featureServiceDescriptionUrl = layerEndpoint + "?f=json";
+    var jsonfile = new XMLHttpRequest();
+    jsonfile.open("GET", featureServiceDescriptionUrl, true);
+    jsonfile.onreadystatechange = function() {
+        if (jsonfile.readyState == 4) {
+            if (jsonfile.status == 200) {
+                require(["esri/geometry/Extent"], function(Extent) {
+                    var extent = JSON.parse(jsonfile.responseText).extent;
+                    extent = new Extent(extent);
+                    return callback(null, extent);
+                });
+            } else {
+                return callback("Could not get extent", null);
+            }
+        }
+    };
+    jsonfile.send(null);
 }
 
 function openBikeshareLayer(g) {
@@ -60,7 +55,7 @@ function openBikeshareLayer(g) {
 			if (extentHandler) {
 				extentHandler.remove();
 			}
-		    require(["esri/layers/FeatureLayer"], function(FeatureLayer) {
+			require(["esri/layers/FeatureLayer"], function(FeatureLayer) {
 				if (bikeshareLayer) {
 					map.removeLayer(bikeshareLayer);
 					delete bikeshareLayer;
@@ -70,7 +65,7 @@ function openBikeshareLayer(g) {
 				bikeshareLayer.setMinScale(switchScale);
 				map.addLayer(bikeshareLayer);
 				map.setExtent(extent, true);
-		    });
+			});
 		} else {
 			console.log("Error loading layer! " + err);
 		}
@@ -98,9 +93,9 @@ function openWorldLayer() {
 				}
 			});
 		}
-		
-		map.centerAndZoom(defaultCenter,defaultZoom);
-	
+
+		map.centerAndZoom(defaultCenter, defaultZoom);
+
 		extentHandler = map.on("extent-change", function(extent) {
 			lastWorldExtent = extent;
 		});
@@ -108,19 +103,16 @@ function openWorldLayer() {
 }
 
 function initApp() {
-    require(["esri/map", "esri/geometry/Extent", "esri/layers/FeatureLayer", 
-    		 "esri/dijit/InfoWindowLite", "esri/InfoTemplate", 
-    		 "dojo/dom-construct", "dojo/domReady!"], 
-			function(Map, Extent, FeatureLayer, 
-					 InfoWindowLite, InfoTemplate, 
-					 domConstruct) {
+	require(["esri/map", "esri/dijit/InfoWindowLite", "esri/InfoTemplate", 
+			 "dojo/dom-construct", "dojo/domReady!"], 
+			function(Map, InfoWindowLite, InfoTemplate, domConstruct) {
 		map = new Map("map", mapOptions);
-		
+
 		var parameterRoot = getParameterByName("urlroot");
 		if (parameterRoot) {
 			urlRoot = parameterRoot;
 		}
-		
+
 		worldLayerURL = urlRoot + worldLayerURL;
 
 		var infoWindow = new InfoWindowLite(null, domConstruct.create("div", null, null, map.root));
