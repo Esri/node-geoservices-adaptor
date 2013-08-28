@@ -55,12 +55,17 @@ function openBikeshareLayer(g) {
 			if (extentHandler) {
 				extentHandler.remove();
 			}
-			require(["esri/layers/FeatureLayer"], function(FeatureLayer) {
+			require(["esri/layers/FeatureLayer", "esri/InfoTemplate"],
+					function(FeatureLayer, InfoTemplate) {
 				if (bikeshareLayer) {
 					map.removeLayer(bikeshareLayer);
 					delete bikeshareLayer;
 				}
-				bikeshareLayer = new FeatureLayer(url);
+				bikeshareLayer = new FeatureLayer(url, {
+                    infoTemplate: new InfoTemplate("${name}",
+                    	"<tr>Bikes: <td>${bikes}</td></tr><br>" + 
+                    	"<tr>Docks: <td>${free}</td></tr>")
+                });
 				bikeshareLayer.world_network = g.attributes.name;
 				bikeshareLayer.setMinScale(switchScale);
 				map.addLayer(bikeshareLayer);
@@ -88,6 +93,7 @@ function openWorldLayer() {
 			worldLayer.on("scale-visibility-change", function(e) {
 				if (worldLayer.isVisibleAtScale(map.getScale())) {
 					document.getElementById("titleMessage").innerText = worldText;
+					map.infoWindow.hide();
 				} else {
 					document.getElementById("titleMessage").innerText = bikeshareLayer.world_network;
 				}
@@ -118,9 +124,9 @@ function initApp() {
 		var infoWindow = new InfoWindowLite(null, domConstruct.create("div", null, null, map.root));
 		infoWindow.startup();
 		map.setInfoWindow(infoWindow);
+		map.infoWindow.resize(200, 75);
 
 		map.on("load", function() {
-			var bikesharePopupTemplate = new InfoTemplate();
 			openWorldLayer();
 			document.getElementById("btnBackToWorldView").onclick = openWorldLayer;
 		});

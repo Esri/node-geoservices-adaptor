@@ -321,7 +321,7 @@ Object.defineProperties(CityBikes.prototype, {
 				
 				results.push(networkFeature);
 
-				this._stationsForNetwork(n, 30*60*1000, (function(stationFeatures, err) {
+				this._stationsForNetwork(n, 5*60*1000, (function(stationFeatures, err) {
 					if (err) { 
 						console.log("Couldn't read stations for network " + this.name);
 						this.docks = this.bikes = -1;
@@ -454,15 +454,15 @@ Object.defineProperties(CityBikes.prototype, {
 				station["timezoneOffsetString"] = "GMT" + gmtOffStr;
 				station["localTimeString"] = new Date(localEpochMS).toUTCString() + gmtOffStr;
 
-			// Fix the lat/lng					
-			var x = station.lng / 1000000;
-			var y = station.lat / 1000000;
-			if (x < -180 || x > 180 || y < -90 || y > 90 || x == 0 || y == 0) {
-				console.log("Invalid GeoLocation!! " + y + "," + x);
-				console.log(station);
-				x = n.network.lng;
-				y = n.network.lat;
-				console.log("Corrected GeoLocation!! " + y + "," + x);
+				// Fix the lat/lng					
+				var x = station.lng / 1000000;
+				var y = station.lat / 1000000;
+				if (x < -180 || x > 180 || y < -90 || y > 90 || x == 0 || y == 0) {
+					console.log("Invalid GeoLocation!! " + y + "," + x);
+					console.log(station);
+					x = n.network.lng;
+					y = n.network.lat;
+					console.log("Corrected GeoLocation!! " + y + "," + x);
 				}
 				// And build that extent so that the "Layer (Feature Service)"
 				// JSON can specify the extent of the layer. That way, when it's
