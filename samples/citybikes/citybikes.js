@@ -67,8 +67,15 @@ var timezoneAPIKey = "IMPMC00M2XNY"; // Replace this with your own key from time
 var timezoneCacheFilename = path.join(path.dirname(module.filename),"data","timezones.json");
 
 var allNetworksServiceId = "world_bikeshares",
-	allNetworksServiceName = "World Bikeshares";
+	allNetworksServiceName = "World Bikeshares",
+	allNetworksAllDataLayerId = 0,
+	allNetworksAllDataLayerName = "All Bikeshares",
+	allNetworksGoodDataLayerId = 1,
+	allNetworksGoodDataLayerName = "Bikeshares with Stations";
 	
+var extentMinWidth = 0.1, // In 4326 units (decimal degrees)
+	extentMinHeight = 0.1; // In 4326 units (decimal degrees)
+
 var states = {
 	empty: "empty",
 	loading: "loading",
@@ -157,13 +164,12 @@ Object.defineProperties(CityBikes.prototype, {
 					network.lng = network.lng / 1000000;
 					var x = network.lng;
 					var y = network.lat;
-					var w = 0.5, h = 0.5;
 					// Build an extent based off this lat/lng for the FeatureService
 					network["calculatedExtent"] = {
-						xmin: x - (w/2),
-						xmax: x + (w/2),
-						ymin: y - (h/2),
-						ymax: y + (h/2),
+						xmin: x - (extentMinWidth/2),
+						xmax: x + (extentMinWidth/2),
+						ymin: y - (extentMinHeight/2),
+						ymax: y + (extentMinHeight/2),
 						spatialReference: {
 							"wkid": 4326,
 							"latestWkid": 4326
@@ -318,6 +324,7 @@ Object.defineProperties(CityBikes.prototype, {
 							this.docks += stationFeatures[i].attributes.free;
 							this.bikes += stationFeatures[i].attributes.bikes;
 						}
+						this.docks = Math.max(0,this.docks);
 					}
 
 					networksToLoad--;
@@ -414,15 +421,15 @@ Object.defineProperties(CityBikes.prototype, {
 								station["timezoneOffsetString"] = "GMT" + gmtOffStr;
 								station["localTimeString"] = new Date(localEpochMS).toUTCString() + gmtOffStr;
 
-								// Fix the lat/lng					
-								var x = station.lng / 1000000;
-								var y = station.lat / 1000000;
-								if (x < -180 || x > 180 || y < -90 || y > 90) {
-									console.log("Invalid GeoLocation!! " + y + "," + x);
-									console.log(station);
-									x = n.network.lng;
-									y = n.network.lat;
-									console.log("Corrected GeoLocation!! " + y + "," + x);
+							// Fix the lat/lng					
+							var x = station.lng / 1000000;
+							var y = station.lat / 1000000;
+							if (x < -180 || x > 180 || y < -90 || y > 90 || x == 0 || y == 0) {
+								console.log("Invalid GeoLocation!! " + y + "," + x);
+								console.log(station);
+								x = n.network.lng;
+								y = n.network.lat;
+								console.log("Corrected GeoLocation!! " + y + "," + x);
 								}
 								// And build that extent so that the "Layer (Feature Service)"
 								// JSON can specify the extent of the layer. That way, when it's
@@ -467,6 +474,15 @@ Object.defineProperties(CityBikes.prototype, {
 						
 								// And add the stations cache to our overall cache structure.
 								n.stations.cachedStations.push(stationFeature);
+							}
+							
+							if (minX == maxX) {
+								minX -= extentMinWidth/2;
+								maxX += extentMinWidth/2;
+							}
+							if (minY == maxY) {
+								minY -= extentMinHeight/2;
+								maxY += extentMinHeight/2;
 							}
 							// Store the calculated extent
 							n.stations["extent"] = n.network["calculatedExtent"] = {
@@ -675,6 +691,15 @@ Object.defineProperties(CityBikes.prototype, {
 			callback(out.sort());
 		}
 	},
+	getLayerIds: {
+		value: function(serviceId, callback) {
+			if (serviceId === allNetworksServiceId) {
+				callback([allNetworksAllDataLayerId, allNetworksGoodDataLayerId], null);
+			} else {
+				callback([0], null);
+			}
+		}
+	},
 	getServiceName: {
 		value: function(serviceId) {
 			return serviceId === allNetworksServiceId?allNetworksServiceName:serviceId;
@@ -682,7 +707,18 @@ Object.defineProperties(CityBikes.prototype, {
 	},
 	getLayerName: {
 		value: function(serviceId, layerId) {
-			return serviceId===allNetworksServiceId?allNetworksServiceName:"Current Status";
+			if (serviceId===allNetworksServiceId) {
+				switch (layerId) {
+					case allNetworksAllDataLayerId:
+						return allNetworksAllDataLayerName;
+					case allNetworksGoodDataLayerId:
+						return allNetworksGoodDataLayerName;
+					default:
+						return "Unknown Layer ID: " + layerId;
+				}
+			} else {
+				return "Current Status";
+			}
 		}
 	},
 	idField: {
@@ -716,6 +752,12 @@ Object.defineProperties(CityBikes.prototype, {
 				
 				if (serviceId === allNetworksServiceId) {
 					this._networkFeatures(networks, function(results, err) {
+						if (layerId == allNetworksGoodDataLayerId) {
+							// Filter out Stations == 0
+							results = results.filter(function (feature) {
+								return feature.attributes.stations > 0;
+							});
+						}
 						callback(results, idField, fields, err);
 					});
 				} else {
