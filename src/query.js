@@ -57,7 +57,6 @@ Query = function(request) {
 	
 	var _outFields = (request.param("outFields") || "*");
 	if (_outFields !== "*") {
-		debugger;
 		_outFields = _outFields.split(",");
 	}
 	this.outFields = _outFields; // Not used
