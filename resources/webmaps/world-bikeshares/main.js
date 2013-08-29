@@ -21,6 +21,51 @@ var mapOptions = {
 	},
 	bikesharePopupTemplate = null;
 
+function pathStrings(pieData) {
+	var total = pieData.reduce(function (accu, that) { return that + accu; }, 0);
+    var sectorAngleArr = pieData.map(function (v) { return 360 * v / total; });
+
+	var radius = 7,
+		centerX = 0,
+		centerY = 0;
+	var paths = [];
+
+    var startAngle = 0;
+    var endAngle = 0;
+    for (var i=0; i<sectorAngleArr.length; i++){
+        startAngle = endAngle;
+        endAngle = startAngle + sectorAngleArr[i];
+
+        var x1,x2,y1,y2 ;
+
+        x1 = parseInt(Math.round(centerX + radius*Math.cos(Math.PI*startAngle/180)));
+        y1 = parseInt(Math.round(centerY + radius*Math.sin(Math.PI*startAngle/180)));
+
+        x2 = parseInt(Math.round(centerX + radius*Math.cos(Math.PI*endAngle/180)));
+        y2 = parseInt(Math.round(centerY + radius*Math.sin(Math.PI*endAngle/180)));
+
+        var d = "M" + centerX + "," + centerY + 
+        		"  L" + x1 + "," + y1 + 
+        		"  A" + radius + "," + radius + " 0 " + 
+                ((endAngle-startAngle > 180) ? 1 : 0) + ",1 " + x2 + "," + y2 + " z";
+        paths.push(d);
+        //alert(d); // enable to see coords as they are displayed
+// 		var c = parseInt(i / sectorAngleArr.length * 360);
+// 		var arc = makeSVG("path", {d: d, fill: "hsl(" + c + ", 66%, 50%)"});
+// 		paper.appendChild(arc);
+// 		arc.onclick = clickHandler; // This is optional, of course
+    }
+    return paths;
+}
+
+function createSymbol(path, color) {
+	var markerSymbol = new esri.symbol.SimpleMarkerSymbol();
+	markerSymbol.setPath(path);
+	markerSymbol.setColor(new dojo.Color(color));
+	markerSymbol.setOutline(null);
+	return markerSymbol;
+}
+
 function getParameterByName(name) {
 	name = name.replace(/[\[]/, "\[").replace(/[\]]/, "\]");
 	var regex = new RegExp("[\?&]" + name + "=([^&#]*)"),
@@ -67,7 +112,7 @@ function openBikeshareLayer(g) {
                     	"<tr>Bikes: <td>${bikes}</td></tr><br>" + 
                     	"<tr>Docks: <td>${free}</td></tr>")
                 });
-				bikeshareLayer.world_network = g.attributes.name;
+				bikeshareLayer.world_network_details = g.attributes;
 				bikeshareLayer.setMinScale(switchScale);
 				map.addLayer(bikeshareLayer);
 				map.setExtent(extent, true);
@@ -79,7 +124,8 @@ function openBikeshareLayer(g) {
 }
 
 function openWorldLayer() {
-	require(["esri/layers/FeatureLayer"], function(FeatureLayer) {
+	require(["esri/layers/FeatureLayer", "esri/renderers/SimpleRenderer", "esri/symbols/SimpleMarkerSymbol"], 
+			function(FeatureLayer, SimpleRenderer, SimpleMarkerSymbol) {
 		if (!worldLayer) {
 			document.getElementById("titleMessage").innerText = worldText;
 			worldLayer = new FeatureLayer(worldLayerURL);
@@ -96,9 +142,23 @@ function openWorldLayer() {
 					document.getElementById("titleMessage").innerText = worldText;
 					map.infoWindow.hide();
 				} else {
-					document.getElementById("titleMessage").innerText = bikeshareLayer.world_network;
+					var details = bikeshareLayer.world_network_details;
+					document.getElementById("titleMessage").innerText = 
+						details.name + 
+						" (" + details.docks + "," + details.bikes + ")";
 				}
 			});
+			var renderer = new SimpleRenderer(new SimpleMarkerSymbol());
+			renderer.getSymbol = function(graphic) {
+				var docks = graphic.attributes.docks,
+					bikes = graphic.attributes.bikes,
+					paths = pathStrings([docks, bikes]);
+				for (var i=0; i<paths.length; i++) {
+					console.log(paths[i]);
+				}
+				return createSymbol(paths[0], [255,0,0]);
+			}
+			worldLayer.renderer = renderer;
 		}
 
 		if (lastWorldExtent) {
