@@ -65,6 +65,9 @@ var dockClassificationScheme = {
 var featureFilterFunctions = {
 	"cristolib": function(item) {
 		return !(item.attributes.bikes == 0 && item.attributes.free == 0);
+	},
+	"levelo": function(item) {
+		return !(item.attributes.bikes == 0 && item.attributes.free == 0);
 	}
 };
 
