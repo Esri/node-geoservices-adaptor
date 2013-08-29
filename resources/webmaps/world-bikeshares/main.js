@@ -1,4 +1,5 @@
 var map = null,
+	legend = null,
 	worldLayerName = "world",
 	bikeshareLayerName = "local",
 	urlRoot = location.protocol + "//" + location.host,
@@ -105,12 +106,24 @@ function openBikeshareLayer(g) {
 					delete bikeshareLayer;
 				}
 				bikeshareLayer = new FeatureLayer(url, {
-                    infoTemplate: new InfoTemplate("${name}",
+                    infoTemplate: new InfoTemplate("${bikesClass} at ${name}",
                     	"<tr>Bikes: <td>${bikes}</td></tr><br>" + 
                     	"<tr>Docks: <td>${free}</td></tr>")
                 });
 				bikeshareLayer.world_network_details = g.attributes;
 				bikeshareLayer.setMinScale(switchScale);
+				bikeshareLayer.on("load", function() {
+					require(["esri/dijit/Legend", "dojo/dom-construct"], 
+							function(Legend, domConstruct) {
+						legend = new Legend({
+							map: map,
+							layerInfos: [{
+								layer: bikeshareLayer
+							}],
+						}, domConstruct.create("div", {id: "mainLegend", class: "legend"}, map.root));
+						legend.startup();
+					});
+				});
 				map.addLayer(bikeshareLayer);
 				map.setExtent(extent, true);
 			});
@@ -121,7 +134,8 @@ function openBikeshareLayer(g) {
 }
 
 function openWorldLayer() {
-	require(["esri/layers/FeatureLayer", "esri/renderers/SimpleRenderer", "esri/symbols/SimpleMarkerSymbol"], 
+	require(["esri/layers/FeatureLayer",
+			 "esri/renderers/SimpleRenderer", "esri/symbols/SimpleMarkerSymbol"], 
 			function(FeatureLayer, SimpleRenderer, SimpleMarkerSymbol) {
 		if (!worldLayers) {
 			worldLayers = [new FeatureLayer(worldLayerURL), new FeatureLayer(worldLayerURL)];
@@ -141,6 +155,7 @@ function openWorldLayer() {
 						document.getElementById("titleMessage").innerText = worldText;
 						document.getElementById("userMessage").innerText = "";
 						map.infoWindow.hide();
+						if (legend) { legend.destroy() };
 					} else {
 						var details = bikeshareLayer.world_network_details;
 						document.getElementById("titleMessage").innerText = details.name;
@@ -186,7 +201,7 @@ function initApp() {
 		var infoWindow = new InfoWindowLite(null, domConstruct.create("div", null, null, map.root));
 		infoWindow.startup();
 		map.setInfoWindow(infoWindow);
-		map.infoWindow.resize(200, 75);
+		map.infoWindow.resize(350, 75);
 
 		map.on("load", function() {
 			openWorldLayer();

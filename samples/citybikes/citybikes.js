@@ -165,7 +165,7 @@ Object.defineProperties(CityBikes.prototype, {
 			// A blank cache
 			var nc = {};
 			
-			networks.push(this.__esribikeshare.network);
+			networks.push(JSON.parse(JSON.stringify(this.__esribikeshare.network)));
 
 			// update cache
 			for (var i=0; i<networks.length; i++)
@@ -204,18 +204,29 @@ Object.defineProperties(CityBikes.prototype, {
 					};
 			
 					// And store it in the cache
-					nc[network.name] = networkCacheEntry;
+// 					nc[network.name] = networkCacheEntry;
 		
 					// Set up the timezone for this network
-					this._getTimezone(networkCacheEntry, (function() {
-						if (this.loadCacheOnStart) {
-							// Don't pre-cache unless deployed
-							console.log("Precaching stations for " + networkCacheEntry.network.name);
-							this._stationsForNetwork(networkCacheEntry, null, function(stations) {
-								return null;
-							});
-						}
-					}).bind(this));
+					((function(tempCache, cacheEntry) {
+						this._getTimezone(cacheEntry, (function() {
+							if (this.loadCacheOnStart) {
+								// Don't pre-cache unless deployed
+								console.log("Precaching stations for " + cacheEntry.network.name);
+								this._stationsForNetwork(cacheEntry, null, function(stations, err) {
+									if (err) {
+										console.log("Error: " + err);
+										console.log("Emptying Stations: " + cacheEntry.network.name);
+										cacheEntry.stations.cachedStations = [];
+										cacheEntry.stations.status = "loaded";
+									} else {
+										// Store it in the cache.
+										tempCache[cacheEntry.network.name] = cacheEntry;
+									}
+									return null;
+								});
+							}
+						}).bind(this));
+					}).bind(this))(nc, networkCacheEntry);
 		
 					added++
 				}
@@ -384,13 +395,28 @@ Object.defineProperties(CityBikes.prototype, {
 							res.on('data', function(chunk) {
 								stationsJSON = stationsJSON + chunk;
 							});
+							
+							res.on('error', function(e) {
+								console.log(e);
+								debugger;
+							});
 
 							res.on('end', (function() 
 							{
-								// Done eating the stations HTTP response for a given network.
-								var stationsData = JSON.parse(stationsJSON);
-
-								this._cacheStations(n, stationsData, callback);
+								var stationsData = null;
+								try {
+									// Done eating the stations HTTP response for a given network.
+									stationsData = JSON.parse(stationsJSON);
+								} catch (e) {
+									console.log(e + " getting stations for " + n.network.name);
+									console.log(stationsJSON);
+									n.stations.cachedStations = [];
+									n.stations.status = "loaded";
+									return callback(null, e);
+								}
+								if (stationsData) {
+									this._cacheStations(n, stationsData, callback);
+								}
 							}).bind(this));
 						}).bind(this));
 					}
@@ -808,7 +834,11 @@ Object.defineProperties(CityBikes.prototype, {
 					this._stationsForNetwork(network, null, (function(stationFeatures, err) {
 						// We have the stations for the network. These are our features
 						// that match the query. So call back to our caller with our results.
-						callback(stationFeatures, idField, fields, err);
+						if (err) {
+							callback(null, null, null, err);
+						} else {
+							callback(stationFeatures, idField, fields, null);
+						}
 					}).bind(this));
 				}
 			}).bind(this));
