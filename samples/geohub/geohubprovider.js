@@ -345,8 +345,8 @@ function outputArcGISJSON(geoJSONOutput, cache, query, callback) {
     console.log("Filtering by geoJSON type: " + typeInfo.type + " / " +
     			typeInfo.types.toString());
     var filteredGeoJSON = FilterGeoJSONByType(geoJSONOutput, typeInfo.type);
-    
-    inflateFields(geoJSONOutput, cache.layerDetails.fields);
+
+    inflateFields(filteredGeoJSON, cache.layerDetails.fields);
     
     var arcgisOutput = TerraformerArcGIS.convert(filteredGeoJSON);
 	
@@ -362,18 +362,15 @@ function outputArcGISJSON(geoJSONOutput, cache, query, callback) {
 		}
 
 		var newId = i;
-// 		if (!arcgisOutput[i].attributes.hasOwnProperty(idField)) {
-			if (arcgisOutput[i].hasOwnProperty("geojsonid")) {
-				newId = arcgisOutput[i].geojsonid;
-				arcgisOutput[i].attributes[idField] = newId;
-				delete arcgisOutput[i].geojsonid;
-			} else {
-				console.log("Having to set id on geoJSON with AUTO: " + newId);
-			}
-// 		}
+		if (arcgisOutput[i].hasOwnProperty("geojsonid")) {
+			newId = arcgisOutput[i].geojsonid;
+			arcgisOutput[i].attributes[idField] = newId;
+			delete arcgisOutput[i].geojsonid;
+		} else {
+			console.log("Having to set id on geoJSON with AUTO: " + newId);
+		}
     }
-
-    callback(arcgisOutput, null, null, null);
+    callback(arcgisOutput, idField, cache.layerDetails.fields, null);
 }
 
 

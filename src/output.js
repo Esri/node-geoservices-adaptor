@@ -230,8 +230,8 @@ function featureServiceLayerQueryJSON(dataProvider, serviceId, layerId,
 					case "json":
 						var featureSet = JSON.parse(JSON.stringify(_featureSetJSON));
 						
-						featureSet.fields = dataProvider.fields(serviceId, layerId);
-						featureSet.objectIdFieldName = dataProvider.idField(serviceId, layerId);
+						featureSet.fields = fields;
+						featureSet.objectIdFieldName = idField;
 						featureSet.features = [];
 						
 						if (query.outSR === 102100)
