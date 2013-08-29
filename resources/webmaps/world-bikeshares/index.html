@@ -11,6 +11,16 @@
 	<link rel="stylesheet" href="./main.css">
 	<style>
       html, body, #map { height: 100%; width: 100%; margin: 0; padding: 0; }
+      #charts {
+        width: 800px;
+      }
+      .featureChart {
+        display: inline-block;
+        /*height: 40px;*/
+        position: absolute;
+        top: -100px;
+        /*width: 40px;*/
+      }
     </style>
 </head>
 <body>
@@ -24,7 +34,8 @@
 		<div class="message"><span id="userMessage" class="user-message"></span></div>
 	</div>
 	<div id="map"></div>
-	<script>var dojoConfig = {parseOnLoad: true};</script>
+	<div id="charts"></div>
+	<script>var dojoConfig = {parseOnLoad: true, gfxRenderer: "canvas"};</script>
 	<script src="http://js.arcgis.com/3.6/"></script>
     <script src='main.js'></script>
 </body>

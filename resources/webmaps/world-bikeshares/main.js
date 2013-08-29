@@ -64,6 +64,132 @@ function createSymbol(path, color) {
 	return markerSymbol;
 }
 
+var charts = [];
+
+var temptemp = "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";
+
+function createPieChart(f) {
+	if (!f.hasOwnProperty("__chart")) {
+		// quick way to find max population so pie charts
+		// can be sized according to total state population
+		require([
+			"dojox/charting/Chart", "dojox/charting/themes/CubanShirts", "dojox/charting/plot2d/Pie",
+			"dojo/dom", "dojo/dom-construct", "dojo/query", "dojo/on", "dojo/aspect", 
+			"dojo/_base/array", "dojo/_base/connect",
+			"esri/map", "esri/tasks/query", "esri/dijit/Popup",
+			"dojo/domReady!"
+			], 
+			function(Chart, theme, PiePlot, dom, domConstruct, query, on, aspect, array, connect) {
+			  // modify the theme so the chart background is transparent
+			  // thanks to:  http://stackoverflow.com/a/8987358/1934
+			theme.chart.fill = "transparent";
+			var d = {
+					bikes: f.attributes.bikes,
+					docks: f.attributes.docks,
+					network: f.attributes.name,
+					point: f.geometry,
+					size: f.attributes.stations
+				}
+	
+// 	//     array.forEach(chartData, function(d, idx) {
+// 			// size chart (roughly) according to total populatiion
+			var size = 30;//d.size;
+// 			// console.log("size is: ", size);
+// 			// size chart node according to chart size/radius
+			var chartNode = domConstruct.create("div", {
+				id: d.network,
+				class: "featureChart",
+				style: {
+					width: size * 2.1 + "px",
+					height: size * 2.1 + "px"
+				}
+			}, dom.byId("charts"));
+			chartNode.setAttribute("data-x", d.point.x);
+			chartNode.setAttribute("data-y", d.point.y);
+			chartNode.setAttribute("data-bikes", d.bikes);
+			chartNode.setAttribute("data-docks", d.docks);
+			chartNode.setAttribute("data-stations", d.stations);
+			chartNode.setAttribute("data-size", size);
+
+			var chart = new Chart(chartNode);
+			chart.setTheme(theme);
+			chart.addPlot("default", {
+				type: PiePlot,
+				radius: size,
+				labels: false
+			});
+			chart.addSeries("default", [d.bikes,d.docks]);
+			chart.render();
+// 	//         charts.push(chart);
+			debugger;
+			var imgSrc = chartNode.firstChild.toDataURL("image/png");
+			var imgData = imgSrc.split(",")[1];
+			var sym = new esri.symbol.PictureMarkerSymbol({
+				"angle": 0,
+				"xoffset": 0,
+				"yoffset": 0,
+				"type": "esriPMS",
+				"imageData": imgData, //,
+				"contentType": "image/png",
+				"width": size,
+				"height": size,
+			});
+			f.__chart = sym;
+			console.log(sym);
+// 			domConstruct.destroy(chart.node);
+		});
+	}
+	return f.__chart;
+}
+    // use setTimeout to wait for charts/canvas elements to finish 
+    // renderering before accessing them
+    // hacky...but explained here:  http://javascriptweblog.wordpress.com/2010/06/28/understanding-javascript-timers/
+//     setTimeout(function() {
+//         query(".featureChart").forEach(function(node) {
+//             var imgSrc = node.firstChild.toDataURL("image/png");
+//             var sym = new esri.symbol.PictureMarkerSymbol({
+//                 "angle": 0,
+//                 "xoffset": 0,
+//                 "yoffset": 0,
+//                 "type": "esriPMS",
+//                 "imageData": imgSrc.split(",")[1],
+//                 "contentType": "image/png",
+//                 "width": node.dataset.size,
+//                 "height": node.dataset.size,
+//             });
+//             var x = node.dataset.x;
+//             var y = node.dataset.y
+//             var pt = new esri.geometry.Point(x, y, map.spatialReference);
+//             var attrs = {
+//                 "State": node.id,
+//                 "Obama": node.dataset.obama,
+//                 "Romney": node.dataset.romney,
+//                 "Population": node.dataset.population
+//             }
+//             var template = new esri.InfoTemplate("${State}", "Obama:  ${Obama}%<br>Romney:  ${Romney}%<br>Population: ${Population}");
+//             var graphic = new esri.Graphic(pt, sym, attrs, template);
+//             map.graphics.add(graphic);
+//         });
+        // now that there are picture marker symbols on the map, remove all charts
+//         array.forEach(charts, function(ch) {
+//             domConstruct.destroy(ch.node);
+//         });
+//     }, 0);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function getParameterByName(name) {
 	name = name.replace(/[\[]/, "\[").replace(/[\]]/, "\]");
 	var regex = new RegExp("[\?&]" + name + "=([^&#]*)"),
@@ -167,12 +293,13 @@ function openWorldLayer() {
 				});
 				var renderer = new SimpleRenderer(new SimpleMarkerSymbol());
 				renderer._bikeLayer = i;
-				renderer.getSymbol = function(graphic) {
-					var docks = graphic.attributes.docks,
-						bikes = graphic.attributes.bikes,
-						paths = pathStrings([docks, bikes]);
-					return createSymbol(paths[this._bikeLayer], colors[this._bikeLayer]);
-				}
+				renderer.getSymbol = createPieChart;
+// 				renderer.getSymbol = function(graphic) {
+// 					var docks = graphic.attributes.docks,
+// 						bikes = graphic.attributes.bikes,
+// 						paths = pathStrings([docks, bikes]);
+// 					return createSymbol(paths[this._bikeLayer], colors[this._bikeLayer]);
+// 				}
 				worldLayer.renderer = renderer;
 			}
 		}
