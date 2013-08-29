@@ -3,14 +3,15 @@ var map = null,
 	bikeshareLayerName = "local",
 	urlRoot = location.protocol + "//" + location.host,
 	worldLayerURL = "/citybikes/rest/services/world_bikeshares/FeatureServer/1",
-	worldLayer = null,
+	worldLayers = null,
 	bikeshareLayer = null,
 	lastWorldExtent = null,
 	extentHandler = null,
 	switchScale = 500000,
 	defaultZoom = 3,
 	defaultCenter = [-35, 25],
-	worldText = "World Bikeshare View";
+	worldText = "World Bikeshare View",
+	colors = ["#55BB55", "#EE4466"];
 
 var mapOptions = {
 		basemap: "gray",
@@ -22,10 +23,11 @@ var mapOptions = {
 	bikesharePopupTemplate = null;
 
 function pathStrings(pieData) {
+	// Modified from http://stackoverflow.com/a/15582018
 	var total = pieData.reduce(function (accu, that) { return that + accu; }, 0);
     var sectorAngleArr = pieData.map(function (v) { return 360 * v / total; });
 
-	var radius = 7,
+	var radius = 9,
 		centerX = 0,
 		centerY = 0;
 	var paths = [];
@@ -49,11 +51,6 @@ function pathStrings(pieData) {
         		"  A" + radius + "," + radius + " 0 " + 
                 ((endAngle-startAngle > 180) ? 1 : 0) + ",1 " + x2 + "," + y2 + " z";
         paths.push(d);
-        //alert(d); // enable to see coords as they are displayed
-// 		var c = parseInt(i / sectorAngleArr.length * 360);
-// 		var arc = makeSVG("path", {d: d, fill: "hsl(" + c + ", 66%, 50%)"});
-// 		paper.appendChild(arc);
-// 		arc.onclick = clickHandler; // This is optional, of course
     }
     return paths;
 }
@@ -126,39 +123,43 @@ function openBikeshareLayer(g) {
 function openWorldLayer() {
 	require(["esri/layers/FeatureLayer", "esri/renderers/SimpleRenderer", "esri/symbols/SimpleMarkerSymbol"], 
 			function(FeatureLayer, SimpleRenderer, SimpleMarkerSymbol) {
-		if (!worldLayer) {
+		if (!worldLayers) {
+			worldLayers = [new FeatureLayer(worldLayerURL), new FeatureLayer(worldLayerURL)];
 			document.getElementById("titleMessage").innerText = worldText;
-			worldLayer = new FeatureLayer(worldLayerURL);
-			worldLayer.setMaxScale(switchScale);
-			map.addLayer(worldLayer);
-			worldLayer.on("click", function(e) {
-				var g = e.graphic;
-				if (g) {
-					openBikeshareLayer(g);
+			for (var i=0; i<worldLayers.length; i++) {
+				var worldLayer = worldLayers[i];
+				worldLayer.setMaxScale(switchScale);
+				map.addLayer(worldLayer);
+				worldLayer.on("click", function(e) {
+					var g = e.graphic;
+					if (g) {
+						openBikeshareLayer(g);
+					}
+				});
+				worldLayer.on("scale-visibility-change", function(e) {
+					if (worldLayer.isVisibleAtScale(map.getScale())) {
+						document.getElementById("titleMessage").innerText = worldText;
+						document.getElementById("userMessage").innerText = "";
+						map.infoWindow.hide();
+					} else {
+						var details = bikeshareLayer.world_network_details;
+						document.getElementById("titleMessage").innerText = details.name;
+						var dStr = " open dock" + (details.docks>1?"s":"");
+						var bStr = " available bike" + (details.bikes>1?"s":"");
+						document.getElementById("userMessage").innerHTML = details.stations + 
+							" stations<br/>(" + details.docks + dStr + ", " + details.bikes + bStr + ")";
+					}
+				});
+				var renderer = new SimpleRenderer(new SimpleMarkerSymbol());
+				renderer._bikeLayer = i;
+				renderer.getSymbol = function(graphic) {
+					var docks = graphic.attributes.docks,
+						bikes = graphic.attributes.bikes,
+						paths = pathStrings([docks, bikes]);
+					return createSymbol(paths[this._bikeLayer], colors[this._bikeLayer]);
 				}
-			});
-			worldLayer.on("scale-visibility-change", function(e) {
-				if (worldLayer.isVisibleAtScale(map.getScale())) {
-					document.getElementById("titleMessage").innerText = worldText;
-					map.infoWindow.hide();
-				} else {
-					var details = bikeshareLayer.world_network_details;
-					document.getElementById("titleMessage").innerText = 
-						details.name + 
-						" (" + details.docks + "," + details.bikes + ")";
-				}
-			});
-			var renderer = new SimpleRenderer(new SimpleMarkerSymbol());
-			renderer.getSymbol = function(graphic) {
-				var docks = graphic.attributes.docks,
-					bikes = graphic.attributes.bikes,
-					paths = pathStrings([docks, bikes]);
-				for (var i=0; i<paths.length; i++) {
-					console.log(paths[i]);
-				}
-				return createSymbol(paths[0], [255,0,0]);
+				worldLayer.renderer = renderer;
 			}
-			worldLayer.renderer = renderer;
 		}
 
 		if (lastWorldExtent) {
