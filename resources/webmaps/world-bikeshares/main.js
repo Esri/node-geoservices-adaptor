@@ -4,15 +4,14 @@ var map = null,
 	bikeshareLayerName = "local",
 	urlRoot = location.protocol + "//" + location.host,
 	worldLayerURL = "/citybikes/rest/services/world_bikeshares/FeatureServer/1",
-	worldLayers = null,
+	worldLayer = null,
 	bikeshareLayer = null,
 	lastWorldExtent = null,
 	extentHandler = null,
 	switchScale = 500000,
 	defaultZoom = 3,
 	defaultCenter = [-35, 25],
-	worldText = "World Bikeshare View",
-	colors = ["#55BB55", "#EE4466"];
+	worldText = "World Bikeshare View";
 
 var mapOptions = {
 		basemap: "gray",
@@ -23,79 +22,69 @@ var mapOptions = {
 	},
 	bikesharePopupTemplate = null;
 
-function pathStrings(pieData) {
-	// Modified from http://stackoverflow.com/a/15582018
-	var total = pieData.reduce(function (accu, that) { return that + accu; }, 0);
-    var sectorAngleArr = pieData.map(function (v) { return 360 * v / total; });
+// We'll use Dojo Charting to create the symbols for the World Bikeshare Map
+// Thanks to Derek Swingley for the sample:
+// http://dl.dropboxusercontent.com/u/2654618/election-results.html
 
-	var radius = 9,
-		centerX = 0,
-		centerY = 0;
-	var paths = [];
+// Declare our own charting theme.
+require(["dojox/charting/Theme"], function(Theme) {
+	dojo.provide("geeknixta.charting.themes.WorldBikemap");
+    geeknixta.charting.themes.WorldBikemap = new Theme({
+        colors: [
+            "#C69F00",
+            "#2C902C",
+            "#7fc25d",
+            "#60b32b",
+            "#277085",
+            "#333"
+        ]
+    });
+});
 
-    var startAngle = 0;
-    var endAngle = 0;
-    for (var i=0; i<sectorAngleArr.length; i++){
-        startAngle = endAngle;
-        endAngle = startAngle + sectorAngleArr[i];
+// Because of the way requests are tiled, and the setTimeout workaround hack we
+// have to employ to read the canvas output into a PNG image, we'll use a tracking
+// system to know when a specific Bike Share graphic is in process or generated.
+var charts = {};
 
-        var x1,x2,y1,y2 ;
-
-        x1 = parseInt(Math.round(centerX + radius*Math.cos(Math.PI*startAngle/180)));
-        y1 = parseInt(Math.round(centerY + radius*Math.sin(Math.PI*startAngle/180)));
-
-        x2 = parseInt(Math.round(centerX + radius*Math.cos(Math.PI*endAngle/180)));
-        y2 = parseInt(Math.round(centerY + radius*Math.sin(Math.PI*endAngle/180)));
-
-        var d = "M" + centerX + "," + centerY + 
-        		"  L" + x1 + "," + y1 + 
-        		"  A" + radius + "," + radius + " 0 " + 
-                ((endAngle-startAngle > 180) ? 1 : 0) + ",1 " + x2 + "," + y2 + " z";
-        paths.push(d);
-    }
-    return paths;
-}
-
-function createSymbol(path, color) {
-	var markerSymbol = new esri.symbol.SimpleMarkerSymbol();
-	markerSymbol.setPath(path);
-	markerSymbol.setColor(new dojo.Color(color));
-	markerSymbol.setOutline(null);
-	return markerSymbol;
-}
-
-var charts = [];
-
-var temptemp = "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";
-
+// This will be the renderer getSymbol() method. Given a feature (f), it will
+// create an off-screen chart using Dojo Charting, and then render it to a PNG.
+// Unfortunately, the actual canvas rendering happens after this call completes
+// so we actually return a null response until our "charts" symbol cache has a valid
+// entry, which happens on setTimeout. When we get the symbol in setTimeout we also 
+// call setSymbol(), since the renderer's getSymbol() will already have happened. on
+// subsequent requests for getSymbol(), we'll have it cached so we just return it.
 function createPieChart(f) {
-	if (!f.hasOwnProperty("__chart")) {
+	if (!charts.hasOwnProperty(f.attributes.name)) {
+		charts[f.attributes.name] = null;
 		// quick way to find max population so pie charts
 		// can be sized according to total state population
 		require([
-			"dojox/charting/Chart", "dojox/charting/themes/CubanShirts", "dojox/charting/plot2d/Pie",
+			"dojox/charting/Chart", "geeknixta/charting/themes/WorldBikemap", "dojox/charting/plot2d/Pie",
 			"dojo/dom", "dojo/dom-construct", "dojo/query", "dojo/on", "dojo/aspect", 
 			"dojo/_base/array", "dojo/_base/connect",
 			"esri/map", "esri/tasks/query", "esri/dijit/Popup",
 			"dojo/domReady!"
 			], 
 			function(Chart, theme, PiePlot, dom, domConstruct, query, on, aspect, array, connect) {
-			  // modify the theme so the chart background is transparent
-			  // thanks to:  http://stackoverflow.com/a/8987358/1934
+
+			// Stash a placeholder symbol while we work out what this really is.
+			charts[f.attributes.name] = new esri.symbol.SimpleMarkerSymbol();
+			// modify the theme so the chart background is transparent
+			// thanks to:  http://stackoverflow.com/a/8987358/1934
 			theme.chart.fill = "transparent";
+
+			// Some data for the chart
 			var d = {
 					bikes: f.attributes.bikes,
 					docks: f.attributes.docks,
 					network: f.attributes.name,
 					point: f.geometry,
-					size: f.attributes.stations
-				}
-	
-// 	//     array.forEach(chartData, function(d, idx) {
-// 			// size chart (roughly) according to total populatiion
-			var size = 30;//d.size;
-// 			// console.log("size is: ", size);
-// 			// size chart node according to chart size/radius
+					stations: f.attributes.stations
+				};
+			// Make a div to hold the chart.
+			var size = (d.stations > 300) ? 24 :
+                (d.stations > 150) ? 18 :
+                12;
 			var chartNode = domConstruct.create("div", {
 				id: d.network,
 				class: "featureChart",
@@ -104,6 +93,7 @@ function createPieChart(f) {
 					height: size * 2.1 + "px"
 				}
 			}, dom.byId("charts"));
+			// Set some attribute that will get read by Dojo Charting.
 			chartNode.setAttribute("data-x", d.point.x);
 			chartNode.setAttribute("data-y", d.point.y);
 			chartNode.setAttribute("data-bikes", d.bikes);
@@ -111,6 +101,7 @@ function createPieChart(f) {
 			chartNode.setAttribute("data-stations", d.stations);
 			chartNode.setAttribute("data-size", size);
 
+			// Create and render the chart.
 			var chart = new Chart(chartNode);
 			chart.setTheme(theme);
 			chart.addPlot("default", {
@@ -118,77 +109,42 @@ function createPieChart(f) {
 				radius: size,
 				labels: false
 			});
-			chart.addSeries("default", [d.bikes,d.docks]);
+			chart.addSeries("default", [d.docks,d.bikes]);
 			chart.render();
-// 	//         charts.push(chart);
-			debugger;
-			var imgSrc = chartNode.firstChild.toDataURL("image/png");
-			var imgData = imgSrc.split(",")[1];
-			var sym = new esri.symbol.PictureMarkerSymbol({
-				"angle": 0,
-				"xoffset": 0,
-				"yoffset": 0,
-				"type": "esriPMS",
-				"imageData": imgData, //,
-				"contentType": "image/png",
-				"width": size,
-				"height": size,
-			});
-			f.__chart = sym;
-			console.log(sym);
-// 			domConstruct.destroy(chart.node);
+
+			// The chart won't be ready for canvas rendering to a PNG until
+			// the thread has dequeued some stuff. So, we'll chuck this onto the
+			// and of that queue and get it as soon as we can.
+			setTimeout(function() {
+				// Render to PNG data.
+				var imgSrc = chartNode.firstChild.toDataURL("image/png");
+				var imgData = imgSrc.split(",")[1];
+				// Create that symbol we couldn't return directly from getRenderer()
+				var sym = new esri.symbol.PictureMarkerSymbol({
+					"angle": 0,
+					"xoffset": 0,
+					"yoffset": 0,
+					"type": "esriPMS",
+					"imageData": imgData,
+					"contentType": "image/png",
+					"width": size,
+					"height": size,
+				});
+				// Replace our cached symbol with this one.
+				charts[f.attributes.name] = sym;
+				// Set the symbol on the graphic we generated it for.
+				f.setSymbol(sym);
+				// Log that we created it.
+				console.log("Created Symbol");
+				// And remove the canvas element we created above to hold the chart.
+	 			domConstruct.destroy(chartNode);
+			}, 0);
 		});
 	}
-	return f.__chart;
+	// We'll have something cached, whether it's the default symbol or the generated
+	// chart symbol, so just return that.
+	return charts[f.attributes.name];
 }
-    // use setTimeout to wait for charts/canvas elements to finish 
-    // renderering before accessing them
-    // hacky...but explained here:  http://javascriptweblog.wordpress.com/2010/06/28/understanding-javascript-timers/
-//     setTimeout(function() {
-//         query(".featureChart").forEach(function(node) {
-//             var imgSrc = node.firstChild.toDataURL("image/png");
-//             var sym = new esri.symbol.PictureMarkerSymbol({
-//                 "angle": 0,
-//                 "xoffset": 0,
-//                 "yoffset": 0,
-//                 "type": "esriPMS",
-//                 "imageData": imgSrc.split(",")[1],
-//                 "contentType": "image/png",
-//                 "width": node.dataset.size,
-//                 "height": node.dataset.size,
-//             });
-//             var x = node.dataset.x;
-//             var y = node.dataset.y
-//             var pt = new esri.geometry.Point(x, y, map.spatialReference);
-//             var attrs = {
-//                 "State": node.id,
-//                 "Obama": node.dataset.obama,
-//                 "Romney": node.dataset.romney,
-//                 "Population": node.dataset.population
-//             }
-//             var template = new esri.InfoTemplate("${State}", "Obama:  ${Obama}%<br>Romney:  ${Romney}%<br>Population: ${Population}");
-//             var graphic = new esri.Graphic(pt, sym, attrs, template);
-//             map.graphics.add(graphic);
-//         });
-        // now that there are picture marker symbols on the map, remove all charts
-//         array.forEach(charts, function(ch) {
-//             domConstruct.destroy(ch.node);
-//         });
-//     }, 0);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function getParameterByName(name) {
 	name = name.replace(/[\[]/, "\[").replace(/[\]]/, "\]");
@@ -263,45 +219,35 @@ function openWorldLayer() {
 	require(["esri/layers/FeatureLayer",
 			 "esri/renderers/SimpleRenderer", "esri/symbols/SimpleMarkerSymbol"], 
 			function(FeatureLayer, SimpleRenderer, SimpleMarkerSymbol) {
-		if (!worldLayers) {
-			worldLayers = [new FeatureLayer(worldLayerURL), new FeatureLayer(worldLayerURL)];
+		if (!worldLayer) {
+			worldLayer = new FeatureLayer(worldLayerURL);
 			document.getElementById("titleMessage").innerText = worldText;
-			for (var i=0; i<worldLayers.length; i++) {
-				var worldLayer = worldLayers[i];
-				worldLayer.setMaxScale(switchScale);
-				map.addLayer(worldLayer);
-				worldLayer.on("click", function(e) {
-					var g = e.graphic;
-					if (g) {
-						openBikeshareLayer(g);
-					}
-				});
-				worldLayer.on("scale-visibility-change", function(e) {
-					if (worldLayer.isVisibleAtScale(map.getScale())) {
-						document.getElementById("titleMessage").innerText = worldText;
-						document.getElementById("userMessage").innerText = "";
-						map.infoWindow.hide();
-						if (legend) { legend.destroy() };
-					} else {
-						var details = bikeshareLayer.world_network_details;
-						document.getElementById("titleMessage").innerText = details.name;
-						var dStr = " open dock" + (details.docks>1?"s":"");
-						var bStr = " available bike" + (details.bikes>1?"s":"");
-						document.getElementById("userMessage").innerHTML = details.stations + 
-							" stations<br/>(" + details.docks + dStr + ", " + details.bikes + bStr + ")";
-					}
-				});
-				var renderer = new SimpleRenderer(new SimpleMarkerSymbol());
-				renderer._bikeLayer = i;
-				renderer.getSymbol = createPieChart;
-// 				renderer.getSymbol = function(graphic) {
-// 					var docks = graphic.attributes.docks,
-// 						bikes = graphic.attributes.bikes,
-// 						paths = pathStrings([docks, bikes]);
-// 					return createSymbol(paths[this._bikeLayer], colors[this._bikeLayer]);
-// 				}
-				worldLayer.renderer = renderer;
-			}
+			worldLayer.setMaxScale(switchScale);
+			map.addLayer(worldLayer);
+			worldLayer.on("click", function(e) {
+				var g = e.graphic;
+				if (g) {
+					openBikeshareLayer(g);
+				}
+			});
+			worldLayer.on("scale-visibility-change", function(e) {
+				if (worldLayer.isVisibleAtScale(map.getScale())) {
+					document.getElementById("titleMessage").innerText = worldText;
+					document.getElementById("userMessage").innerText = "";
+					map.infoWindow.hide();
+					if (legend) { legend.destroy() };
+				} else {
+					var details = bikeshareLayer.world_network_details;
+					document.getElementById("titleMessage").innerText = details.name;
+					var dStr = " open dock" + (details.docks>1?"s":"");
+					var bStr = " available bike" + (details.bikes>1?"s":"");
+					document.getElementById("userMessage").innerHTML = details.stations + 
+						" stations<br/>(" + details.docks + dStr + ", " + details.bikes + bStr + ")";
+				}
+			});
+			var renderer = new SimpleRenderer(new SimpleMarkerSymbol());
+			renderer.getSymbol = createPieChart;
+			worldLayer.renderer = renderer;
 		}
 
 		if (lastWorldExtent) {
