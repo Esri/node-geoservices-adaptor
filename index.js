@@ -195,4 +195,6 @@ app.configure(function() {
 	console.log('App Configured');
 });
 
-app.listen(process.env.PORT || process.env.VCAP_APP_PORT || 1337);
+var port = process.env.PORT || process.env.VCAP_APP_PORT || 1337;
+app.listen(port);
+console.log("Server started on port " + port);
