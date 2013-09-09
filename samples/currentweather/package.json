@@ -1,0 +1,8 @@
+{
+    "name": "currentweather",
+    "main": "./currentwx.js",
+    "version": "0.0.1",
+    "dependencies": {
+        "terraformer-arcgis-parser": "*"
+    }
+}
