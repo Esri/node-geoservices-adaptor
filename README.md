@@ -18,6 +18,7 @@ Here are two sample "data providers":
 
 * **CityBikes**: Provide data from http://api.citybik.es.
 * **GeoHub**: Provide data from geoJSON files stored in GitHub Repositories and Gists.
+* **CurrentWeather** Provide data from NOAA weather stations across the U.S. 
 
 The framework lets you build your own "data providers":
 
