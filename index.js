@@ -13,6 +13,7 @@ var query = require("./src/query");
 
 var citybikes = require("./samples/citybikes");
 var geohubprovider = require("./samples/geohub");
+var currentwx = require("./samples/currentweather");
 
 // General URL engine for routing templated requests
 var routerUrls = new urls.Urls();
@@ -180,7 +181,7 @@ function layerQueryHandler(request, response) {
 app.get(routerUrls.getLayerQueryUrl(), layerQueryHandler);
 app.post(routerUrls.getLayerQueryUrl(), layerQueryHandler);
 
-var dataProviders = [new citybikes.CityBikes(), new geohubprovider.GeoHubProvider(app)];
+var dataProviders = [new citybikes.CityBikes(), new geohubprovider.GeoHubProvider(app), new currentwx.CurrentWx()];
 
 app.configure(function() {
 	var svcs = {};
