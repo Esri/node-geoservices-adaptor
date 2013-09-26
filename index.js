@@ -183,8 +183,8 @@ app.post(routerUrls.getLayerQueryUrl(), layerQueryHandler);
 
 var dataProviders = [
 	new citybikes.CityBikes(), 
-	new geohubprovider.GeoHubProvider(app)/*, 
-	new currentwx.CurrentWx()*/
+	new geohubprovider.GeoHubProvider(app), 
+	new currentwx.CurrentWx()
 ];
 
 app.configure(function() {
