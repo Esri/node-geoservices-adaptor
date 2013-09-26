@@ -296,6 +296,8 @@ Object.defineProperties(CityBikes.prototype, {
 										console.log("Emptying Stations: " + cacheEntry.network.name);
 										cacheEntry.stations.cachedStations = [];
 										cacheEntry.stations.status = states.loaded;
+										cacheEntry.stations.lastReadTime = new Date();
+										cacheEntry.stations.cacheExpirationTime = new Date((new Date).getTime() + 60*60*1000);
 									}
 									return null;
 								});
@@ -330,7 +332,7 @@ Object.defineProperties(CityBikes.prototype, {
 			}
 			if (cacheValid) {
 				// Easy, we already have the info cached.
-				console.log("Returning cached station results for " + networkCacheEntry.network.name);
+				console.log("Returning [" + networkCacheEntry.stations.cachedStations.length + "] cached station results for " + networkCacheEntry.network.name);
 				callback(stationsCache.cachedStations, null);
 			} else {
 				if (stationsCache.status !== states.loading &&
@@ -402,6 +404,9 @@ Object.defineProperties(CityBikes.prototype, {
 						}).bind(this)).on("error", function(e) {
 							console.log("Error getting bikes: " + e);
 							return callback(null, e);
+						}).setTimeout(2000, function() {
+							console.log("Timedout getting stations");
+							this.abort();
 						});
 					}
 				} else {

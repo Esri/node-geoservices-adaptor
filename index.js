@@ -181,7 +181,11 @@ function layerQueryHandler(request, response) {
 app.get(routerUrls.getLayerQueryUrl(), layerQueryHandler);
 app.post(routerUrls.getLayerQueryUrl(), layerQueryHandler);
 
-var dataProviders = [new citybikes.CityBikes(), new geohubprovider.GeoHubProvider(app), new currentwx.CurrentWx()];
+var dataProviders = [
+	new citybikes.CityBikes(), 
+	new geohubprovider.GeoHubProvider(app)/*, 
+	new currentwx.CurrentWx()*/
+];
 
 app.configure(function() {
 	var svcs = {};
