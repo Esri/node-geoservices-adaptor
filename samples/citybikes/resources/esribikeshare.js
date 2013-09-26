@@ -43,6 +43,7 @@ var dockClassificationScheme = {
 function zeroPad(number) {
 	return ("0000" + number).slice(-2)
 }
+
 function getNewStationStatus() {
     var station = JSON.parse(JSON.stringify(stationTemplate));
 

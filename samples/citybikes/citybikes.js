@@ -4,7 +4,9 @@ var dataproviderbase = require("../../src/dataproviderbase"),
 	path = require("path"),
 	fs = require("fs");
 
-var esribikeshare = require("./resources/esribikeshare.js");
+var esribikeshare = require("./resources/esribikeshare.js"),
+	hubwaybikeshare = require("./resources/hubway.js"),
+	bayareabikeshare = require("./resources/bayareabikeshare.js");
 
 var cityBikesNetworksURL = "http://api.citybik.es/networks.json";
 var newMapTemplate = "http://www.arcgis.com/home/webmap/viewer.html?url=%s&source=sd";
@@ -122,6 +124,8 @@ CityBikes = function () {
 	this.loadCacheOnStart = true;//process.env.VCAP_APP_PORT;
 	
 	this.__esribikeshare = new esribikeshare.EsriBikeshare();
+	this.__hubwayBikeshare = new hubwaybikeshare.HubwayBikeshare();
+	this.__bayareaBikeshare = new bayareabikeshare.BayAreaBikeshare();
 
 	if (fs.existsSync(timezoneCacheFilename))
 	{
@@ -154,7 +158,6 @@ Object.defineProperties(CityBikes.prototype, {
 			// Convenience function to check whether we need to refresh our Networks data.
 			var now = new Date();
 			var cacheValid = (this._cachedNetworks != null) && (now < this._cacheExpirationTime);
-			debugger;
 			return cacheValid;
 		}
 	},
@@ -230,6 +233,8 @@ Object.defineProperties(CityBikes.prototype, {
 
 			// We want to include the Esri Bikeshare...
 			networks.push(JSON.parse(JSON.stringify(this.__esribikeshare.network)));
+			networks.push(JSON.parse(JSON.stringify(this.__hubwayBikeshare.network)));
+			networks.push(JSON.parse(JSON.stringify(this.__bayareaBikeshare.network)));
 
 			// A blank cache to build
 			var nc = {};
@@ -336,6 +341,31 @@ Object.defineProperties(CityBikes.prototype, {
 					// Note, we can only ask for the current state of ALL stations in a given network.
 					if (networkCacheEntry.network.name === this.__esribikeshare.name) {
 						this._cacheStations(networkCacheEntry, this.__esribikeshare.stations, callback);
+					} else if (networkCacheEntry.network.name === this.__hubwayBikeshare.name ||
+							   networkCacheEntry.network.name === this.__bayareaBikeshare.name) {
+						var share = null;
+						switch (networkCacheEntry.network.name) {
+							case this.__hubwayBikeshare.name:
+								share = this.__hubwayBikeshare;
+								break;
+							case this.__bayareaBikeshare.name:
+								share = this.__bayareaBikeshare;
+								break;
+						}
+						if (share) {
+							share.getStations((function(err, stationsData) {
+								if (err) {
+									stationsCache.cachedStations = [];
+									stationsCache.status = "loaded";
+									return callback(null, err);
+								}
+								if (stationsData) {
+									this._cacheStations(networkCacheEntry, stationsData, callback);
+								}
+							}).bind(this));
+						} else {
+							callback(null, "Unknown custom bikeshare: " + networkCacheEntry.network.name);
+						}
 					} else {
 						var cityBikesUrl = networkCacheEntry.network.url;
 						http.get(cityBikesUrl, (function (res)
