@@ -188,7 +188,10 @@ Object.defineProperties(CityBikes.prototype, {
 							console.log("Networks loaded");
 							this._cacheNetworkData(networksJSON, callback);
 						}).bind(this));
-					}).bind(this));
+					}).bind(this)).on("error", function (e) {
+						console.log("Error getting network: " + e);
+						return callback(null, e);
+					});
 				} else {
 					// There is a loading operation in progress. So, we'll wait for it
 					// to finish. We'll check 10 times a second (every 100ms).
@@ -366,7 +369,10 @@ Object.defineProperties(CityBikes.prototype, {
 									this._cacheStations(networkCacheEntry, stationsData, callback);
 								}
 							}).bind(this));
-						}).bind(this));
+						}).bind(this)).on("error", function(e) {
+							console.log("Error getting bikes: " + e);
+							return callback(null, e);
+						});
 					}
 				} else {
 					console.log("Waiting for " + networkCacheEntry.network.name + " stations cache");
@@ -626,7 +632,10 @@ Object.defineProperties(CityBikes.prototype, {
 							}
 						}
 					}).bind(this));
-				}).bind(this));
+				}).bind(this)).on("error", function(e) {
+					console.log("Error getting timezone: " + e);
+					return callback(null, e);
+				});
 			}
 		}
 	},
