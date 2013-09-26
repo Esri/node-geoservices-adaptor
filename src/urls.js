@@ -1,16 +1,15 @@
-var path = require('path');
 var util = require('util');
 
 // We will support URLs of the format <serviceBase>/rest/<serviceName>/FeatureServer/0/query
 // etc. but the important thing to note is that <serviceBase> is effectively a virtual 
 // ArcGIS Server root which maps directly to a data provider module inheriting from dataproviderbase
-var serviceBaseUrl = path.sep + path.join('%s', 'rest');
-var servicesUrl = path.join(serviceBaseUrl, 'services');
-var infoUrl = path.join(serviceBaseUrl, 'info');
-var serviceUrlTemplate = path.join(servicesUrl, '%s', 'FeatureServer');
-var layersUrlTemplate = path.join(serviceUrlTemplate, 'layers');
-var layerUrlTemplate = path.join(serviceUrlTemplate, '%s');
-var queryUrlTemplate = path.join(layerUrlTemplate, 'query');
+var serviceBaseUrl = '/%s/rest';
+var servicesUrl = serviceBaseUrl + '/services';
+var infoUrl = serviceBaseUrl + '/info';
+var serviceUrlTemplate = servicesUrl + '/%s/FeatureServer';
+var layersUrlTemplate = serviceUrlTemplate + '/layers';
+var layerUrlTemplate = serviceUrlTemplate + '/%s';
+var queryUrlTemplate = layerUrlTemplate + '/query';
 
 Urls = function(dataProvider) {
     dataProvider = dataProvider || {
