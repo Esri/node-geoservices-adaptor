@@ -1,14 +1,15 @@
 {
-    "name":"node-geoservices-adaptor",
-    "version":"0.0.1",
-    "dependencies":{
-        "express":"3.x",
-        "xml2js":">=0.2.x",
-        "async":"*",
-        "geohub": "*",
-        "terraformer": "https://github.com/nixta/Terraformer/archive/nixta-dist-node.tar.gz"
-    },
-  	"engines": {
-  		"node": ">= 0.8.0"
-  	}
+  "name": "node-geoservices-adaptor",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "3.x",
+    "xml2js": ">=0.2.x",
+    "async": "*",
+    "geohub": "*",
+    "terraformer": "https://github.com/nixta/Terraformer/archive/nixta-dist-node.tar.gz",
+    "request": "~2.27.0"
+  },
+  "engines": {
+    "node": ">= 0.8.0"
+  }
 }
