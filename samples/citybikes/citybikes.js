@@ -378,11 +378,13 @@ Object.defineProperties(CityBikes.prototype, {
               if (!error && response.statusCode == 200) {
                 this._cacheStations(networkCacheEntry, stationsData, callback);
               } else {
+                stationsCache.cachedStations = [];
+                stationsCache.status = "loaded";
                 if (!error) {
                   error = "Error " + response.statusCode + " getting: " + cityBikesUrl;
                 }
                 console.warn(error);
-                callback(null, error);
+                return callback(null, error);
               }
             }).bind(this));
           }
@@ -738,7 +740,7 @@ Object.defineProperties(CityBikes.prototype, {
   getLayerName: {
     value: function(serviceId, layerId) {
       if (serviceId===allNetworksServiceId) {
-        switch (layerId) {
+        switch (parseInt(layerId)) {
           case allNetworksAllDataLayerId:
             return allNetworksAllDataLayerName;
           case allNetworksGoodDataLayerId:
