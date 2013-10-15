@@ -38,6 +38,7 @@ var cityBikesFields = [
   {"name" : "number", "type" : "esriFieldTypeInteger", "alias" : "Number", "nullable" : "true"},
   {"name" : "free", "type" : "esriFieldTypeInteger", "alias" : "Free", "nullable" : "true"},
   {"name" : "bikes", "type" : "esriFieldTypeInteger", "alias" : "Bikes", "nullable" : "true"},
+  {"name" : "total", "type" : "esriFieldTypeInteger", "alias" : "Total", "nullable" : "true"},
   {"name" : "bikesClass", "type" : "esriFieldTypeString", "alias" : "Bikes Class", "length" : "255", "nullable" : "true"},
   {"name" : "docksClass", "type" : "esriFieldTypeString", "alias" : "Docks Class", "length" : "255", "nullable" : "true"},
   {"name" : "address", "type" : "esriFieldTypeString", "alias" : "Address", "length" : "255", "nullable" : "true"},
@@ -483,6 +484,14 @@ Object.defineProperties(CityBikes.prototype, {
         // Fix the bike data if need be.
         stationFeature.attributes.bikes = +stationFeature.attributes.bikes;
         stationFeature.attributes.free = +stationFeature.attributes.free;
+        if (isNaN(stationFeature.attributes.bikes)) {
+          stationFeature.attributes.bikes = 0;
+        }
+        if (isNaN(stationFeature.attributes.free)) {
+          stationFeature.attributes.free = 0;
+        }
+    
+        stationFeature.attributes.total = stationFeature.attributes.bikes + stationFeature.attributes.free;
     
         // Get that nice smart-value for AGOL rendering (see _getBikeRange()).
         if (networkCacheEntry.network.name === this.__esribikeshare.name) {
