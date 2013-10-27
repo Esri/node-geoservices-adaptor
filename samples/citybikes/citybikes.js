@@ -592,7 +592,7 @@ Object.defineProperties(CityBikes.prototype, {
         request(timezoneUrl, (function (error, response, timezoneJSON) {
           if (!error && response.statusCode == 200) {
             var loadedTimezoneOK = false;
-            var timezone = null;
+            var timezone = timezoneJSON;
 
             if (timezone.status === "OK")
             {
