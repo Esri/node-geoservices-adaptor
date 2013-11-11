@@ -9,7 +9,9 @@ var infoUrl = serviceBaseUrl + '/info';
 var serviceUrlTemplate = servicesUrl + '/%s/FeatureServer';
 var layersUrlTemplate = serviceUrlTemplate + '/layers';
 var layerUrlTemplate = serviceUrlTemplate + '/%s';
-var queryUrlTemplate = layerUrlTemplate + '/query';
+var queryUrlTemplate = layerUrlTemplate + '/query%s';
+
+var queryCatchAllTemplate = '(?:/[^?]+)?';
 
 Urls = function(dataProvider) {
     dataProvider = dataProvider || {
@@ -20,33 +22,37 @@ Urls = function(dataProvider) {
 
 Urls.prototype = {
     getServicesUrl: function() {
-        return util.format(servicesUrl, this.dataProvider.name);
+      return util.format(servicesUrl, this.dataProvider.name);
     },
 
     getInfoUrl: function() {
-        return util.format(infoUrl, this.dataProvider.name);
+      return util.format(infoUrl, this.dataProvider.name);
     },
 
     getServiceUrl: function(serviceId) {
-        if (arguments.length < 1) serviceId = ":serviceId";
-        return util.format(serviceUrlTemplate, this.dataProvider.name, serviceId);
+      if (arguments.length < 1) serviceId = ":serviceId";
+      return util.format(serviceUrlTemplate, this.dataProvider.name, serviceId);
     },
 
     getLayersUrl: function(serviceId) {
-        if (arguments.length < 1) serviceId = ":serviceId";
-        return util.format(layersUrlTemplate, this.dataProvider.name, serviceId);
+      if (arguments.length < 1) serviceId = ":serviceId";
+      return util.format(layersUrlTemplate, this.dataProvider.name, serviceId);
     },
 
     getLayerUrl: function(serviceId, layerId) {
-        if (arguments.length < 2) layerId = ":layerId";
-        if (arguments.length < 1) serviceId = ":serviceId";
-        return util.format(layerUrlTemplate, this.dataProvider.name, serviceId, layerId);
+      if (arguments.length < 2) layerId = ":layerId";
+      if (arguments.length < 1) serviceId = ":serviceId";
+      return util.format(layerUrlTemplate, this.dataProvider.name, serviceId, layerId);
     },
 
     getLayerQueryUrl: function(serviceId, layerId) {
-        if (arguments.length < 2) layerId = ":layerId";
-        if (arguments.length < 1) serviceId = ":serviceId";
-        return util.format(queryUrlTemplate, this.dataProvider.name, serviceId, layerId);
+      var q = '';
+      if (arguments.length < 2) {
+        layerId = ":layerId";
+        q = queryCatchAllTemplate;
+      }
+      if (arguments.length < 1) serviceId = ":serviceId";
+      return util.format(queryUrlTemplate, this.dataProvider.name, serviceId, layerId, q);
     }
 }
 
