@@ -76,6 +76,10 @@ var featureFilterFunctions = {
   }
 };
 
+var mapServiceName = {
+  "citi-bike-nyc": "citibikenyc"
+};
+
 var drawingInfo = JSON.parse(fs.readFileSync(path.join(path.dirname(module.filename),"resources","templates","layerDefinition-drawingInfo.json"), 'utf8'));
 
 var timezoneAPIKey = "IMPMC00M2XNY"; // Replace this with your own key from timezonedb.com
@@ -238,6 +242,10 @@ Object.defineProperties(CityBikes.prototype, {
       {
         // Work on the raw network item from Citybik.es
         var network = networks[i];
+        if (mapServiceName.hasOwnProperty(network.name)) {
+          network["sourceName"] = network.name;
+          network.name = mapServiceName[network.name];
+        }
         if (!(network.name in nc))
         {
           // No entry in the cache for this network.
