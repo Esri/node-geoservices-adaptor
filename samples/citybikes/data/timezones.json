@@ -1,1101 +1,12 @@
 {
-  "velib": {
-    "countryCode": "FR",
-    "zoneName": "Europe/Paris",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389228,
-    "cacheRefreshDue": 1375468421281
-  },
-  "dublin": {
-    "countryCode": "IE",
-    "zoneName": "Europe/Dublin",
-    "abbreviation": "IST",
-    "gmtOffset": "3600",
-    "dst": "1",
-    "timestamp": 1375385628,
-    "cacheRefreshDue": 1375468421306
-  },
-  "valenbisi": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389228,
-    "cacheRefreshDue": 1375468421729
-  },
-  "sevici": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389228,
-    "cacheRefreshDue": 1375468422307
-  },
-  "veloh": {
-    "countryCode": "LU",
-    "zoneName": "Europe/Luxembourg",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389230,
-    "cacheRefreshDue": 1375468422696
-  },
-  "villo": {
-    "countryCode": "BE",
-    "zoneName": "Europe/Brussels",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389231,
-    "cacheRefreshDue": 1375468422700
-  },
-  "cyclocity": {
-    "countryCode": "JP",
-    "zoneName": "Asia/Tokyo",
-    "abbreviation": "JST",
-    "gmtOffset": "32400",
-    "dst": "0",
-    "timestamp": 1375414428,
-    "cacheRefreshDue": 1375468423843
-  },
-  "cyclic": {
-    "countryCode": "FR",
-    "zoneName": "Europe/Paris",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389232,
-    "cacheRefreshDue": 1375468423844
-  },
-  "cristolib": {
-    "countryCode": "FR",
-    "zoneName": "Europe/Paris",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389232,
-    "cacheRefreshDue": 1375468423845
-  },
-  "velo": {
-    "countryCode": "FR",
-    "zoneName": "Europe/Paris",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389230,
-    "cacheRefreshDue": 1375468425380
-  },
-  "velostanlib": {
-    "countryCode": "FR",
-    "zoneName": "Europe/Paris",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389233,
-    "cacheRefreshDue": 1375468425380
-  },
-  "bicloo": {
-    "countryCode": "FR",
-    "zoneName": "Europe/Paris",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389233,
-    "cacheRefreshDue": 1375468426302
-  },
-  "velocite": {
-    "countryCode": "FR",
-    "zoneName": "Europe/Paris",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389233,
-    "cacheRefreshDue": 1375468426303
-  },
-  "bicing": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389231,
-    "cacheRefreshDue": 1375468426305
-  },
-  "barclays": {
-    "countryCode": "GB",
-    "zoneName": "Europe/London",
-    "abbreviation": "BST",
-    "gmtOffset": "3600",
-    "dst": "1",
-    "timestamp": 1375385634,
-    "cacheRefreshDue": 1375468426305
-  },
-  "tusbic": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389235,
-    "cacheRefreshDue": 1375468427470
-  },
-  "citycycle": {
-    "countryCode": "AU",
-    "zoneName": "Australia/Brisbane",
-    "abbreviation": "EST",
-    "gmtOffset": "36000",
-    "dst": "0",
-    "timestamp": 1375418035,
-    "cacheRefreshDue": 1375468427471
-  },
-  "wien": {
-    "countryCode": "AT",
-    "zoneName": "Europe/Vienna",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389235,
-    "cacheRefreshDue": 1375468427666
-  },
-  "goteborg": {
-    "countryCode": "SE",
-    "zoneName": "Europe/Stockholm",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389235,
-    "cacheRefreshDue": 1375468428231
-  },
-  "ecobici": {
-    "countryCode": "MX",
-    "zoneName": "America/Mexico_City",
-    "abbreviation": "CDT",
-    "gmtOffset": "-18000",
-    "dst": "1",
-    "timestamp": 1375364034,
-    "cacheRefreshDue": 1375468428400
-  },
-  "velam": {
-    "countryCode": "FR",
-    "zoneName": "Europe/Paris",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389237,
-    "cacheRefreshDue": 1375468429066
-  },
-  "melbourne": {
-    "countryCode": "AU",
-    "zoneName": "Australia/Melbourne",
-    "abbreviation": "EST",
-    "gmtOffset": "36000",
-    "dst": "0",
-    "timestamp": 1375418037,
-    "cacheRefreshDue": 1375468429177
-  },
-  "mulhouse": {
-    "countryCode": "FR",
-    "zoneName": "Europe/Paris",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389236,
-    "cacheRefreshDue": 1375468429182
-  },
-  "levelo": {
-    "countryCode": "FR",
-    "zoneName": "Europe/Paris",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389236,
-    "cacheRefreshDue": 1375468429187
-  },
-  "bixi": {
-    "countryCode": "CA",
-    "zoneName": "America/Montreal",
-    "abbreviation": "EDT",
-    "gmtOffset": "-14400",
-    "dst": "1",
-    "timestamp": 1375367637,
-    "cacheRefreshDue": 1375468430043
-  },
-  "decobike": {
-    "countryCode": "US",
-    "zoneName": "America/New_York",
-    "abbreviation": "EDT",
-    "gmtOffset": "-14400",
-    "dst": "1",
-    "timestamp": 1375367638,
-    "cacheRefreshDue": 1375468431821
-  },
-  "girocleta": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389238,
-    "cacheRefreshDue": 1375468431822
-  },
-  "niceride": {
-    "countryCode": "US",
-    "zoneName": "America/Chicago",
-    "abbreviation": "CDT",
-    "gmtOffset": "-18000",
-    "dst": "1",
-    "timestamp": 1375364038,
-    "cacheRefreshDue": 1375468431930
-  },
-  "capitalbikeshare": {
-    "countryCode": "US",
-    "zoneName": "America/New_York",
-    "abbreviation": "EDT",
-    "gmtOffset": "-14400",
-    "dst": "1",
-    "timestamp": 1375367638,
-    "cacheRefreshDue": 1375468432170
-  },
-  "denver": {
-    "countryCode": "US",
-    "zoneName": "America/Denver",
-    "abbreviation": "MDT",
-    "gmtOffset": "-21600",
-    "dst": "1",
-    "timestamp": 1375360439,
-    "cacheRefreshDue": 1375468433059
-  },
-  "tobike": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389241,
-    "cacheRefreshDue": 1375468434288
-  },
-  "desmoines": {
-    "countryCode": "US",
-    "zoneName": "America/Chicago",
-    "abbreviation": "CDT",
-    "gmtOffset": "-18000",
-    "dst": "1",
-    "timestamp": 1375364041,
-    "cacheRefreshDue": 1375468434289
-  },
-  "hawaii": {
-    "countryCode": "US",
-    "zoneName": "Pacific/Honolulu",
-    "abbreviation": "HST",
-    "gmtOffset": "-36000",
-    "dst": "0",
-    "timestamp": 1375346041,
-    "cacheRefreshDue": 1375468434290
-  },
-  "bicikelj": {
-    "countryCode": "SI",
-    "zoneName": "Europe/Ljubljana",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389242,
-    "cacheRefreshDue": 1375468434290
-  },
-  "mejorenbici": {
-    "countryCode": "AR",
-    "zoneName": "America/Argentina/Buenos_Aires",
-    "abbreviation": "ART",
-    "gmtOffset": "-10800",
-    "dst": "0",
-    "timestamp": 1375371243,
-    "cacheRefreshDue": 1375468435823
-  },
-  "sanantonio": {
-    "countryCode": "US",
-    "zoneName": "America/Chicago",
-    "abbreviation": "CDT",
-    "gmtOffset": "-18000",
-    "dst": "1",
-    "timestamp": 1375364041,
-    "cacheRefreshDue": 1375468436439
-  },
-  "bikemi": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389243,
-    "cacheRefreshDue": 1375468438282
-  },
-  "palma": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389243,
-    "cacheRefreshDue": 1375468438463
-  },
-  "bysykkel": {
-    "countryCode": "NO",
-    "zoneName": "Europe/Oslo",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389245,
-    "cacheRefreshDue": 1375468440345
-  },
-  "boulder": {
-    "countryCode": "US",
-    "zoneName": "America/Denver",
-    "abbreviation": "MDT",
-    "gmtOffset": "-21600",
-    "dst": "1",
-    "timestamp": 1375360443,
-    "cacheRefreshDue": 1375468440345
-  },
-  "venice": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389247,
-    "cacheRefreshDue": 1375468440346
-  },
-  "rome": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389247,
-    "cacheRefreshDue": 1375468440349
-  },
-  "bicileon": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389245,
-    "cacheRefreshDue": 1375468440407
-  },
-  "tigullionbike": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389249,
-    "cacheRefreshDue": 1375468442582
-  },
-  "madison": {
-    "countryCode": "US",
-    "zoneName": "America/Chicago",
-    "abbreviation": "CDT",
-    "gmtOffset": "-18000",
-    "dst": "1",
-    "timestamp": 1375364049,
-    "cacheRefreshDue": 1375468442583
-  },
-  "toronto": {
-    "countryCode": "CA",
-    "zoneName": "America/Toronto",
-    "abbreviation": "EDT",
-    "gmtOffset": "-14400",
-    "dst": "1",
-    "timestamp": 1375367649,
-    "cacheRefreshDue": 1375468442583
-  },
-  "ottawa": {
-    "countryCode": "CA",
-    "zoneName": "America/Toronto",
-    "abbreviation": "EDT",
-    "gmtOffset": "-14400",
-    "dst": "1",
-    "timestamp": 1375367652,
-    "cacheRefreshDue": 1375468443811
-  },
-  "vlille": {
-    "countryCode": "FR",
-    "zoneName": "Europe/Paris",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389249,
-    "cacheRefreshDue": 1375468443812
-  },
-  "citibikenyc": {
-    "countryCode": "US",
-    "zoneName": "America/New_York",
-    "abbreviation": "EDT",
-    "gmtOffset": "-14400",
-    "dst": "1",
-    "timestamp": 1375367649,
-    "cacheRefreshDue": 1375468445654
-  },
-  "broward": {
-    "countryCode": "US",
-    "zoneName": "America/New_York",
-    "abbreviation": "EDT",
-    "gmtOffset": "-14400",
-    "dst": "1",
-    "timestamp": 1375367652,
-    "cacheRefreshDue": 1375468445655
-  },
-  "houston": {
-    "countryCode": "US",
-    "zoneName": "America/Chicago",
-    "abbreviation": "CDT",
-    "gmtOffset": "-18000",
-    "dst": "1",
-    "timestamp": 1375364055,
-    "cacheRefreshDue": 1375468450878
-  },
-  "fortworth": {
-    "countryCode": "US",
-    "zoneName": "America/Chicago",
-    "abbreviation": "CDT",
-    "gmtOffset": "-18000",
-    "dst": "1",
-    "timestamp": 1375364053,
-    "cacheRefreshDue": 1375468451883
-  },
-  "charlotte": {
-    "countryCode": "US",
-    "zoneName": "America/New_York",
-    "abbreviation": "EDT",
-    "gmtOffset": "-14400",
-    "dst": "1",
-    "timestamp": 1375367652,
-    "cacheRefreshDue": 1375468452087
-  },
-  "nashville": {
-    "countryCode": "US",
-    "zoneName": "America/Chicago",
-    "abbreviation": "CDT",
-    "gmtOffset": "-18000",
-    "dst": "1",
-    "timestamp": 1375364055,
-    "cacheRefreshDue": 1375468452098
-  },
-  "greenville": {
-    "countryCode": "US",
-    "zoneName": "America/New_York",
-    "abbreviation": "EDT",
-    "gmtOffset": "-14400",
-    "dst": "1",
-    "timestamp": 1375367653,
-    "cacheRefreshDue": 1375468452124
-  },
-  "spartanburg": {
-    "countryCode": "US",
-    "zoneName": "America/New_York",
-    "abbreviation": "EDT",
-    "gmtOffset": "-14400",
-    "dst": "1",
-    "timestamp": 1375367660,
-    "cacheRefreshDue": 1375468452392
-  },
-  "albacete": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389261,
-    "cacheRefreshDue": 1375468455658
-  },
-  "kansas": {
-    "countryCode": "US",
-    "zoneName": "America/Chicago",
-    "abbreviation": "CDT",
-    "gmtOffset": "-18000",
-    "dst": "1",
-    "timestamp": 1375364061,
-    "cacheRefreshDue": 1375468455953
-  },
-  "divvybikes": {
-    "countryCode": "US",
-    "zoneName": "America/Chicago",
-    "abbreviation": "CDT",
-    "gmtOffset": "-18000",
-    "dst": "1",
-    "timestamp": 1375364061,
-    "cacheRefreshDue": 1375468456170
-  },
-  "omaha": {
-    "countryCode": "US",
-    "zoneName": "America/Chicago",
-    "abbreviation": "CDT",
-    "gmtOffset": "-18000",
-    "dst": "1",
-    "timestamp": 1375364061,
-    "cacheRefreshDue": 1375468456233
-  },
-  "montilla": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389261,
-    "cacheRefreshDue": 1375468456236
-  },
-  "ciudad_real": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389265,
-    "cacheRefreshDue": 1375468457943
-  },
-  "cieza": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389265,
-    "cacheRefreshDue": 1375468458557
-  },
-  "san_pedro": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389265,
-    "cacheRefreshDue": 1375468458558
-  },
-  "villaquilambre": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389265,
-    "cacheRefreshDue": 1375468458559
-  },
-  "puertobike": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389265,
-    "cacheRefreshDue": 1375468458559
-  },
-  "almunecar": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389267,
-    "cacheRefreshDue": 1375468460093
-  },
-  "badajoz": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389267,
-    "cacheRefreshDue": 1375468460826
-  },
-  "soria": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389267,
-    "cacheRefreshDue": 1375468460829
-  },
-  "redondela": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389267,
-    "cacheRefreshDue": 1375468460830
-  },
-  "las_palmas": {
-    "countryCode": "ES",
-    "zoneName": "Atlantic/Canary",
-    "abbreviation": "WEST",
-    "gmtOffset": "3600",
-    "dst": "1",
-    "timestamp": 1375385667,
-    "cacheRefreshDue": 1375468460870
-  },
-  "salamanca": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389269,
-    "cacheRefreshDue": 1375468461757
-  },
-  "lalin": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389270,
-    "cacheRefreshDue": 1375468463476
-  },
-  "villarreal": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389270,
-    "cacheRefreshDue": 1375468463477
-  },
-  "bicielx": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389270,
-    "cacheRefreshDue": 1375468463477
-  },
-  "aranda_de_duero": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389270,
-    "cacheRefreshDue": 1375468463478
-  },
-  "a_rua": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389271,
-    "cacheRefreshDue": 1375468463478
-  },
-  "aranjuez": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389272,
-    "cacheRefreshDue": 1375468465930
-  },
-  "ubeda": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389272,
-    "cacheRefreshDue": 1375468469550
-  },
-  "novelda": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389272,
-    "cacheRefreshDue": 1375468469570
-  },
-  "via_verde": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389272,
-    "cacheRefreshDue": 1375468469571
-  },
-  "paiporta": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389272,
-    "cacheRefreshDue": 1375468469571
-  },
-  "antequera": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389275,
-    "cacheRefreshDue": 1375468469653
-  },
-  "o_barco": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389279,
-    "cacheRefreshDue": 1375468471829
-  },
-  "san_javier": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389279,
-    "cacheRefreshDue": 1375468471830
-  },
-  "el_campello": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389279,
-    "cacheRefreshDue": 1375468471832
-  },
-  "don_benito_villanueva": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389279,
-    "cacheRefreshDue": 1375468471834
-  },
-  "puerto_lumbreras": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389279,
-    "cacheRefreshDue": 1375468471836
-  },
-  "palencia": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389281,
-    "cacheRefreshDue": 1375468473917
-  },
-  "alhama_de_murcia": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389281,
-    "cacheRefreshDue": 1375468473917
-  },
-  "pinto": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389281,
-    "cacheRefreshDue": 1375468473918
-  },
-  "baeza": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389281,
-    "cacheRefreshDue": 1375468473918
-  },
-  "bicio": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389281,
-    "cacheRefreshDue": 1375468473918
-  },
-  "sant_joan": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389283,
-    "cacheRefreshDue": 1375468476067
-  },
-  "priego_de_cordoba": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389283,
-    "cacheRefreshDue": 1375468476068
-  },
-  "guadalajara": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389283,
-    "cacheRefreshDue": 1375468476068
-  },
-  "jaen": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389283,
-    "cacheRefreshDue": 1375468476069
-  },
-  "blanca": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389283,
-    "cacheRefreshDue": 1375468476069
-  },
-  "vinaros": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389285,
-    "cacheRefreshDue": 1375468478178
-  },
-  "mula": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389285,
-    "cacheRefreshDue": 1375468478180
-  },
-  "talavera": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389285,
-    "cacheRefreshDue": 1375468478181
-  },
-  "vigo": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389285,
-    "cacheRefreshDue": 1375468478181
-  },
-  "universidad_de_granada": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389285,
-    "cacheRefreshDue": 1375468478182
-  },
-  "velov": {
-    "countryCode": "FR",
-    "zoneName": "Europe/Paris",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1375389287,
-    "cacheRefreshDue": 1375468479447
-  },
-  "bizi": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1376867890,
-    "cacheRefreshDue": 1376947091834
-  },
-  "vilnius-cyclocity": {
-    "countryCode": "LT",
-    "zoneName": "Europe/Vilnius",
-    "abbreviation": "EEST",
-    "gmtOffset": "10800",
-    "dst": "1",
-    "timestamp": 1377375088,
-    "cacheRefreshDue": 1377450691067
-  },
-  "esribike": {
-    "countryCode": "US",
-    "zoneName": "America/Los_Angeles",
-    "abbreviation": "PDT",
-    "gmtOffset": "-25200",
-    "dst": "1",
-    "timestamp": 1377688526,
-    "cacheRefreshDue": 1377800128386
-  },
-  "goodbike": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CEST",
-    "gmtOffset": "7200",
-    "dst": "1",
-    "timestamp": 1380231115,
-    "cacheRefreshDue": 1380310320967
-  },
-  "bayareabikeshare": {
-    "countryCode": "US",
-    "zoneName": "America/Los_Angeles",
-    "abbreviation": "PDT",
-    "gmtOffset": "-25200",
-    "dst": "1",
-    "timestamp": 1380212098,
-    "cacheRefreshDue": 1380323704499
-  },
-  "hubway": {
-    "countryCode": "US",
-    "zoneName": "America/New_York",
-    "abbreviation": "EDT",
-    "gmtOffset": "-14400",
-    "dst": "1",
-    "timestamp": 1380222898,
-    "cacheRefreshDue": 1380323704513
-  },
-  "bay-area-bike-share": {
-    "countryCode": "US",
-    "zoneName": "America/Los_Angeles",
-    "abbreviation": "PDT",
-    "gmtOffset": "-25200",
-    "dst": "1",
-    "timestamp": 1382857382,
-    "cacheRefreshDue": 1382968989791
-  },
-  "capital-bikeshare": {
-    "countryCode": "US",
-    "zoneName": "America/New_York",
-    "abbreviation": "EST",
-    "gmtOffset": "-18000",
-    "dst": "0",
-    "timestamp": 1391970117,
-    "cacheRefreshDue": 1392074521502
-  },
-  "barclays-cycle-hire": {
-    "countryCode": "GB",
-    "zoneName": "Europe/London",
-    "abbreviation": "GMT",
-    "gmtOffset": "0",
-    "dst": "0",
-    "timestamp": 1391988117,
-    "cacheRefreshDue": 1392074521847
-  },
-  "bixi-montreal": {
-    "countryCode": "CA",
-    "zoneName": "America/Montreal",
-    "abbreviation": "EST",
-    "gmtOffset": "-18000",
-    "dst": "0",
-    "timestamp": 1391970117,
-    "cacheRefreshDue": 1392074521923
-  },
-  "melbourne-bike-share": {
-    "countryCode": "AU",
-    "zoneName": "Australia/Melbourne",
-    "abbreviation": "EST",
-    "gmtOffset": "39600",
-    "dst": "1",
-    "timestamp": 1392027717,
-    "cacheRefreshDue": 1392074522282
-  },
-  "citybike-wien": {
-    "countryCode": "AT",
-    "zoneName": "Europe/Vienna",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991717,
-    "cacheRefreshDue": 1392074522289
-  },
-  "capital-bixi": {
-    "countryCode": "CA",
-    "zoneName": "America/Toronto",
-    "abbreviation": "EST",
-    "gmtOffset": "-18000",
-    "dst": "0",
-    "timestamp": 1391970120,
-    "cacheRefreshDue": 1392074522686
-  },
-  "bixi-toronto": {
-    "countryCode": "CA",
-    "zoneName": "America/Toronto",
-    "abbreviation": "EST",
-    "gmtOffset": "-18000",
-    "dst": "0",
-    "timestamp": 1391970120,
-    "cacheRefreshDue": 1392074524262
-  },
-  "nice-ride": {
-    "countryCode": "US",
-    "zoneName": "America/Chicago",
-    "abbreviation": "CST",
-    "gmtOffset": "-21600",
-    "dst": "0",
-    "timestamp": 1391966520,
-    "cacheRefreshDue": 1392074524263
-  },
   "alba": {
     "countryCode": "IT",
     "zoneName": "Europe/Rome",
     "abbreviation": "CET",
     "gmtOffset": "3600",
     "dst": "0",
-    "timestamp": 1391991721,
-    "cacheRefreshDue": 1392074524444
-  },
-  "bassanodelgrappa": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991722,
-    "cacheRefreshDue": 1392074526259
-  },
-  "bariinbici": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991722,
-    "cacheRefreshDue": 1392074526617
+    "timestamp": 1391993465,
+    "cacheRefreshDue": 1392076267933
   },
   "andria": {
     "countryCode": "IT",
@@ -1103,278 +14,8 @@
     "abbreviation": "CET",
     "gmtOffset": "3600",
     "dst": "0",
-    "timestamp": 1391991722,
-    "cacheRefreshDue": 1392074526619
-  },
-  "biciamo": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991724,
-    "cacheRefreshDue": 1392074527537
-  },
-  "divvy": {
-    "countryCode": "US",
-    "zoneName": "America/Chicago",
-    "abbreviation": "CST",
-    "gmtOffset": "-21600",
-    "dst": "0",
-    "timestamp": 1391966520,
-    "cacheRefreshDue": 1392074527538
-  },
-  "bra": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991724,
-    "cacheRefreshDue": 1392074528256
-  },
-  "casalmaggiore": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991725,
-    "cacheRefreshDue": 1392074529143
-  },
-  "cagliari": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991724,
-    "cacheRefreshDue": 1392074529182
-  },
-  "ossola": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991725,
-    "cacheRefreshDue": 1392074529183
-  },
-  "jesinbici": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991726,
-    "cacheRefreshDue": 1392074529669
-  },
-  "noviligure": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991727,
-    "cacheRefreshDue": 1392074530406
-  },
-  "mobike": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991727,
-    "cacheRefreshDue": 1392074530407
-  },
-  "oderzo": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991728,
-    "cacheRefreshDue": 1392074530408
-  },
-  "bike-chattanooga": {
-    "countryCode": "US",
-    "zoneName": "America/New_York",
-    "abbreviation": "EST",
-    "gmtOffset": "-18000",
-    "dst": "0",
-    "timestamp": 1391970119,
-    "cacheRefreshDue": 1392074530526
-  },
-  "lecce": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991727,
-    "cacheRefreshDue": 1392074531122
-  },
-  "pontedera": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991728,
-    "cacheRefreshDue": 1392074531571
-  },
-  "treviso": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991729,
-    "cacheRefreshDue": 1392074531764
-  },
-  "pistoiainbici": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991728,
-    "cacheRefreshDue": 1392074531844
-  },
-  "chivasso": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991728,
-    "cacheRefreshDue": 1392074533171
-  },
-  "mantova": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991729,
-    "cacheRefreshDue": 1392074534017
-  },
-  "prato": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991730,
-    "cacheRefreshDue": 1392074534402
-  },
-  "sandonadipiave": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991730,
-    "cacheRefreshDue": 1392074534460
-  },
-  "nbici": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991728,
-    "cacheRefreshDue": 1392074535032
-  },
-  "settimotorinese": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991732,
-    "cacheRefreshDue": 1392074535166
-  },
-  "sondrio": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991732,
-    "cacheRefreshDue": 1392074535637
-  },
-  "villorba": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991732,
-    "cacheRefreshDue": 1392074535712
-  },
-  "savona": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991731,
-    "cacheRefreshDue": 1392074536407
-  },
-  "portofinoparkandbike": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991734,
-    "cacheRefreshDue": 1392074536408
-  },
-  "roma-n-bike": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991733,
-    "cacheRefreshDue": 1392074537632
-  },
-  "ascolipiceno": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991736,
-    "cacheRefreshDue": 1392074538391
-  },
-  "bigi": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991736,
-    "cacheRefreshDue": 1392074538832
-  },
-  "vercelli": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991737,
-    "cacheRefreshDue": 1392074540034
-  },
-  "decobike-long-beach": {
-    "countryCode": "US",
-    "zoneName": "America/New_York",
-    "abbreviation": "EST",
-    "gmtOffset": "-18000",
-    "dst": "0",
-    "timestamp": 1391970134,
-    "cacheRefreshDue": 1392074540035
+    "timestamp": 1391994119,
+    "cacheRefreshDue": 1392076921523
   },
   "arbike": {
     "countryCode": "IT",
@@ -1382,809 +23,17 @@
     "abbreviation": "CET",
     "gmtOffset": "3600",
     "dst": "0",
-    "timestamp": 1391991734,
-    "cacheRefreshDue": 1392074540035
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076269278
   },
-  "biciinbusto": {
+  "ascolipiceno": {
     "countryCode": "IT",
     "zoneName": "Europe/Rome",
     "abbreviation": "CET",
     "gmtOffset": "3600",
     "dst": "0",
-    "timestamp": 1391991738,
-    "cacheRefreshDue": 1392074541652
-  },
-  "meglioinbici": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991738,
-    "cacheRefreshDue": 1392074541654
-  },
-  "cuneo": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991738,
-    "cacheRefreshDue": 1392074541654
-  },
-  "fossano": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991740,
-    "cacheRefreshDue": 1392074542062
-  },
-  "lecco": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991740,
-    "cacheRefreshDue": 1392074542662
-  },
-  "manerbainbici": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991741,
-    "cacheRefreshDue": 1392074543179
-  },
-  "marebici": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991741,
-    "cacheRefreshDue": 1392074547447
-  },
-  "freebikesharing": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991740,
-    "cacheRefreshDue": 1392074549451
-  },
-  "novara": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991745,
-    "cacheRefreshDue": 1392074551296
-  },
-  "biella": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991747,
-    "cacheRefreshDue": 1392074552672
-  },
-  "gobike": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991734,
-    "cacheRefreshDue": 1392074552814
-  },
-  "bikeinbath": {
-    "countryCode": "GB",
-    "zoneName": "Europe/London",
-    "abbreviation": "GMT",
-    "gmtOffset": "0",
-    "dst": "0",
-    "timestamp": 1391988140,
-    "cacheRefreshDue": 1392074555616
-  },
-  "parma": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991751,
-    "cacheRefreshDue": 1392074556689
-  },
-  "piacenza": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991751,
-    "cacheRefreshDue": 1392074556757
-  },
-  "pinerolo": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991753,
-    "cacheRefreshDue": 1392074557440
-  },
-  "parkinbici": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991749,
-    "cacheRefreshDue": 1392074557441
-  },
-  "reggioemilia": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991755,
-    "cacheRefreshDue": 1392074557476
-  },
-  "saluzzo": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991755,
-    "cacheRefreshDue": 1392074558360
-  },
-  "savigliano": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991755,
-    "cacheRefreshDue": 1392074558361
-  },
-  "bicischio": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991755,
-    "cacheRefreshDue": 1392074558361
-  },
-  "rimini": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991755,
-    "cacheRefreshDue": 1392074558987
-  },
-  "udine": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991756,
-    "cacheRefreshDue": 1392074559590
-  },
-  "bicico": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991756,
-    "cacheRefreshDue": 1392074559591
-  },
-  "tiranoinbici": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991756,
-    "cacheRefreshDue": 1392074559592
-  },
-  "speziainbici": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991757,
-    "cacheRefreshDue": 1392074559616
-  },
-  "pavia": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991757,
-    "cacheRefreshDue": 1392074561644
-  },
-  "to-bike": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991757,
-    "cacheRefreshDue": 1392074561662
-  },
-  "venezia": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991757,
-    "cacheRefreshDue": 1392074561704
-  },
-  "biciperugia": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991757,
-    "cacheRefreshDue": 1392074562810
-  },
-  "ustica": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991760,
-    "cacheRefreshDue": 1392074566317
-  },
-  "greenbikeslc": {
-    "countryCode": "US",
-    "zoneName": "America/Denver",
-    "abbreviation": "MST",
-    "gmtOffset": "-25200",
-    "dst": "0",
-    "timestamp": 1391962961,
-    "cacheRefreshDue": 1392074569008
-  },
-  "kansascity": {
-    "countryCode": "US",
-    "zoneName": "America/Chicago",
-    "abbreviation": "CST",
-    "gmtOffset": "-21600",
-    "dst": "0",
-    "timestamp": 1391966560,
-    "cacheRefreshDue": 1392074569173
-  },
-  "Terni": {
-    "countryCode": "IT",
-    "zoneName": "Europe/Rome",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991760,
-    "cacheRefreshDue": 1392074569282
-  },
-  "decobike-miami-beach": {
-    "countryCode": "US",
-    "zoneName": "America/New_York",
-    "abbreviation": "EST",
-    "gmtOffset": "-18000",
-    "dst": "0",
-    "timestamp": 1391970133,
-    "cacheRefreshDue": 1392074570993
-  },
-  "onroll-albacete": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991764,
-    "cacheRefreshDue": 1392074574643
-  },
-  "onroll-a-rua": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991767,
-    "cacheRefreshDue": 1392074575910
-  },
-  "onroll-aranda-de-duero": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991767,
-    "cacheRefreshDue": 1392074576735
-  },
-  "onroll-aranjuez": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991769,
-    "cacheRefreshDue": 1392074579962
-  },
-  "onroll-alhama-de-murcia": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991767,
-    "cacheRefreshDue": 1392074580784
-  },
-  "onroll-badajoz": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991775,
-    "cacheRefreshDue": 1392074582937
-  },
-  "onroll-benidorm": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991778,
-    "cacheRefreshDue": 1392074589133
-  },
-  "onroll-blanca": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991779,
-    "cacheRefreshDue": 1392074590824
-  },
-  "onroll-ciudad-real": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991781,
-    "cacheRefreshDue": 1392074593785
-  },
-  "onroll-antequera": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991774,
-    "cacheRefreshDue": 1392074594178
-  },
-  "onroll-baeza": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991787,
-    "cacheRefreshDue": 1392074595330
-  },
-  "onroll-el-campello": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991789,
-    "cacheRefreshDue": 1392074598065
-  },
-  "onroll-almunecar": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991773,
-    "cacheRefreshDue": 1392074599330
-  },
-  "onroll-elche": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991792,
-    "cacheRefreshDue": 1392074601061
-  },
-  "onroll-jaen": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991792,
-    "cacheRefreshDue": 1392074603829
-  },
-  "onroll-cieza": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991793,
-    "cacheRefreshDue": 1392074604205
-  },
-  "onroll-lalin": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991796,
-    "cacheRefreshDue": 1392074608742
-  },
-  "onroll-montilla": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991799,
-    "cacheRefreshDue": 1392074609862
-  },
-  "onroll-novelda": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991802,
-    "cacheRefreshDue": 1392074611200
-  },
-  "onroll-don-benito-villanueva": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991802,
-    "cacheRefreshDue": 1392074614886
-  },
-  "onroll-o-barco": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991807,
-    "cacheRefreshDue": 1392074618266
-  },
-  "onroll-las-palmas": {
-    "countryCode": "ES",
-    "zoneName": "Atlantic/Canary",
-    "abbreviation": "WET",
-    "gmtOffset": "0",
-    "dst": "0",
-    "timestamp": 1391988197,
-    "cacheRefreshDue": 1392074627291
-  },
-  "onroll-palencia": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991813,
-    "cacheRefreshDue": 1392074631168
-  },
-  "onroll-paiporta": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991809,
-    "cacheRefreshDue": 1392074636081
-  },
-  "onroll-guadalajara": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991808,
-    "cacheRefreshDue": 1392074640998
-  },
-  "onroll-pinto": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991816,
-    "cacheRefreshDue": 1392074646221
-  },
-  "onroll-puerto-lumbreras": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991825,
-    "cacheRefreshDue": 1392074687386
-  },
-  "onroll-mula": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991829,
-    "cacheRefreshDue": 1392074697983
-  },
-  "onroll-puertollano": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991834,
-    "cacheRefreshDue": 1392074712255
-  },
-  "onroll-redondela": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991839,
-    "cacheRefreshDue": 1392074718003
-  },
-  "onroll-san-javier": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991844,
-    "cacheRefreshDue": 1392074752653
-  },
-  "onroll-san-pedro": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991896,
-    "cacheRefreshDue": 1392074807250
-  },
-  "onroll-sant-joan": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991930,
-    "cacheRefreshDue": 1392074817333
-  },
-  "onroll-soria": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991955,
-    "cacheRefreshDue": 1392074834038
-  },
-  "onroll-priego-de-cordoba": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991955,
-    "cacheRefreshDue": 1392074836587
-  },
-  "onroll-ubeda": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391991996,
-    "cacheRefreshDue": 1392074872929
-  },
-  "onroll-talavera": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391992015,
-    "cacheRefreshDue": 1392074899800
-  },
-  "onroll-villaquilambre": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391992071,
-    "cacheRefreshDue": 1392074922338
-  },
-  "onroll-universidad-de-granada": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391992035,
-    "cacheRefreshDue": 1392074922396
-  },
-  "onroll-vinaros": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391992079,
-    "cacheRefreshDue": 1392074927310
-  },
-  "onroll-salamanca": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391992098,
-    "cacheRefreshDue": 1392074943648
-  },
-  "dublinbikes": {
-    "countryCode": "IE",
-    "zoneName": "Europe/Dublin",
-    "abbreviation": "GMT",
-    "gmtOffset": "0",
-    "dst": "0",
-    "timestamp": 1391988520,
-    "cacheRefreshDue": 1392074950382
-  },
-  "onroll-segovia": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391992133,
-    "cacheRefreshDue": 1392074950721
-  },
-  "stockholm-cyclocity": {
-    "countryCode": "SE",
-    "zoneName": "Europe/Stockholm",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391992147,
-    "cacheRefreshDue": 1392074950993
-  },
-  "onroll-via-verde": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391992141,
-    "cacheRefreshDue": 1392074951061
-  },
-  "bysykkel-lillestrom": {
-    "countryCode": "NO",
-    "zoneName": "Europe/Oslo",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391992149,
-    "cacheRefreshDue": 1392074969703
-  },
-  "goeteborg": {
-    "countryCode": "SE",
-    "zoneName": "Europe/Stockholm",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391992153,
-    "cacheRefreshDue": 1392074971545
-  },
-  "li-bia-velo": {
-    "countryCode": "BE",
-    "zoneName": "Europe/Brussels",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391992154,
-    "cacheRefreshDue": 1392074979533
-  },
-  "velo2": {
-    "countryCode": "FR",
-    "zoneName": "Europe/Paris",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391992162,
-    "cacheRefreshDue": 1392074985370
-  },
-  "velocite-mulhouse": {
-    "countryCode": "FR",
-    "zoneName": "Europe/Paris",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391992153,
-    "cacheRefreshDue": 1392074989671
-  },
-  "velocite-besancon": {
-    "countryCode": "FR",
-    "zoneName": "Europe/Paris",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391992177,
-    "cacheRefreshDue": 1392074996428
-  },
-  "toyama-cyclocity": {
-    "countryCode": "JP",
-    "zoneName": "Asia/Tokyo",
-    "abbreviation": "JST",
-    "gmtOffset": "32400",
-    "dst": "0",
-    "timestamp": 1392020969,
-    "cacheRefreshDue": 1392075001024
-  },
-  "velik": {
-    "countryCode": "RU",
-    "zoneName": "Europe/Moscow",
-    "abbreviation": "MSK",
-    "gmtOffset": "14400",
-    "dst": "0",
-    "timestamp": 1392002993,
-    "cacheRefreshDue": 1392075012095
-  },
-  "bicipalma": {
-    "countryCode": "ES",
-    "zoneName": "Europe/Madrid",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391992183,
-    "cacheRefreshDue": 1392075013940
-  },
-  "le-velo": {
-    "countryCode": "FR",
-    "zoneName": "Europe/Paris",
-    "abbreviation": "CET",
-    "gmtOffset": "3600",
-    "dst": "0",
-    "timestamp": 1391992186,
-    "cacheRefreshDue": 1392075018855
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076269348
   },
   "austin": {
     "countryCode": "US",
@@ -2192,7 +41,1537 @@
     "abbreviation": "CST",
     "gmtOffset": "-21600",
     "dst": "0",
-    "timestamp": 1391966997,
-    "cacheRefreshDue": 1392075028889
+    "timestamp": 1391968303,
+    "cacheRefreshDue": 1392076305259
+  },
+  "barclays-cycle-hire": {
+    "countryCode": "GB",
+    "zoneName": "Europe/London",
+    "abbreviation": "GMT",
+    "gmtOffset": "0",
+    "dst": "0",
+    "timestamp": 1391989865,
+    "cacheRefreshDue": 1392076266980
+  },
+  "bariinbici": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993466,
+    "cacheRefreshDue": 1392076268028
+  },
+  "bassanodelgrappa": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993466,
+    "cacheRefreshDue": 1392076268026
+  },
+  "bay-area-bike-share": {
+    "countryCode": "US",
+    "zoneName": "America/Los_Angeles",
+    "abbreviation": "PST",
+    "gmtOffset": "-28800",
+    "dst": "0",
+    "timestamp": 1391961065,
+    "cacheRefreshDue": 1392076277047
+  },
+  "bayareabikeshare": {
+    "countryCode": "US",
+    "zoneName": "America/Los_Angeles",
+    "abbreviation": "PST",
+    "gmtOffset": "-28800",
+    "dst": "0",
+    "timestamp": 1391961107,
+    "cacheRefreshDue": 1392076310188
+  },
+  "biciamo": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993466,
+    "cacheRefreshDue": 1392076268206
+  },
+  "bicico": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993476,
+    "cacheRefreshDue": 1392076278311
+  },
+  "biciinbusto": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076269520
+  },
+  "bicikelj": {
+    "countryCode": "SI",
+    "zoneName": "Europe/Ljubljana",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993500,
+    "cacheRefreshDue": 1392076304184
+  },
+  "bicing": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076300804
+  },
+  "bicipalma": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993503,
+    "cacheRefreshDue": 1392076304992
+  },
+  "biciperugia": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993477,
+    "cacheRefreshDue": 1392076278788
+  },
+  "bicischio": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993476,
+    "cacheRefreshDue": 1392076277924
+  },
+  "bicloo": {
+    "countryCode": "FR",
+    "zoneName": "Europe/Paris",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993503,
+    "cacheRefreshDue": 1392076309423
+  },
+  "biella": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993475,
+    "cacheRefreshDue": 1392076277148
+  },
+  "bigi": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076269368
+  },
+  "bike-chattanooga": {
+    "countryCode": "US",
+    "zoneName": "America/New_York",
+    "abbreviation": "EST",
+    "gmtOffset": "-18000",
+    "dst": "0",
+    "timestamp": 1391971865,
+    "cacheRefreshDue": 1392076267071
+  },
+  "bikeinbath": {
+    "countryCode": "GB",
+    "zoneName": "Europe/London",
+    "abbreviation": "GMT",
+    "gmtOffset": "0",
+    "dst": "0",
+    "timestamp": 1391989867,
+    "cacheRefreshDue": 1392076269698
+  },
+  "bixi-montreal": {
+    "countryCode": "CA",
+    "zoneName": "America/Montreal",
+    "abbreviation": "EST",
+    "gmtOffset": "-18000",
+    "dst": "0",
+    "timestamp": 1391971865,
+    "cacheRefreshDue": 1392076267069
+  },
+  "bixi-toronto": {
+    "countryCode": "CA",
+    "zoneName": "America/Toronto",
+    "abbreviation": "EST",
+    "gmtOffset": "-18000",
+    "dst": "0",
+    "timestamp": 1391971865,
+    "cacheRefreshDue": 1392076267158
+  },
+  "bizi": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076300906
+  },
+  "boulder": {
+    "countryCode": "US",
+    "zoneName": "America/Denver",
+    "abbreviation": "MST",
+    "gmtOffset": "-25200",
+    "dst": "0",
+    "timestamp": 1391964677,
+    "cacheRefreshDue": 1392076282362
+  },
+  "bra": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993466,
+    "cacheRefreshDue": 1392076268120
+  },
+  "broward": {
+    "countryCode": "US",
+    "zoneName": "America/New_York",
+    "abbreviation": "EST",
+    "gmtOffset": "-18000",
+    "dst": "0",
+    "timestamp": 1391971879,
+    "cacheRefreshDue": 1392076293040
+  },
+  "bysykkel-lillestrom": {
+    "countryCode": "NO",
+    "zoneName": "Europe/Oslo",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993500,
+    "cacheRefreshDue": 1392076302453
+  },
+  "cagliari": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993466,
+    "cacheRefreshDue": 1392076268118
+  },
+  "capital-bikeshare": {
+    "countryCode": "US",
+    "zoneName": "America/New_York",
+    "abbreviation": "EST",
+    "gmtOffset": "-18000",
+    "dst": "0",
+    "timestamp": 1391972415,
+    "cacheRefreshDue": 1392076817157
+  },
+  "capital-bixi": {
+    "countryCode": "CA",
+    "zoneName": "America/Toronto",
+    "abbreviation": "EST",
+    "gmtOffset": "-18000",
+    "dst": "0",
+    "timestamp": 1391971865,
+    "cacheRefreshDue": 1392076267080
+  },
+  "casalmaggiore": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993466,
+    "cacheRefreshDue": 1392076268211
+  },
+  "charlotte": {
+    "countryCode": "US",
+    "zoneName": "America/New_York",
+    "abbreviation": "EST",
+    "gmtOffset": "-18000",
+    "dst": "0",
+    "timestamp": 1391971879,
+    "cacheRefreshDue": 1392076289803
+  },
+  "chivasso": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993466,
+    "cacheRefreshDue": 1392076268568
+  },
+  "citibikenyc": {
+    "countryCode": "US",
+    "zoneName": "America/New_York",
+    "abbreviation": "EST",
+    "gmtOffset": "-18000",
+    "dst": "0",
+    "timestamp": 1391971865,
+    "cacheRefreshDue": 1392076281450
+  },
+  "citybike-wien": {
+    "countryCode": "AT",
+    "zoneName": "Europe/Vienna",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993465,
+    "cacheRefreshDue": 1392076267078
+  },
+  "citycycle": {
+    "countryCode": "AU",
+    "zoneName": "Australia/Brisbane",
+    "abbreviation": "EST",
+    "gmtOffset": "36000",
+    "dst": "0",
+    "timestamp": 1392025899,
+    "cacheRefreshDue": 1392076302406
+  },
+  "cristolib": {
+    "countryCode": "FR",
+    "zoneName": "Europe/Paris",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993501,
+    "cacheRefreshDue": 1392076304183
+  },
+  "cuneo": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076269548
+  },
+  "cyclic": {
+    "countryCode": "FR",
+    "zoneName": "Europe/Paris",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993497,
+    "cacheRefreshDue": 1392076300841
+  },
+  "decobike-long-beach": {
+    "countryCode": "US",
+    "zoneName": "America/New_York",
+    "abbreviation": "EST",
+    "gmtOffset": "-18000",
+    "dst": "0",
+    "timestamp": 1391971867,
+    "cacheRefreshDue": 1392076269172
+  },
+  "decobike-miami-beach": {
+    "countryCode": "US",
+    "zoneName": "America/New_York",
+    "abbreviation": "EST",
+    "gmtOffset": "-18000",
+    "dst": "0",
+    "timestamp": 1391971867,
+    "cacheRefreshDue": 1392076269098
+  },
+  "denver": {
+    "countryCode": "US",
+    "zoneName": "America/Denver",
+    "abbreviation": "MST",
+    "gmtOffset": "-25200",
+    "dst": "0",
+    "timestamp": 1391964680,
+    "cacheRefreshDue": 1392076285175
+  },
+  "desmoines": {
+    "countryCode": "US",
+    "zoneName": "America/Chicago",
+    "abbreviation": "CST",
+    "gmtOffset": "-21600",
+    "dst": "0",
+    "timestamp": 1391968280,
+    "cacheRefreshDue": 1392076288208
+  },
+  "divvy": {
+    "countryCode": "US",
+    "zoneName": "America/Chicago",
+    "abbreviation": "CST",
+    "gmtOffset": "-21600",
+    "dst": "0",
+    "timestamp": 1391968265,
+    "cacheRefreshDue": 1392076267168
+  },
+  "dublinbikes": {
+    "countryCode": "IE",
+    "zoneName": "Europe/Dublin",
+    "abbreviation": "GMT",
+    "gmtOffset": "0",
+    "dst": "0",
+    "timestamp": 1391989896,
+    "cacheRefreshDue": 1392076298624
+  },
+  "ecobici": {
+    "countryCode": "MX",
+    "zoneName": "America/Mexico_City",
+    "abbreviation": "CST",
+    "gmtOffset": "-21600",
+    "dst": "0",
+    "timestamp": 1391968296,
+    "cacheRefreshDue": 1392076300252
+  },
+  "esribike": {
+    "countryCode": "US",
+    "zoneName": "America/Los_Angeles",
+    "abbreviation": "PST",
+    "gmtOffset": "-28800",
+    "dst": "0",
+    "timestamp": 1391961103,
+    "cacheRefreshDue": 1392076310356
+  },
+  "fortworth": {
+    "countryCode": "US",
+    "zoneName": "America/Chicago",
+    "abbreviation": "CST",
+    "gmtOffset": "-21600",
+    "dst": "0",
+    "timestamp": 1391968281,
+    "cacheRefreshDue": 1392076289615
+  },
+  "fossano": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076269608
+  },
+  "freebikesharing": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076269638
+  },
+  "girocleta": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993503,
+    "cacheRefreshDue": 1392076308751
+  },
+  "gobike": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076269263
+  },
+  "goeteborg": {
+    "countryCode": "SE",
+    "zoneName": "Europe/Stockholm",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993500,
+    "cacheRefreshDue": 1392076302541
+  },
+  "goodbike": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993468,
+    "cacheRefreshDue": 1392076282679
+  },
+  "greenbikeslc": {
+    "countryCode": "US",
+    "zoneName": "America/Denver",
+    "abbreviation": "MST",
+    "gmtOffset": "-25200",
+    "dst": "0",
+    "timestamp": 1391964683,
+    "cacheRefreshDue": 1392076285381
+  },
+  "greenville": {
+    "countryCode": "US",
+    "zoneName": "America/New_York",
+    "abbreviation": "EST",
+    "gmtOffset": "-18000",
+    "dst": "0",
+    "timestamp": 1391971883,
+    "cacheRefreshDue": 1392076291895
+  },
+  "hawaii": {
+    "countryCode": "US",
+    "zoneName": "Pacific/Honolulu",
+    "abbreviation": "HST",
+    "gmtOffset": "-36000",
+    "dst": "0",
+    "timestamp": 1391953886,
+    "cacheRefreshDue": 1392076296196
+  },
+  "houston": {
+    "countryCode": "US",
+    "zoneName": "America/Chicago",
+    "abbreviation": "CST",
+    "gmtOffset": "-21600",
+    "dst": "0",
+    "timestamp": 1391968287,
+    "cacheRefreshDue": 1392076293738
+  },
+  "hubway": {
+    "countryCode": "US",
+    "zoneName": "America/New_York",
+    "abbreviation": "EST",
+    "gmtOffset": "-18000",
+    "dst": "0",
+    "timestamp": 1391971865,
+    "cacheRefreshDue": 1392076281451
+  },
+  "jesinbici": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993466,
+    "cacheRefreshDue": 1392076268300
+  },
+  "kansascity": {
+    "countryCode": "US",
+    "zoneName": "America/Chicago",
+    "abbreviation": "CST",
+    "gmtOffset": "-21600",
+    "dst": "0",
+    "timestamp": 1391968283,
+    "cacheRefreshDue": 1392076285289
+  },
+  "le-velo": {
+    "countryCode": "FR",
+    "zoneName": "Europe/Paris",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993503,
+    "cacheRefreshDue": 1392076305078
+  },
+  "lecce": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993466,
+    "cacheRefreshDue": 1392076268382
+  },
+  "lecco": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993468,
+    "cacheRefreshDue": 1392076269728
+  },
+  "li-bia-velo": {
+    "countryCode": "BE",
+    "zoneName": "Europe/Brussels",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993500,
+    "cacheRefreshDue": 1392076302663
+  },
+  "madison": {
+    "countryCode": "US",
+    "zoneName": "America/Chicago",
+    "abbreviation": "CST",
+    "gmtOffset": "-21600",
+    "dst": "0",
+    "timestamp": 1391968288,
+    "cacheRefreshDue": 1392076296353
+  },
+  "manerbainbici": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993468,
+    "cacheRefreshDue": 1392076269818
+  },
+  "mantova": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076268741
+  },
+  "marebici": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993468,
+    "cacheRefreshDue": 1392076269908
+  },
+  "meglioinbici": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076269458
+  },
+  "melbourne-bike-share": {
+    "countryCode": "AU",
+    "zoneName": "Australia/Melbourne",
+    "abbreviation": "EST",
+    "gmtOffset": "39600",
+    "dst": "1",
+    "timestamp": 1392029465,
+    "cacheRefreshDue": 1392076266976
+  },
+  "mobike": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993466,
+    "cacheRefreshDue": 1392076268391
+  },
+  "nashville": {
+    "countryCode": "US",
+    "zoneName": "America/Chicago",
+    "abbreviation": "CST",
+    "gmtOffset": "-21600",
+    "dst": "0",
+    "timestamp": 1391968290,
+    "cacheRefreshDue": 1392076296783
+  },
+  "nbici": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993466,
+    "cacheRefreshDue": 1392076268563
+  },
+  "nice-ride": {
+    "countryCode": "US",
+    "zoneName": "America/Chicago",
+    "abbreviation": "CST",
+    "gmtOffset": "-21600",
+    "dst": "0",
+    "timestamp": 1391968265,
+    "cacheRefreshDue": 1392076267163
+  },
+  "novara": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993468,
+    "cacheRefreshDue": 1392076269998
+  },
+  "noviligure": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993466,
+    "cacheRefreshDue": 1392076268475
+  },
+  "oderzo": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993466,
+    "cacheRefreshDue": 1392076268483
+  },
+  "omaha": {
+    "countryCode": "US",
+    "zoneName": "America/Chicago",
+    "abbreviation": "CST",
+    "gmtOffset": "-21600",
+    "dst": "0",
+    "timestamp": 1391968291,
+    "cacheRefreshDue": 1392076297739
+  },
+  "onroll-a-rua": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993495,
+    "cacheRefreshDue": 1392076296886
+  },
+  "onroll-albacete": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993494,
+    "cacheRefreshDue": 1392076296465
+  },
+  "onroll-alhama-de-murcia": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993494,
+    "cacheRefreshDue": 1392076296561
+  },
+  "onroll-almunecar": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993495,
+    "cacheRefreshDue": 1392076297176
+  },
+  "onroll-antequera": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993495,
+    "cacheRefreshDue": 1392076297279
+  },
+  "onroll-aranda-de-duero": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993495,
+    "cacheRefreshDue": 1392076296983
+  },
+  "onroll-aranjuez": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993495,
+    "cacheRefreshDue": 1392076297079
+  },
+  "onroll-badajoz": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993495,
+    "cacheRefreshDue": 1392076297373
+  },
+  "onroll-baeza": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993495,
+    "cacheRefreshDue": 1392076297659
+  },
+  "onroll-benidorm": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993495,
+    "cacheRefreshDue": 1392076297468
+  },
+  "onroll-blanca": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993495,
+    "cacheRefreshDue": 1392076297563
+  },
+  "onroll-cieza": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076297833
+  },
+  "onroll-ciudad-real": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993495,
+    "cacheRefreshDue": 1392076297576
+  },
+  "onroll-don-benito-villanueva": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076297956
+  },
+  "onroll-el-campello": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993495,
+    "cacheRefreshDue": 1392076297668
+  },
+  "onroll-elche": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076297761
+  },
+  "onroll-guadalajara": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298045
+  },
+  "onroll-jaen": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076297766
+  },
+  "onroll-lalin": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076297864
+  },
+  "onroll-las-palmas": {
+    "countryCode": "ES",
+    "zoneName": "Atlantic/Canary",
+    "abbreviation": "WET",
+    "gmtOffset": "0",
+    "dst": "0",
+    "timestamp": 1391989896,
+    "cacheRefreshDue": 1392076297903
+  },
+  "onroll-montilla": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076297926
+  },
+  "onroll-mula": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298201
+  },
+  "onroll-novelda": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076297996
+  },
+  "onroll-o-barco": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298014
+  },
+  "onroll-paiporta": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298096
+  },
+  "onroll-palencia": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298108
+  },
+  "onroll-pinto": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298139
+  },
+  "onroll-priego-de-cordoba": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298393
+  },
+  "onroll-puerto-lumbreras": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298188
+  },
+  "onroll-puertollano": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298236
+  },
+  "onroll-redondela": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298284
+  },
+  "onroll-salamanca": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298533
+  },
+  "onroll-san-javier": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298299
+  },
+  "onroll-san-pedro": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298333
+  },
+  "onroll-sant-joan": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298341
+  },
+  "onroll-segovia": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298713
+  },
+  "onroll-soria": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298405
+  },
+  "onroll-talavera": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298436
+  },
+  "onroll-ubeda": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298428
+  },
+  "onroll-universidad-de-granada": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298486
+  },
+  "onroll-via-verde": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993499,
+    "cacheRefreshDue": 1392076300898
+  },
+  "onroll-villaquilambre": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298501
+  },
+  "onroll-vinaros": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993496,
+    "cacheRefreshDue": 1392076298524
+  },
+  "ossola": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993466,
+    "cacheRefreshDue": 1392076268295
+  },
+  "parkinbici": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993475,
+    "cacheRefreshDue": 1392076277246
+  },
+  "parma": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993475,
+    "cacheRefreshDue": 1392076277346
+  },
+  "pavia": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993476,
+    "cacheRefreshDue": 1392076278501
+  },
+  "piacenza": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993475,
+    "cacheRefreshDue": 1392076277443
+  },
+  "pinerolo": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993475,
+    "cacheRefreshDue": 1392076277556
+  },
+  "pistoiainbici": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993466,
+    "cacheRefreshDue": 1392076268648
+  },
+  "pontedera": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993466,
+    "cacheRefreshDue": 1392076268655
+  },
+  "portofinoparkandbike": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076269188
+  },
+  "prato": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076268823
+  },
+  "reggioemilia": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993475,
+    "cacheRefreshDue": 1392076277648
+  },
+  "rimini": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993476,
+    "cacheRefreshDue": 1392076277748
+  },
+  "roma-n-bike": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076269086
+  },
+  "saluzzo": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993476,
+    "cacheRefreshDue": 1392076277836
+  },
+  "sanantonio": {
+    "countryCode": "US",
+    "zoneName": "America/Chicago",
+    "abbreviation": "CST",
+    "gmtOffset": "-21600",
+    "dst": "0",
+    "timestamp": 1391968292,
+    "cacheRefreshDue": 1392076297479
+  },
+  "sandonadipiave": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076268828
+  },
+  "savigliano": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993476,
+    "cacheRefreshDue": 1392076278025
+  },
+  "savona": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076268909
+  },
+  "settimotorinese": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076268918
+  },
+  "sevici": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993502,
+    "cacheRefreshDue": 1392076309706
+  },
+  "sondrio": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076268998
+  },
+  "spartanburg": {
+    "countryCode": "US",
+    "zoneName": "America/New_York",
+    "abbreviation": "EST",
+    "gmtOffset": "-18000",
+    "dst": "0",
+    "timestamp": 1391971894,
+    "cacheRefreshDue": 1392076298238
+  },
+  "speziainbici": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993476,
+    "cacheRefreshDue": 1392076278405
+  },
+  "stockholm-cyclocity": {
+    "countryCode": "SE",
+    "zoneName": "Europe/Stockholm",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993499,
+    "cacheRefreshDue": 1392076300996
+  },
+  "Terni": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993481,
+    "cacheRefreshDue": 1392076282771
+  },
+  "tigullionbike": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993468,
+    "cacheRefreshDue": 1392076282362
+  },
+  "tiranoinbici": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993476,
+    "cacheRefreshDue": 1392076278116
+  },
+  "to-bike": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993476,
+    "cacheRefreshDue": 1392076278588
+  },
+  "toyama-cyclocity": {
+    "countryCode": "JP",
+    "zoneName": "Asia/Tokyo",
+    "abbreviation": "JST",
+    "gmtOffset": "32400",
+    "dst": "0",
+    "timestamp": 1392022303,
+    "cacheRefreshDue": 1392076304896
+  },
+  "treviso": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076268735
+  },
+  "tusbic": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993499,
+    "cacheRefreshDue": 1392076302481
+  },
+  "udine": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993476,
+    "cacheRefreshDue": 1392076278216
+  },
+  "ustica": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993481,
+    "cacheRefreshDue": 1392076282861
+  },
+  "valenbisi": {
+    "countryCode": "ES",
+    "zoneName": "Europe/Madrid",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993500,
+    "cacheRefreshDue": 1392076304797
+  },
+  "velam": {
+    "countryCode": "FR",
+    "zoneName": "Europe/Paris",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993500,
+    "cacheRefreshDue": 1392076303568
+  },
+  "velib": {
+    "countryCode": "FR",
+    "zoneName": "Europe/Paris",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993498,
+    "cacheRefreshDue": 1392076302341
+  },
+  "velik": {
+    "countryCode": "RU",
+    "zoneName": "Europe/Moscow",
+    "abbreviation": "MSK",
+    "gmtOffset": "14400",
+    "dst": "0",
+    "timestamp": 1392004303,
+    "cacheRefreshDue": 1392076305169
+  },
+  "velo": {
+    "countryCode": "FR",
+    "zoneName": "Europe/Paris",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993498,
+    "cacheRefreshDue": 1392076302356
+  },
+  "velo2": {
+    "countryCode": "FR",
+    "zoneName": "Europe/Paris",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993502,
+    "cacheRefreshDue": 1392076304283
+  },
+  "velocite-besancon": {
+    "countryCode": "FR",
+    "zoneName": "Europe/Paris",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993503,
+    "cacheRefreshDue": 1392076304916
+  },
+  "velocite-mulhouse": {
+    "countryCode": "FR",
+    "zoneName": "Europe/Paris",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993500,
+    "cacheRefreshDue": 1392076302434
+  },
+  "veloh": {
+    "countryCode": "LU",
+    "zoneName": "Europe/Luxembourg",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993499,
+    "cacheRefreshDue": 1392076302340
+  },
+  "velostanlib": {
+    "countryCode": "FR",
+    "zoneName": "Europe/Paris",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993501,
+    "cacheRefreshDue": 1392076304798
+  },
+  "velov": {
+    "countryCode": "FR",
+    "zoneName": "Europe/Paris",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993500,
+    "cacheRefreshDue": 1392076303723
+  },
+  "venezia": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993476,
+    "cacheRefreshDue": 1392076278678
+  },
+  "vercelli": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076269435
+  },
+  "villo": {
+    "countryCode": "BE",
+    "zoneName": "Europe/Brussels",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993502,
+    "cacheRefreshDue": 1392076304823
+  },
+  "villorba": {
+    "countryCode": "IT",
+    "zoneName": "Europe/Rome",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993467,
+    "cacheRefreshDue": 1392076269008
+  },
+  "vilnius-cyclocity": {
+    "countryCode": "LT",
+    "zoneName": "Europe/Vilnius",
+    "abbreviation": "EET",
+    "gmtOffset": "7200",
+    "dst": "0",
+    "timestamp": 1391997102,
+    "cacheRefreshDue": 1392076309407
+  },
+  "vlille": {
+    "countryCode": "FR",
+    "zoneName": "Europe/Paris",
+    "abbreviation": "CET",
+    "gmtOffset": "3600",
+    "dst": "0",
+    "timestamp": 1391993494,
+    "cacheRefreshDue": 1392076299882
   }
 }

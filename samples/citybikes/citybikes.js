@@ -632,11 +632,7 @@ Object.defineProperties(CityBikes.prototype, {
               // timezonedb API too soon.
               if (Object.size(this._networksAwaitingTimezone) == 0)
               {
-                if (!fs.existsSync(path.dirname(timezoneCacheFilename))) {
-                  fs.mkDirSync(path.dirname(timezoneCacheFilename));
-                }
-                fs.writeFile(timezoneCacheFilename, JSON.stringify(this._networkTimezones));
-                console.log("Wrote timezones to " + timezoneCacheFilename);
+                this._saveSortedTimezones();
               }
             
               // Call back with our updated cache entry, setting "this"
@@ -651,6 +647,26 @@ Object.defineProperties(CityBikes.prototype, {
           }
         }).bind(this));
       }
+    }
+  },
+  _saveSortedTimezones: {
+    value: function() {
+      if (!fs.existsSync(path.dirname(timezoneCacheFilename))) {
+        fs.mkDirSync(path.dirname(timezoneCacheFilename));
+      }
+      var sortedTimezones = {},
+          keys = [];
+      for (var k in this._networkTimezones) {
+        keys.push(k);
+      }
+      keys.sort(function (a, b) {
+        return a.toLowerCase().localeCompare(b.toLowerCase());
+      });
+      for (var i=0; i<keys.length; i++) {
+        sortedTimezones[keys[i]] = this._networkTimezones[keys[i]];
+      }
+      fs.writeFile(timezoneCacheFilename, JSON.stringify(sortedTimezones, undefined, 2));
+      console.log("Wrote timezones to " + timezoneCacheFilename);
     }
   },
   _getGMTOffsetString: {
