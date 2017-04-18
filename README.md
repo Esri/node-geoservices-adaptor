@@ -11,7 +11,7 @@ View a [live demo](http://geonode.geeknixta.com).
 
 ![Sample Image](docs/citibike-svc.png)
 
-##Introduction
+## Introduction
 The application handles ArcGIS REST API requests to custom "data providers", and returns their output in ArcGIS JSON format.
 
 Here are two sample "data providers":
@@ -40,19 +40,19 @@ By using the Esri [Terraformer](https://github.com/esri/terraformer) library's `
 ## Requirements
 * [node.js](http://nodejs.org)
 
-##Installation
+## Installation
 1. Clone the repo and run `npm update` in the repo folder
 2. Run the node server with `node index`
 3. Browse to [http://localhost:1337](http://localhost:1337)
 
-##Sample Data Providers
-###Citybikes
+## Sample Data Providers
+### Citybikes
 The Citybikes sample data provider makes use of the [awesome API](http://api.citybik.es) at [CityBik.es](http://citybik.es) providing bike share data (almost) globally. This sample Data Provider adapts the data into Geoservices format output. The root REST endpoint 
 for the CityBikes data provider can be found live here (this is where you might point ArcCatalog): http://geonode.geeknixta.com/citybikes/rest/services
-###GeoHub
+### GeoHub
 Making use of the [GeoHub repo](https://github.com/chelm/geohub), this sample provider allows a client to request geoJSON files from either a GitHub repository ([example](https://github.com/chelm/grunt-geo/blob/master/forks.geojson)) or from a GitHub gist ([example](https://gist.github.com/chelm/6178185)). This sample uses the `dataproviderbase` GeoStore cache framework. For more details, see the [GeoHub Plugin Readme](samples/geohub/README.md).
 
-##Known Limitations
+## Known Limitations
 * Only a limited subset of the [Geoservices REST Specification](http://resources.arcgis.com/en/help/arcgis-rest-api/) is implemented.
 	* [`Server Info`](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Server_Info/02r300000116000000/)
 	* [`Catalog`](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Catalog/02r3000000tn000000/)

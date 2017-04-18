@@ -5,7 +5,7 @@ This is a sample Data Provider for the [node-geoservices-adaptor](../..).
 
 It provides access to geoJSON files stored in GitHub by providing a wrapper around [GeoHub](https://github.com/chelm/geohub).
 
-##GitHub Repository
+## GitHub Repository
 To reference a geoJSON file from a GitHub repository, use the following REST URL structure:
 
 	/geohub/rest/services/repo+<GitHub Username>+<Repo Name>+<File Name>/FeatureServer/0
@@ -21,7 +21,7 @@ Below is a sample URL that you can add directly to an ArcGIS Online map or consu
 * Access `forks.geojson` in chelm's grunt-geo repo: http://geonode.geeknixta.com/geohub/rest/services/repo+chelm+grunt-geo+forks/FeatureServer/0
 * Access `samples/bower.geojson` in chelm's grunt-geo repo: http://geonode.geeknixta.com/geohub/rest/services/repo+chelm+grunt-geo+samples%2Fbower/FeatureServer/0
 
-##GitHub Gist
+## GitHub Gist
 
 To reference a geoJSON file from a GitHub Gist, use the following REST URL structure:
 
@@ -37,8 +37,8 @@ Below are some sample URLs that you can add directly to an ArcGIS Online map or 
 * Access the first geoJSON file in gist `6178185`: http://geonode.geeknixta.com/geohub/rest/services/gist+6178185/FeatureServer/0
 * Access the second geoJSON file in gist `6178185`: http://geonode.geeknixta.com/geohub/rest/services/gist+6178185/FeatureServer/1
 
-##Notes
-###geoJSON containing multiple geometry types
+## Notes
+### geoJSON containing multiple geometry types
 
 An ArcGIS Feature Layer can only provide a single type of Esri Geometry. However, geoJSON files may contain any combination of [Geometry Types](http://www.geojson.org/geojson-spec.html#geometry-objects). The GeoHub Data Provider defaults to outputting only geometries matching the type of the first geometry encountered in the geoJSON file. In the case where the geoJSON includes multiple Geometry Types and the first geometry in the geoJSON file is not the type you want to provide, add the optional `+<GeometryType>` specifier like this:
 
@@ -59,12 +59,12 @@ Where `<GeometryType>` is a valid geoJSON Geometry Type as specified by the [geo
 
 Below are some sample URLs that you can add directly to an ArcGIS Online map or consume with one of the ArcGIS APIs:
 
-#####Repository:
+##### Repository:
 * Access `forks.geojson` in chelm's grunt-geo repo, filtering by geometry type `LineString`: http://geonode.geeknixta.com/geohub/rest/services/repo+chelm+grunt-geo+forks+LineString/FeatureServer/0
 * Access `samples/bower.geojson` in chelm's grunt-geo repo, filtering by geometry type `LineString`: http://geonode.geeknixta.com/geohub/rest/services/repo+chelm+grunt-geo+samples%2Fbower+LineString/FeatureServer/0
 
-#####Gist:
+##### Gist:
 * Access the second geoJSON file in gist `6178185` and view only `Point` geometries: http://geonode.geeknixta.com/geohub/rest/services/gist+6178185+Point/FeatureServer/1
 
-###GeoHub
+### GeoHub
 This adaptor makes use of [GeoHub](https://github.com/chelm/geohub).
